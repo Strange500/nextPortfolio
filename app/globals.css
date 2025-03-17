@@ -2,3 +2,34 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --small-circle-1: gravitate 4s infinite linear;
+}
+
+@keyframes gravitate {
+    from {
+        transform: rotate(-20deg) translateX(100vw);
+    }
+    to {
+        transform: rotate(90deg) translateX(100vw);
+    }
+}
+
+@keyframes gravitate2 {
+    from {
+        transform: rotate(270deg) translateX(100vw);
+    }
+    to {
+        transform: rotate(90deg) translateX(100vw);
+    }
+}
+
+@keyframes gravitate3 {
+    from {
+        transform: rotate(-270deg) translateX(100vw);
+    }
+    to {
+        transform: rotate(0deg) translateX(100vw);
+    }
+}
+

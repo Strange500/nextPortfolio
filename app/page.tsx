@@ -1,11 +1,16 @@
-import react from 'react';
+import { Bg } from '@/components/background'
+import { SmallSocialBtn } from '@/components/smallSocialBtn'
 
 export default function Page() {
   return (
-  <section className="py-24">
+  <section className="w-screen h-screen">
+    <Bg />
+
     <div className="container">
-      <h1 className="text-3xl font-bold">NEXT TS Starter</h1>
+
     </div>
+
+    <SmallSocialBtn />
   </section>
   )
 }
