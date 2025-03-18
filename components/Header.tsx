@@ -15,7 +15,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className='sticky top-0 z-10 flex w-full items-center justify-between bg-[--black-transparent] p-4 px-8 shadow-md'>
+    <nav className='sticky top-0 z-10 flex w-full items-center justify-between bg-neutral-900 p-4 px-8 shadow-md'>
       <div className='text-lg font-semibold text-white'>Portfolio</div>
 
       <div className='cursor-pointer md:hidden' onClick={toggleMenu}>
