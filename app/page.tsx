@@ -177,7 +177,12 @@ export default function Page() {
         <div className='flex justify-center md:justify-start'>
           <div className='mx-4 flex flex-col justify-center text-center md:mx-0 md:text-left'>
             <h1 className='text-2xl font-semibold text-neutral-900 md:text-4xl'>
-              Hi, I'm <span className='gradient-text'>Benjamin Roget</span>
+              Hi, I'm <span className='relative animate-[--color-shift] '>
+                        Benjamin Roget
+                        <span className={`absolute top-0 left-0 opacity-75 w-full h-full  animate-[--ping-text]  text-center flex justify-center items-center prenomnom`}>
+                          Benjamin Roget
+                        </span>
+                      </span>
             </h1>
             <p className='text-lg text-neutral-900'>
               I'm a IT student from France

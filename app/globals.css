@@ -6,6 +6,8 @@
     --black-transparent: rgba(0, 0, 0, 0.5);
     --small-circle-1: gravitate 4s infinite linear;
     --small-circle-1-mobile: gravitateMobile 4s infinite linear;
+    --ping-text: pingText 5s infinite linear;
+    --color-shift: colorShift 5s infinite;
 }
 
 @keyframes gravitate {
@@ -44,6 +46,8 @@
     }
 }
 
+
+
 @keyframes gradient-animation {
     0% {
         background-position: 0% 50%; /* Start position of the gradient */
@@ -59,12 +63,91 @@
 @layer components {
     .gradient-text {
         font-weight: bold;
-        background: linear-gradient(270deg, #ff0066, #ffcc00, #00ffcc, #6600ff);
+        background: linear-gradient(270deg, #ff0066, #ffcc00, #00ffcc, #6600ff, #ff0066);
         background-size: 400%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: gradient-animation 5s ease-in infinite;
     }
+}
+
+@keyframes pingText {
+    0% {
+        transform: scale(1);
+        color: #ff0066;
+        opacity: 1;
+    } 19%
+          {
+          transform: scale(1.1);
+          color: #ff0066;
+          opacity: 0;
+      }
+    20% {
+        transform: scale(1);
+        color: #ffcc00;
+        opacity: 1;
+    }
+    39% {
+        transform: scale(1.1);
+        color: #ffcc00;
+        opacity: 0;
+    } 40% {
+        transform: scale(1);
+        color: #00ffcc;
+        opacity: 1;
+    } 59% {
+        transform: scale(1.1);
+        color: #00ffcc;
+        opacity: 0;
+    } 60% {
+        transform: scale(1);
+        color: #6600ff;
+        opacity: 1;
+    } 79% {
+        transform: scale(1.1);
+        color: #6600ff;
+        opacity: 0;
+    } 80% {
+        transform: scale(1);
+        color: #ff0066;
+        opacity: 1;
+    } 99% {
+        transform: scale(1.1);
+        color: #ff0066;
+        opacity: 0;
+    }  100% {
+        transform: scale(1);
+        color: #33ff00;
+        opacity: 1;
+    }
+}
+
+
+
+@keyframes colorShift {
+    0% {
+        color: #ff0066;
+    }
+    19% {
+        color: #ff0066;
+    } 20% {
+          color: #ffcc00;
+      } 39% {
+            color: #ffcc00;
+        } 40% {
+              color: #00ffcc;
+          } 59% {
+                color: #00ffcc;
+            } 60% {
+                  color: #6600ff;
+              } 79% {
+                    color: #6600ff;
+                } 80% {
+                      color: #ff0066;
+                  } 100% {
+                        color: #ff0066;
+                    }
+
 }
 
 @layer base {
