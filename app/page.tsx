@@ -234,10 +234,10 @@ export default function Page() {
         <div className='flex justify-center md:justify-start'>
           <div className='mx-4 flex flex-col justify-center text-center md:mx-0 md:text-left'>
             <h1 className='text-2xl font-semibold text-neutral-900 md:text-4xl'>
-              Hi, I'm <span className='gradient-text'>Benjamin Roget</span>
+              Hi, I&#39;m <span className='gradient-text'>Benjamin Roget</span>
             </h1>
             <p className='text-lg text-neutral-900'>
-              I'm a IT student from France
+              I&#39;m a IT student from France
             </p>
           </div>
         </div>

@@ -35,10 +35,11 @@ export const ReadMeDialog = ({ content, title }: { content: string, title: strin
         </div>
       </DialogTrigger>
       <DialogContent className={`max-h-[80vh] w-full max-w-[1500px] overflow-x-hidden overflow-y-visible p-2`}>
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle className={`hidden`}>{title}</DialogTitle>
         <section
           className={`markdown-body p-[15px] md:w-[1480px] md:p-[45px]`}
           dangerouslySetInnerHTML={{ __html: content }}
+
         ></section>
       </DialogContent>
     </Dialog>
