@@ -6,6 +6,8 @@
     --black-transparent: rgba(0, 0, 0, 0.5);
     --small-circle-1: gravitate 4s infinite linear;
     --small-circle-1-mobile: gravitateMobile 4s infinite linear;
+    --ping-text: pingText 1s infinite;
+    --color-shift: colorShift 10s infinite;
 }
 
 @keyframes gravitate {
@@ -44,6 +46,16 @@
     }
 }
 
+@keyframes colorShift {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+    100% {
+        filter: hue-rotate(360deg);
+    }
+
+}
+
 @keyframes gradient-animation {
     0% {
         background-position: 0% 50%; /* Start position of the gradient */
@@ -64,6 +76,17 @@
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: gradient-animation 5s ease-in infinite;
+    }
+}
+
+@keyframes pingText {
+    0% {
+        transform: scale(1.6);
+        opacity: 1;
+    }
+    50%, 100% {
+        transform: scale(1.7);
+        opacity: 0;
     }
 }
 
