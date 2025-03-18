@@ -1,20 +1,12 @@
-"use client";
-import { marked } from 'marked'
+'use client'
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
 
-
-
-
-
-export const ReadMeDialog =  ({ content }: { content: string }) => {
-  const markdown =  getHtmlFromMarkdown(content)
+export const ReadMeDialog = ({ content, title }: { content: string, title: string }) => {
   return (
     <Dialog>
       <DialogTrigger>
@@ -42,13 +34,12 @@ export const ReadMeDialog =  ({ content }: { content: string }) => {
           </svg>
         </div>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription
-            dangerouslySetInnerHTML={{ __html: markdown }}
-          ></DialogDescription>
-        </DialogHeader>
+      <DialogContent className={`max-h-[80vh] w-full max-w-[1500px] overflow-x-hidden overflow-y-visible p-2`}>
+        <DialogTitle>{title}</DialogTitle>
+        <section
+          className={`markdown-body p-[15px] md:w-[1480px] md:p-[45px]`}
+          dangerouslySetInnerHTML={{ __html: content }}
+        ></section>
       </DialogContent>
     </Dialog>
   )
