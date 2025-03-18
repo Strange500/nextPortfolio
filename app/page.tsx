@@ -7,8 +7,8 @@ export default function Page() {
 
     <Header/>
 
-    <div className="container mx-auto p-4">
-      <div className={` md:p-32 p-7 `}></div>
+    <div className="container mx-auto">
+      <div className={` md:pt-60 pt-12 pt`}></div>
       <div className="flex justify-center md:justify-start ">
         <div className="flex flex-col justify-center text-center md:text-left mx-4 md:mx-0">
             <h1 className="text-2xl md:text-4xl font-semibold">
@@ -17,9 +17,10 @@ export default function Page() {
           <p className="text-lg text-gray-500">I'm a IT student from France</p>
         </div>
       </div>
+      <SmallSocialBtn />
     </div>
 
-    <SmallSocialBtn />
+
   </section>
   )
 }

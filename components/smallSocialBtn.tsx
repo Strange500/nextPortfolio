@@ -2,7 +2,7 @@
 
 export const SmallSocialBtn = () => {
   return (
-    <div className="flex justify-center items-center fixed bottom-0 right-0 z-50 p-2 space-x-2">
+    <div className="flex justify-center items-center md:justify-start md:items-start pt-2 space-x-2">
       <a href="https://www.linkedin.com/in/roget-benjamin"
          className="text-white bg-black p-2 rounded shadow hover:bg-gray-900">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-linkedin"
