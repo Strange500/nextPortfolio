@@ -1,63 +1,33 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Circle, Quadtree, Rectangle } from '@timohausmann/quadtree-ts';
+import { useEffect } from "react";
+import { Circle, Quadtree } from '@timohausmann/quadtree-ts';
 
 const MAX_OBJECTS = 5;
 const MAX_LEVELS = 10;
-const NUM_POINTS = 500;
-const MAX_DISTANCE = 100;
+const NUM_POINTS = 1500;
+const MAX_DISTANCE = 50;
 const RADIUS = 1;
 
-class Point extends Circle {
-  deg: number;
 
-  constructor(x: number, y: number, deg: number) {
-    super({ x, y, r: RADIUS });
-    this.deg = deg;
-  }
-
-  update(canvasWidth: number, canvasHeight: number) {
-    // Modify movement speed and add variability to direction
-    const speed = 0.3; // Reduced speed
-    this.x += Math.cos(this.deg) * speed;
-    this.y += Math.sin(this.deg) * speed;
-
-    // Bounce off the walls by reversing the degree and adding some randomness
-    if (this.x < 0 || this.x > canvasWidth) {
-      this.deg = Math.PI - this.deg + (Math.random() * 0.25 - 0.125); // Small random change
-    }
-    if (this.y < 0 || this.y > canvasHeight) {
-      this.deg = -this.deg + (Math.random() * 0.25 - 0.125); // Small random change
-    }
-  }
-
-  render(context: CanvasRenderingContext2D) {
-    context.beginPath();
-    context.arc(this.x, this.y, RADIUS, 0, 2 * Math.PI);
-    context.fillStyle = "black";
-    context.fill();
-  }
-
-  distanceTo(other: Point): number {
-    return Math.sqrt((this.x - other.x) ** 2 + (this.y - other.y) ** 2);
-  }
-}
-
-function genRandomPoint(maxWidth: number, maxHeight: number): Point {
-  const x = Math.random() * maxWidth;
-  const y = Math.random() * maxHeight;
-  const deg = Math.random() * 2 * Math.PI; // Use radians for degrees
-  return new Point(x, y, deg);
-}
 
 const useCanvasAnimation = () => {
+
+
   useEffect(() => {
+
+    const mousePos = {
+      x: 0,
+      y: 0,
+    }
+    function setMousePos(param: {x: number; y: number}) {
+      mousePos.x = param.x;
+      mousePos.y = param.y;
+    }
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const context = canvas.getContext("2d") as CanvasRenderingContext2D;
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
-
     // Initialize Quadtree
     const quadtree = new Quadtree<Point>({
       width: canvas.width,
@@ -66,6 +36,49 @@ const useCanvasAnimation = () => {
       maxLevels: MAX_LEVELS,
     });
 
+    class Point extends Circle {
+      deg: number;
+
+      constructor(x: number, y: number, deg: number) {
+        super({ x, y, r: RADIUS });
+        this.deg = deg;
+      }
+
+      update(canvasWidth: number, canvasHeight: number) {
+        // Modify movement speed and add variability to direction
+        const speed = 0.3; // Reduced speed
+        this.x += Math.cos(this.deg) * speed;
+        this.y += Math.sin(this.deg) * speed;
+
+        // Bounce off the walls by reversing the degree and adding some randomness
+        if (this.x < 0 || this.x > canvasWidth) {
+          this.deg = Math.PI - this.deg + (Math.random() * 0.25 - 0.125); // Small random change
+        }
+        if (this.y < 0 || this.y > canvasHeight) {
+          this.deg = -this.deg + (Math.random() * 0.25 - 0.125); // Small random change
+        }
+
+      }
+
+      render(context: CanvasRenderingContext2D) {
+        context.beginPath();
+        context.arc(this.x, this.y, RADIUS, 0, 2 * Math.PI);
+        context.fillStyle = "black";
+        context.fill();
+      }
+
+      distanceTo(other: Point): number {
+        return Math.sqrt((this.x - other.x) ** 2 + (this.y - other.y) ** 2);
+      }
+    }
+
+    function genRandomPoint(maxWidth: number, maxHeight: number): Point {
+      const x = Math.random() * maxWidth;
+      const y = Math.random() * maxHeight;
+      const deg = Math.random() * 2 * Math.PI; // Use radians for degrees
+      return new Point(x, y, deg);
+    }
+
     // Generate a collection of points
     const points = Array.from({ length: NUM_POINTS }, () => {
       const point = genRandomPoint(canvas.width, canvas.height);
@@ -73,23 +86,18 @@ const useCanvasAnimation = () => {
       return point;
     });
 
-    canvas.addEventListener('mousemove', (event) => {
-      const x = event.clientX;
-      const y = event.clientY;
-      quadtree.retrieve(new Rectangle({
-        x,
-        y,
-        width: 1,
-        height: 1,
-      })).forEach(point => {
-          context.beginPath();
-          context.moveTo(point.x, point.y);
-          context.lineTo(x, y);
-          context.strokeStyle = "black";
-          context.stroke();
+    const handleMouseMove = (event: MouseEvent) => {
+      if (canvas) {
+        const rect = canvas.getBoundingClientRect();
+        setMousePos({
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+        });
+      }
+    };
 
-      })
-    });
+    document.addEventListener('mousemove', handleMouseMove);
+
 
     const animate = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -98,7 +106,12 @@ const useCanvasAnimation = () => {
       points.forEach(point => {
         point.update(canvas.width, canvas.height);
         point.render(context);
+
+        quadtree.remove(point, true);
+        quadtree.insert(point);
       });
+      quadtree.remove(points[0]);
+      quadtree.insert(points[0]);
 
       // Draw connections between close points
       points.forEach(point => {
@@ -117,7 +130,26 @@ const useCanvasAnimation = () => {
             context.stroke();
           }
         });
+
+
       });
+
+      quadtree.retrieve(new Circle({
+        x:  mousePos.x,
+        y: mousePos.y,
+        r: MAX_DISTANCE,
+      })).forEach(point => {
+        if (point.distanceTo(new Point(mousePos.x, mousePos.y, 0)) < MAX_DISTANCE * 2) {
+          context.beginPath();
+          context.moveTo(point.x, point.y);
+          context.lineTo(mousePos.x, mousePos.y);
+          context.strokeStyle = "black";
+          context.stroke();
+        }
+      })
+
+
+
 
       requestAnimationFrame(animate);
     };
@@ -130,12 +162,11 @@ const useCanvasAnimation = () => {
   });
 };
 
-const Home = () => {
+const BG = () => {
   useCanvasAnimation();
-
   return (
-    <canvas id={'canvas'} className="w-screen h-screen"></canvas>
+    <canvas id={'canvas'} className="w-screen h-screen z-[-1] absolute top-0 right-0"></canvas>
   );
 };
 
-export default Home;
+export default BG;

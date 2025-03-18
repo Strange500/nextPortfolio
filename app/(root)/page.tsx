@@ -226,7 +226,7 @@ export default function Page() {
   }
 
   return (
-    <section className='h-screen w-screen overflow-x-hidden'>
+    <section className='h-screen w-screen overflow-x-hidden bg-[--white-transparent]'>
       <Header />
 
       <div className='container mx-auto h-full'>
