@@ -1,4 +1,3 @@
-'use client'
 import { SmallSocialBtn } from '@/components/smallSocialBtn'
 import Header from '@/components/Header'
 import { Button } from '@/components/ui/button'
@@ -12,6 +11,17 @@ import {
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { JSX } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
+import { ReadMeDialog } from '@/components/ReadMeDialog'
+import { marked } from 'marked'
+
 
 function getSvgForLink(url: string): JSX.Element | undefined {
   if (url.startsWith('https://github.com')) {
@@ -70,9 +80,8 @@ function getButtonForLink(url: string): JSX.Element {
   } else if (url.startsWith('https://www.linkedin.com')) {
     text = 'See on LinkedIn'
   }
-
   return (
-    <Button onClick={() => window.open(url)}>
+    <Button>
       {getSvgForLink(url)}
       <span className='ml-2'>{text}</span>
     </Button>
@@ -93,7 +102,12 @@ const projects = [
     description:
       'This project is a web application built with Next.js that provides an interactive interface for displaying information about video games using the RAWG API. Users can search for games, view detailed information, and download games directly from the server.',
     tags: ['React', 'Next.js', 'TailwindCSS', 'Docker', 'JavaScript'],
-    links: ['https://github.com/Strange500/GameList', 'https://gamelist.portfolio.qgroget.com']
+    links: [
+      'https://github.com/Strange500/GameList',
+      'https://gamelist.portfolio.qgroget.com'
+    ],
+    readme:
+      'https://github.com/Strange500/GameList/raw/859c49fe87b581e9fc5d7b44dea0807d79e2d2da/README.md'
   },
   {
     order: 2,
@@ -105,40 +119,65 @@ const projects = [
   {
     order: 3,
     title: 'QGChat',
-    description: 'QGChat est une application web permettant aux utilisateurs de créer et gérer des fils de discussion avec un ou plusieurs participants. Chaque utilisateur peut poster et lire des messages dans ces fils. L’application suit une architecture MVC en JEE, avec une interface responsive compatible avec ordinateur et mobile.',
+    description:
+      'QGChat est une application web permettant aux utilisateurs de créer et gérer des fils de discussion avec un ou plusieurs participants. Chaque utilisateur peut poster et lire des messages dans ces fils. L’application suit une architecture MVC en JEE, avec une interface responsive compatible avec ordinateur et mobile.',
     tags: ['Java', 'JEE', 'MVC', 'Tomcat', 'JavaScript'],
     links: ['https://github.com', 'https://tomcat.qgroget.com/sae']
   },
   {
     order: 5,
     title: 'This portfolio',
-    description: 'This portfolio is a Next.js application that showcases my projects and skills. It is built with TypeScript, TailwindCSS, and uses a custom design system. The site is fully responsive and optimized for performance.',
+    description:
+      'This portfolio is a Next.js application that showcases my projects and skills. It is built with TypeScript, TailwindCSS, and uses a custom design system. The site is fully responsive and optimized for performance.',
     tags: ['React', 'Next.js', 'TailwindCSS', 'TypeScript'],
     links: ['https://github.com/Strange500/nextPortfolio']
   },
   {
     order: 3,
     title: 'HomeLab',
-    description: 'My homeLab is my domestic server that hosts various services such as a JellyFin instance, a Gitea instance, a Pi-hole instance, and this portfolio! The server runs Unraid as the host OS and uses docker for containerization.',
+    description:
+      'My homeLab is my domestic server that hosts various services such as a JellyFin instance, a Gitea instance, a Pi-hole instance, and this portfolio! The server runs Unraid as the host OS and uses docker for containerization.',
     tags: ['Unraid', 'Docker', 'Linux', 'Self-hosting'],
-    links: []
+    links: [],
+    readme:
+      'https://raw.githubusercontent.com/Strange500/nextPortfolio/b5aa2fda9042ac9b94630b4ab72b16cf2cdae335/README.md'
   }
 ]
 
+async function getHtmlFromMarkdown(content: string) {
+  return marked.parse(content)
+}
 
-function ProjectCard({ title, description, tags, links } : { title: string, description: string, tags: string[], links: string[] }) {
+async function ProjectCard({
+  title,
+  description,
+  tags,
+  links,
+  readme
+}: {
+  title: string
+  description: string
+  tags: string[]
+  links: string[]
+  readme: string | undefined
+}) {
 
+  const content = readme ? await fetch(readme).then(res => res.text()) : undefined;
   return (
-    <Card className={`bg-white shadow-md h-full flex justify-between flex-col`}>
+    <Card className={`flex h-full flex-col justify-between bg-white shadow-md`}>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className={`flex flex-row justify-between`}>
+          {title}
+          {content && <ReadMeDialog content={content} /> }
+        </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         {tags.map(tag => (
           <Badge
             key={tag}
-            className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+            className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'
+          >
             {tag}
           </Badge>
         ))}
@@ -166,8 +205,6 @@ export default function Page() {
     })
   }
 
-
-
   return (
     <section className='h-screen w-screen overflow-x-hidden'>
       <Header />
@@ -188,7 +225,6 @@ export default function Page() {
         <div className={`pt-12`}></div>
         <a
           href={`#project`}
-          onClick={handleSmoothScroll}
           className={`flex justify-center align-middle md:justify-start`}
         >
           <Button
@@ -214,13 +250,13 @@ export default function Page() {
         <ul
           className={`grid h-[80%] grid-cols-1 gap-4 overflow-y-scroll md:h-auto md:grid-cols-2 md:overflow-visible lg:grid-cols-3`}
         >
-          {projects.sort((a,b)=> a.order - b.order).map((project, index) => (
-            <li key={index} className={`rounded-lg `} >
-              <ProjectCard {...project} />
-            </li>
-          ))}
-
-
+          {projects
+            .sort((a, b) => a.order - b.order)
+            .map((project, index) => (
+              <li key={index} className={`rounded-lg`}>
+                <ProjectCard {...project} />
+              </li>
+            ))}
         </ul>
       </div>
     </section>
