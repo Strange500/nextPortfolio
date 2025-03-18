@@ -1,7 +1,8 @@
+@import url('./githubCss.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 :root {
     --black-transparent: rgba(0, 0, 0, 0.5);
     --small-circle-1: gravitate 4s infinite linear;
@@ -216,5 +217,10 @@
   body {
     @apply bg-background text-foreground;
     }
+}
+
+.dialogMarkDownContent img{
+    width: 15vw;
+    border-radius: 0.5rem;
 }
 

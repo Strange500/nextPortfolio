@@ -1,4 +1,3 @@
-'use client'
 import { SmallSocialBtn } from '@/components/smallSocialBtn'
 import Header from '@/components/Header'
 import { Button } from '@/components/ui/button'
@@ -12,6 +11,11 @@ import {
 } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { JSX } from 'react'
+
+import { ReadMeDialog } from '@/components/ReadMeDialog'
+import { marked } from 'marked'
+import Link from 'next/link'
+
 
 function getSvgForLink(url: string): JSX.Element | undefined {
   if (url.startsWith('https://github.com')) {
@@ -70,13 +74,29 @@ function getButtonForLink(url: string): JSX.Element {
   } else if (url.startsWith('https://www.linkedin.com')) {
     text = 'See on LinkedIn'
   }
-
   return (
-    <Button onClick={() => window.open(url)}>
-      {getSvgForLink(url)}
-      <span className='ml-2'>{text}</span>
-    </Button>
+    <Link href={url}>
+      <Button>
+        {getSvgForLink(url)}
+        <span className='ml-2'>{text}</span>
+      </Button>
+    </Link>
   )
+}
+
+function fixImgLink(relativeLink: string, readmeUrl:string) {
+  const baseUrl = readmeUrl.split('/').slice(0, -1).join('/')
+  return `${baseUrl}/${relativeLink.replace('./', '')}`
+}
+
+function replaceBrokenMarkdownLinks(content: string, readmeUrl: string) {
+  // test regexp
+
+  return content.replace(/\[.*\]\((\.\/.*)\)/g, (match) => {
+    const tmp = fixImgLink(match.split('](')[1].split(')')[0], readmeUrl);
+    console.log(match.split('](')[0] + `](${tmp})`)
+    return match.split('](')[0] + `](${tmp})`
+  });
 }
 
 const projects = [
@@ -85,7 +105,9 @@ const projects = [
     title: 'Classification-K-NN',
     description: `Dans ce projet, nous avons développé une application de visualisation de données en 2D, offrant des fonctionnalités telles que la classification K-NN, des tests de robustesse et des prédictions. L'application a été implémentée selon le modèle MVC en Java, utilisant la bibliothèque graphique JavaFX.`,
     tags: ['Java', 'JavaFX', 'MVC'],
-    links: ['https://github.com/Strange500/Classification-K-NN']
+    links: ['https://github.com/Strange500/Classification-K-NN'],
+    readme:
+      'https://github.com/Strange500/Classification-K-NN/raw/cc6b9ab8f5a912ab2f789068e2789b27c43a3d6c/README.md'
   },
   {
     order: 1,
@@ -93,52 +115,89 @@ const projects = [
     description:
       'This project is a web application built with Next.js that provides an interactive interface for displaying information about video games using the RAWG API. Users can search for games, view detailed information, and download games directly from the server.',
     tags: ['React', 'Next.js', 'TailwindCSS', 'Docker', 'JavaScript'],
-    links: ['https://github.com/Strange500/GameList', 'https://gamelist.portfolio.qgroget.com']
+    links: [
+      'https://github.com/Strange500/GameList',
+      'https://gamelist.portfolio.qgroget.com'
+    ],
+    readme:
+      'https://github.com/Strange500/GameList/raw/859c49fe87b581e9fc5d7b44dea0807d79e2d2da/README.md'
   },
   {
     order: 2,
     title: 'Bagarre.io',
     description: `Bagarre.io est un Agar.io-like développé en JavaScript. Le jeu est un jeu multijoueur en temps réel où les joueurs peuvent se battre pour devenir le plus gros joueur.`,
     tags: ['JavaScript', 'Node.js', 'Socket.io'],
-    links: ['https://github.com', 'https://bagarre.portfolio.qgroget.com']
+    links: ['https://bagarre.portfolio.qgroget.com']
   },
   {
     order: 3,
     title: 'QGChat',
-    description: 'QGChat est une application web permettant aux utilisateurs de créer et gérer des fils de discussion avec un ou plusieurs participants. Chaque utilisateur peut poster et lire des messages dans ces fils. L’application suit une architecture MVC en JEE, avec une interface responsive compatible avec ordinateur et mobile.',
+    description:
+      'QGChat est une application web permettant aux utilisateurs de créer et gérer des fils de discussion avec un ou plusieurs participants. Chaque utilisateur peut poster et lire des messages dans ces fils. L’application suit une architecture MVC en JEE, avec une interface responsive compatible avec ordinateur et mobile.',
     tags: ['Java', 'JEE', 'MVC', 'Tomcat', 'JavaScript'],
     links: ['https://github.com', 'https://tomcat.qgroget.com/sae']
   },
   {
     order: 5,
     title: 'This portfolio',
-    description: 'This portfolio is a Next.js application that showcases my projects and skills. It is built with TypeScript, TailwindCSS, and uses a custom design system. The site is fully responsive and optimized for performance.',
+    description:
+      'This portfolio is a Next.js application that showcases my projects and skills. It is built with TypeScript, TailwindCSS, and uses a custom design system. The site is fully responsive and optimized for performance.',
     tags: ['React', 'Next.js', 'TailwindCSS', 'TypeScript'],
-    links: ['https://github.com/Strange500/nextPortfolio']
+    links: ['https://github.com/Strange500/nextPortfolio'],
+    readme:
+      'https://github.com/Strange500/nextPortfolio/raw/3930e3fbb708fcadf93cc80a255b43d6a318d6d5/README.md'
   },
   {
     order: 3,
     title: 'HomeLab',
-    description: 'My homeLab is my domestic server that hosts various services such as a JellyFin instance, a Gitea instance, a Pi-hole instance, and this portfolio! The server runs Unraid as the host OS and uses docker for containerization.',
+    description:
+      'My homeLab is my domestic server that hosts various services such as a JellyFin instance, a Gitea instance, a Pi-hole instance, and this portfolio! The server runs Unraid as the host OS and uses docker for containerization.',
     tags: ['Unraid', 'Docker', 'Linux', 'Self-hosting'],
     links: []
   }
 ]
 
+async function getHtmlFromMarkdown(content: string | undefined) {
+  if (!content) return ''
+  return marked.parse(content)
+}
 
-function ProjectCard({ title, description, tags, links } : { title: string, description: string, tags: string[], links: string[] }) {
-
+async function ProjectCard({
+  title,
+  description,
+  tags,
+  links,
+  readme
+}: {
+  title: string
+  description: string
+  tags: string[]
+  links: string[]
+  readme: string | undefined
+}) {
+  let content = '';
+  let fixedReadme = '';
+  let contentString = '';
+  if (readme) {
+    contentString = await fetch(readme).then(res => res.text()) || '';
+    fixedReadme = replaceBrokenMarkdownLinks(contentString, readme)
+    content = await getHtmlFromMarkdown(fixedReadme);
+  }
   return (
-    <Card className={`bg-white shadow-md h-full flex justify-between flex-col`}>
+    <Card className={`flex h-full flex-col justify-between bg-white shadow-md`}>
       <CardHeader>
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className={`flex flex-row justify-between`}>
+          {title}
+          {content !== '' && <ReadMeDialog content={content} title={title} /> }
+        </CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         {tags.map(tag => (
           <Badge
             key={tag}
-            className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+            className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'
+          >
             {tag}
           </Badge>
         ))}
@@ -166,8 +225,6 @@ export default function Page() {
     })
   }
 
-
-
   return (
     <section className='h-screen w-screen overflow-x-hidden'>
       <Header />
@@ -177,7 +234,7 @@ export default function Page() {
         <div className='flex justify-center md:justify-start'>
           <div className='mx-4 flex flex-col justify-center text-center md:mx-0 md:text-left'>
             <h1 className='text-2xl font-semibold text-neutral-900 md:text-4xl'>
-              Hi, I'm <span className='relative animate-[--color-shift] '>
+              Hi, I&#39;m  <span className='relative animate-[--color-shift] '>
                         Benjamin Roget
                         <span className={`absolute top-0 left-0 opacity-75 w-full h-full  animate-[--ping-text]  text-center flex justify-center items-center prenomnom`}>
                           Benjamin Roget
@@ -185,7 +242,7 @@ export default function Page() {
                       </span>
             </h1>
             <p className='text-lg text-neutral-900'>
-              I'm a IT student from France
+              I&#39;m a IT student from France
             </p>
           </div>
         </div>
@@ -193,7 +250,6 @@ export default function Page() {
         <div className={`pt-12`}></div>
         <a
           href={`#project`}
-          onClick={handleSmoothScroll}
           className={`flex justify-center align-middle md:justify-start`}
         >
           <Button
@@ -219,13 +275,13 @@ export default function Page() {
         <ul
           className={`grid h-[80%] grid-cols-1 gap-4 overflow-y-scroll md:h-auto md:grid-cols-2 md:overflow-visible lg:grid-cols-3`}
         >
-          {projects.sort((a,b)=> a.order - b.order).map((project, index) => (
-            <li key={index} className={`rounded-lg `} >
-              <ProjectCard {...project} />
-            </li>
-          ))}
-
-
+          {projects
+            .sort((a, b) => a.order - b.order)
+            .map((project, index) => (
+              <li key={index} className={`rounded-lg`}>
+                <ProjectCard {...project} />
+              </li>
+            ))}
         </ul>
       </div>
     </section>
