@@ -81,12 +81,14 @@ function getButtonForLink(url: string): JSX.Element {
 
 const projects = [
   {
+    order: 36,
     title: 'Classification-K-NN',
     description: `Dans ce projet, nous avons développé une application de visualisation de données en 2D, offrant des fonctionnalités telles que la classification K-NN, des tests de robustesse et des prédictions. L'application a été implémentée selon le modèle MVC en Java, utilisant la bibliothèque graphique JavaFX.`,
     tags: ['Java', 'JavaFX', 'MVC'],
     links: ['https://github.com/Strange500/Classification-K-NN']
   },
   {
+    order: 1,
     title: 'GameList',
     description:
       'This project is a web application built with Next.js that provides an interactive interface for displaying information about video games using the RAWG API. Users can search for games, view detailed information, and download games directly from the server.',
@@ -94,24 +96,28 @@ const projects = [
     links: ['https://github.com/Strange500/GameList', 'https://gamelist.portfolio.qgroget.com']
   },
   {
+    order: 2,
     title: 'Bagarre.io',
     description: `Bagarre.io est un Agar.io-like développé en JavaScript. Le jeu est un jeu multijoueur en temps réel où les joueurs peuvent se battre pour devenir le plus gros joueur.`,
     tags: ['JavaScript', 'Node.js', 'Socket.io'],
     links: ['https://github.com', 'https://bagarre.portfolio.qgroget.com']
   },
   {
+    order: 3,
     title: 'QGChat',
     description: 'QGChat est une application web permettant aux utilisateurs de créer et gérer des fils de discussion avec un ou plusieurs participants. Chaque utilisateur peut poster et lire des messages dans ces fils. L’application suit une architecture MVC en JEE, avec une interface responsive compatible avec ordinateur et mobile.',
     tags: ['Java', 'JEE', 'MVC', 'Tomcat', 'JavaScript'],
-    links: ['https://github.com']
+    links: ['https://github.com', 'https://tomcat.qgroget.com/sae']
   },
   {
+    order: 5,
     title: 'This portfolio',
     description: 'This portfolio is a Next.js application that showcases my projects and skills. It is built with TypeScript, TailwindCSS, and uses a custom design system. The site is fully responsive and optimized for performance.',
     tags: ['React', 'Next.js', 'TailwindCSS', 'TypeScript'],
     links: ['https://github.com/Strange500/nextPortfolio']
   },
   {
+    order: 3,
     title: 'HomeLab',
     description: 'My homeLab is my domestic server that hosts various services such as a JellyFin instance, a Gitea instance, a Pi-hole instance, and this portfolio! The server runs Unraid as the host OS and uses docker for containerization.',
     tags: ['Unraid', 'Docker', 'Linux', 'Self-hosting'],
@@ -123,7 +129,7 @@ const projects = [
 function ProjectCard({ title, description, tags, links } : { title: string, description: string, tags: string[], links: string[] }) {
 
   return (
-    <Card>
+    <Card className={`bg-white shadow-md h-full flex justify-between flex-col`}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -159,6 +165,8 @@ export default function Page() {
       block: 'start'
     })
   }
+
+
 
   return (
     <section className='h-screen w-screen overflow-x-hidden'>
@@ -206,7 +214,7 @@ export default function Page() {
         <ul
           className={`grid h-[80%] grid-cols-1 gap-4 overflow-y-scroll md:h-auto md:grid-cols-2 md:overflow-visible lg:grid-cols-3`}
         >
-          {projects.map((project, index) => (
+          {projects.sort((a,b)=> a.order - b.order).map((project, index) => (
             <li key={index} className={`rounded-lg `} >
               <ProjectCard {...project} />
             </li>
