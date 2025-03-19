@@ -16,6 +16,17 @@ const useCanvasAnimation = () => {
 
   useEffect(() => {
 
+    const canvasResizeObserver = new ResizeObserver(resampleCanvas);
+
+
+    function resampleCanvas() {
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+    }
+
+
+
+
     const mousePos = {
       x: 0,
       y: 0,
@@ -28,6 +39,9 @@ const useCanvasAnimation = () => {
     const context = canvas.getContext("2d") as CanvasRenderingContext2D;
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
+
+    canvasResizeObserver.observe(canvas);
+
     const quadtree = new Quadtree<Point>({
       width: canvas.width,
       height: canvas.height,
