@@ -107,7 +107,7 @@ const projects = [
     tags: ['Java', 'JavaFX', 'MVC'],
     links: ['https://github.com/Strange500/Classification-K-NN'],
     readme:
-      'https://github.com/Strange500/Classification-K-NN/raw/cc6b9ab8f5a912ab2f789068e2789b27c43a3d6c/README.md'
+      'https://raw.githubusercontent.com/Strange500/Classification-K-NN/refs/heads/main/README.md'
   },
   {
     order: 1,
@@ -120,7 +120,7 @@ const projects = [
       'https://gamelist.portfolio.qgroget.com'
     ],
     readme:
-      'https://github.com/Strange500/GameList/raw/859c49fe87b581e9fc5d7b44dea0807d79e2d2da/README.md'
+      'https://raw.githubusercontent.com/Strange500/GameList/refs/heads/main/README.md'
   },
   {
     order: 2,
@@ -136,7 +136,7 @@ const projects = [
       'QGChat est une application web permettant aux utilisateurs de créer et gérer des fils de discussion avec un ou plusieurs participants. Chaque utilisateur peut poster et lire des messages dans ces fils. L’application suit une architecture MVC en JEE, avec une interface responsive compatible avec ordinateur et mobile.',
     tags: ['Java', 'JEE', 'MVC', 'Tomcat', 'JavaScript'],
     links: ['https://github.com/Strange500/QGChat', 'https://tomcat.qgroget.com/sae'],
-    readme: "https://github.com/Strange500/QGChat/raw/2e62f5c7e901271cf70ef08a755fafe50cd108c0/README.md"
+    readme: "https://raw.githubusercontent.com/Strange500/QGChat/refs/heads/main/README.md"
   },
   {
     order: 5,
@@ -146,7 +146,7 @@ const projects = [
     tags: ['React', 'Next.js', 'TailwindCSS', 'TypeScript'],
     links: ['https://github.com/Strange500/nextPortfolio'],
     readme:
-      'https://github.com/Strange500/nextPortfolio/raw/3930e3fbb708fcadf93cc80a255b43d6a318d6d5/README.md'
+      'https://raw.githubusercontent.com/Strange500/nextPortfolio/refs/heads/main/README.md'
   },
   {
     order: 3,
@@ -217,7 +217,7 @@ async function ProjectCard({
 export default function Page() {
 
   return (
-    <section className='h-full w-screen overflow-x-hidden bg-[--white-transparent]' >
+    <section className='h-full w-screen bg-[--white-transparent]' >
 
 
       <div className='container mx-auto h-full' id={'home'}>
@@ -275,6 +275,8 @@ export default function Page() {
             ))}
         </ul>
       </div>
+
+
 
     </section>
   )
