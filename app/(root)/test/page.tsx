@@ -6,8 +6,8 @@ import { Circle, Quadtree } from '@timohausmann/quadtree-ts';
 const MAX_OBJECTS = 5;
 const MAX_LEVELS = 10;
 const NUM_POINTS = 1500;
-const MAX_DISTANCE = 50;
-const RADIUS = 1;
+const MAX_DISTANCE = 60;
+const RADIUS = 3;
 
 
 
@@ -28,7 +28,6 @@ const useCanvasAnimation = () => {
     const context = canvas.getContext("2d") as CanvasRenderingContext2D;
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
-    // Initialize Quadtree
     const quadtree = new Quadtree<Point>({
       width: canvas.width,
       height: canvas.height,
@@ -98,23 +97,27 @@ const useCanvasAnimation = () => {
 
     document.addEventListener('mousemove', handleMouseMove);
 
+    const point1 = points.toSpliced(0, NUM_POINTS / 2);
+    const point2 = points.toSpliced(NUM_POINTS / 2, NUM_POINTS);
+
+    let pointls = point1;
 
     const animate = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update and render points
-      points.forEach(point => {
+      pointls.forEach(point => {
         point.update(canvas.width, canvas.height);
         point.render(context);
 
         quadtree.remove(point, true);
         quadtree.insert(point);
       });
+
       quadtree.remove(points[0]);
       quadtree.insert(points[0]);
-
       // Draw connections between close points
-      points.forEach(point => {
+      pointls.forEach(point => {
         const neighbors = quadtree.retrieve(new Circle({
           x: point.x,
           y: point.y,
@@ -131,9 +134,10 @@ const useCanvasAnimation = () => {
           }
         });
 
+        pointls = pointls === point1 ? point2 : point1;
+
 
       });
-
       quadtree.retrieve(new Circle({
         x:  mousePos.x,
         y: mousePos.y,
@@ -143,7 +147,7 @@ const useCanvasAnimation = () => {
           context.beginPath();
           context.moveTo(point.x, point.y);
           context.lineTo(mousePos.x, mousePos.y);
-          context.strokeStyle = "black";
+          context.strokeStyle = "red";
           context.stroke();
         }
       })
