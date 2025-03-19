@@ -10,12 +10,23 @@ const Navbar = () => {
     setIsOpen(false); // Close the menu on link click
   };
 
+  const handleSmoothScroll = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault()
+    const targetId = event.currentTarget.getAttribute('href') as string
+    const targetElement = document.querySelector(targetId)
+    if (!targetElement) return
+    targetElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    })
+  }
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <nav className='sticky top-0 z-10 flex w-full items-center justify-between bg-neutral-900 p-4 px-8 shadow-md'>
+    <nav className='sticky z-10 top-0 flex w-full items-center justify-between bg-neutral-900 p-4 px-8 shadow-md'>
       <div className='text-lg font-semibold text-white'>Portfolio</div>
 
       <div className='cursor-pointer md:hidden' onClick={toggleMenu}>
@@ -39,42 +50,56 @@ const Navbar = () => {
         className={`absolute flex-col bg-[--black-transparent] transition-all duration-300 md:static md:flex md:flex-row md:space-x-6 md:bg-transparent ${isOpen ? 'top-16' : 'top-[-200px]'} md:top-0`}
       >
         <li
-          className={`group ${activeLink === 'Home' ? 'font-bold' : ''} w-16 flex align-middle justify-center`}
+          className={`group ${activeLink === 'Home' ? 'font-bold' : ''} flex w-16 justify-center align-middle`}
         >
           <a
-            href='#'
-            onClick={() => handleLinkClick('Home')}
+            // scroll to div with id home
+            onClick={(event) => {
+              handleLinkClick('Home');
+              handleSmoothScroll(event);
+            }}
+            href='#home'
             className={`block text-white transition duration-300 hover:text-gray-300`}
           >
             Home
           </a>
         </li>
         <li
-          className={`group ${activeLink === 'Technologies' ? 'font-bold' : ''} w-16  flex align-middle justify-center`}
+          className={`group ${activeLink === 'Technologies' ? 'font-bold' : ''} flex w-16 justify-center align-middle`}
         >
           <a
-            href='#techContainer'
-            onClick={() => handleLinkClick('Technologies')}
+            onClick={(event) => {
+              handleLinkClick('Technologies');
+              handleSmoothScroll(event);
+            }}
+            href={'#technologies'}
             className={`block text-white transition duration-300 hover:text-gray-300 ${activeLink === 'Technologies' ? 'font-bold' : ''}`}
           >
             Techno
           </a>
         </li>
         <li
-          className={`group ${activeLink === 'Projects' ? 'font-bold' : ''} w-16  flex align-middle justify-center`}
+          className={`group ${activeLink === 'Projects' ? 'font-bold' : ''} flex w-16 justify-center align-middle`}
         >
           <a
-            href='#projects'
-            onClick={() => handleLinkClick('Projects')}
+            onClick={(event) => {
+              handleLinkClick('Projects');
+              handleSmoothScroll(event);
+            }}
+            href={'#projects'}
             className={`block text-white transition duration-300 hover:text-gray-300 ${activeLink === 'Projects' ? 'font-bold' : ''}`}
           >
             Projects
           </a>
         </li>
-        <li className={`group  ${activeLink === 'Contact' ? 'font-bold' : ''} w-16  flex align-middle justify-center`}>
+        <li
+          className={`group ${activeLink === 'Contact' ? 'font-bold' : ''} flex w-16 justify-center align-middle`}
+        >
           <a
-            href='#contact'
-            onClick={() => handleLinkClick('Contact')}
+            onClick={(event) => {
+              handleLinkClick('Contact');
+              handleSmoothScroll(event);
+            }}
             className={`block text-white transition duration-300 hover:text-gray-300 ${activeLink === 'Contact' ? 'font-bold' : ''}`}
           >
             Contact

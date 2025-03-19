@@ -3,11 +3,11 @@
 import { useEffect } from "react";
 import { Circle, Quadtree } from '@timohausmann/quadtree-ts';
 
-const MAX_OBJECTS = 5;
-const MAX_LEVELS = 10;
-const NUM_POINTS = 1500;
+const MAX_OBJECTS = 10;
+const MAX_LEVELS = 3;
 const MAX_DISTANCE = 60;
 const RADIUS = 3;
+const COLORS = ["#0F0F0F", "#2D2E2E", "#716969"];
 
 
 
@@ -16,45 +16,56 @@ const useCanvasAnimation = () => {
 
   useEffect(() => {
 
+
     const canvasResizeObserver = new ResizeObserver(resampleCanvas);
 
 
     function resampleCanvas() {
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
+      NUM_POINTS = Math.floor((canvas.width * canvas.height) / 1000);
+      // rebuild the quadtree and points array
+      quadtree = new Quadtree<Point>({
+        width: canvas.width,
+        height: canvas.height,
+        maxObjects: MAX_OBJECTS,
+        maxLevels: MAX_LEVELS,
+      });
+      points.length = 0;
+      for (let i = 0; i < NUM_POINTS; i++) {
+        const point = genRandomPoint(canvas.width, canvas.height);
+        quadtree.insert(point);
+        points.push(point);
+      }
     }
 
 
-
-
-    const mousePos = {
-      x: 0,
-      y: 0,
-    }
-    function setMousePos(param: {x: number; y: number}) {
-      mousePos.x = param.x;
-      mousePos.y = param.y;
-    }
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const context = canvas.getContext("2d") as CanvasRenderingContext2D;
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+    canvas.width = canvas.clientWidth + 100;
+    canvas.height = canvas.clientHeight + 100;
+    //const NUM_POINTS = 1500;
+    // I want a desnity of 1 point per 100 pixels
+    let NUM_POINTS = Math.floor((canvas.width * canvas.height) / 1000);
+
 
     canvasResizeObserver.observe(canvas);
 
-    const quadtree = new Quadtree<Point>({
-      width: canvas.width,
-      height: canvas.height,
+    let quadtree = new Quadtree<Point>({
+      width: canvas.width + 100,
+      height: canvas.height + 100,
       maxObjects: MAX_OBJECTS,
       maxLevels: MAX_LEVELS,
     });
 
     class Point extends Circle {
       deg: number;
+      color: string;
 
-      constructor(x: number, y: number, deg: number) {
+      constructor(x: number, y: number, deg: number, color:string) {
         super({ x, y, r: RADIUS });
         this.deg = deg;
+        this.color = color;
       }
 
       update(canvasWidth: number, canvasHeight: number) {
@@ -76,7 +87,7 @@ const useCanvasAnimation = () => {
       render(context: CanvasRenderingContext2D) {
         context.beginPath();
         context.arc(this.x, this.y, RADIUS, 0, 2 * Math.PI);
-        context.fillStyle = "black";
+        context.fillStyle = this.color;
         context.fill();
       }
 
@@ -89,7 +100,7 @@ const useCanvasAnimation = () => {
       const x = Math.random() * maxWidth;
       const y = Math.random() * maxHeight;
       const deg = Math.random() * 2 * Math.PI; // Use radians for degrees
-      return new Point(x, y, deg);
+      return new Point(x, y, deg, COLORS[Math.floor(Math.random() * COLORS.length)]);
     }
 
     // Generate a collection of points
@@ -111,62 +122,89 @@ const useCanvasAnimation = () => {
 
     document.addEventListener('mousemove', handleMouseMove);
 
-    const point1 = points.toSpliced(0, NUM_POINTS / 2);
-    const point2 = points.toSpliced(NUM_POINTS / 2, NUM_POINTS);
+    const mousePoint: Point = new Point(-100, -100, 0, "red");
+    function setMousePos(param: {x: number; y: number}) {
+      mousePoint.x = param.x;
+      mousePoint.y = param.y;
+    }
 
-    let pointls = point1;
+
+    const times: number[] = []
+    let fps: number = 0;
+
+    const interval = setInterval(() => {
+      console.log(fps);
+      if (fps < 60) {
+        for (let i = 0; i < 10; i++) {
+          const p=points.pop();
+          if(p){
+            quadtree.remove(p, true);
+          }
+        }
+      } else {
+        for (let i = 0; i < 10; i++) {
+          const p=genRandomPoint(canvas.width, canvas.height);
+          points.push(p);
+          quadtree.insert(p);
+        }
+      }
+    }, 1000);
+
+    let stop = false;
 
     const animate = () => {
+      if (stop) {
+        return;
+      }
+      const now = performance.now();
+      while (times.length > 0 && times[0] <= now - 1000) {
+        times.shift();
+      }
+      times.push(now);
+      fps = times.length;
+      
+      
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update and render points
-      pointls.forEach(point => {
+      points.forEach(point => {
         point.update(canvas.width, canvas.height);
         point.render(context);
-
         quadtree.remove(point, true);
         quadtree.insert(point);
       });
-
       quadtree.remove(points[0]);
       quadtree.insert(points[0]);
+
       // Draw connections between close points
-      pointls.forEach(point => {
+      const drawnConnections = new Set(); // Set to keep track of drawn connections
+      quadtree.insert(mousePoint);
+      points.forEach(point => {
         const neighbors = quadtree.retrieve(new Circle({
           x: point.x,
           y: point.y,
           r: MAX_DISTANCE,
         }));
-
         neighbors.forEach(neighbor => {
           if (neighbor !== point && point.distanceTo(neighbor) <= MAX_DISTANCE) {
-            context.beginPath();
-            context.moveTo(point.x, point.y);
-            context.lineTo(neighbor.x, neighbor.y);
-            context.strokeStyle = "black";
-            context.stroke();
+            // Create a unique identifier for the connection
+            const connectionId = `${Math.min(point.x, neighbor.x)}-${Math.max(point.y, neighbor.y)}`;
+
+            if (!drawnConnections.has(connectionId)) {
+              // Only draw if this connection hasn't been drawn before
+              context.beginPath();
+              context.moveTo(point.x, point.y);
+              context.lineTo(neighbor.x, neighbor.y);
+              context.strokeStyle = neighbor.color;
+              context.stroke();
+              // Add the connection to the set
+              drawnConnections.add(connectionId);
+            }
           }
         });
-
-        pointls = pointls === point1 ? point2 : point1;
-
-
+        quadtree.remove(point, true);
+        drawnConnections.clear();
       });
-      quadtree.retrieve(new Circle({
-        x:  mousePos.x,
-        y: mousePos.y,
-        r: MAX_DISTANCE,
-      })).forEach(point => {
-        if (point.distanceTo(new Point(mousePos.x, mousePos.y, 0)) < MAX_DISTANCE * 2) {
-          context.beginPath();
-          context.moveTo(point.x, point.y);
-          context.lineTo(mousePos.x, mousePos.y);
-          context.strokeStyle = "red";
-          context.stroke();
-        }
-      })
-
-
 
 
       requestAnimationFrame(animate);
@@ -175,15 +213,19 @@ const useCanvasAnimation = () => {
     animate();
 
     return () => {
-      // Optional cleanup logic if needed
+      document.removeEventListener('mousemove', handleMouseMove);
+      clearInterval(interval);
+      stop = true;
     };
   });
+
+
 };
 
 const BG = () => {
   useCanvasAnimation();
   return (
-    <canvas id={'canvas'} className="w-screen h-screen z-[-1] absolute top-0 right-0"></canvas>
+    <canvas id={'canvas'} className="w-[110vw] h-[110vh] z-[-1] fixed top-0 right-0"></canvas>
   );
 };
 
