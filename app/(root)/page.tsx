@@ -218,8 +218,6 @@ export default function Page() {
 
   return (
     <section className='h-full w-screen bg-[--white-transparent]' >
-
-
       <div className='container mx-auto h-full' id={'home'}>
         <div className={`pt-28 md:pt-60`}></div>
           <div className='flex justify-center md:justify-start'>
@@ -257,7 +255,7 @@ export default function Page() {
           </a>
       </div>
 
-      <div className='container mx-auto h-[100vh]' id={'project'}>
+      <div className='container mx-auto ' id={'project'}>
         <div className={`pt-16 md:pt-96`}></div>
         <h1 className='text-2xl font-semibold md:text-4xl' id={'projects'}>
           Projects I worked on
