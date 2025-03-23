@@ -179,7 +179,7 @@ async function ProjectCard({
   let fixedReadme = '';
   let contentString = '';
   if (readme) {
-    contentString = await fetch(readme).then(res => res.text()) || '';
+    contentString = await fetch(readme).then(res => res.text()).catch(()=>null) || '';
     fixedReadme = replaceBrokenMarkdownLinks(contentString, readme)
     content = await getHtmlFromMarkdown(fixedReadme);
   }
@@ -190,7 +190,7 @@ async function ProjectCard({
           {title}
           {content !== '' && <ReadMeDialog content={content} title={title} /> }
         </CardTitle>
-        <CardDescription>{description}</CardDescription>
+        <CardDescription className={'text-justify'}>{description}</CardDescription>
       </CardHeader>
       <CardContent>
         {tags.map(tag => (
@@ -264,103 +264,116 @@ export default function Page() {
           <h1 className='text-2xl font-semibold md:text-4xl'>Presentation</h1>
           <section className={`pt-12`}></section>
           <Card className={`bg-white shadow-md`}>
-            <CardHeader>
-              <CardDescription>
-                Currently a second-year student in a Bachelor's program in
-                Computer Science, I am passionate about software development and
-                system administration. I have acquired skills in Java, Python,
-                C, HTML, CSS, and JavaScript, as well as experience with tools
-                such as Docker, Git, IntelliJ IDEA, PostgreSQL, and Visual
-                Studio Code. I also have hands-on experience in server
-                configuration and database management.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className={`grid grid-cols-6 gap-4`}>
-              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                <img
-                  src='https://static.cdnlogo.com/logos/r/63/react.svg'
-                  className='h-8 w-8 pr-1'
-                  alt='React'
-                />
-                React
-              </Badge>
-              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                <img
-                  src='https://static.cdnlogo.com/logos/n/80/next-js.svg'
-                  className='h-8 w-8 pr-1'
-                  alt='Next.js'
-                />
-                Next.js
-              </Badge>
-              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                <img
-                  src='https://static.cdnlogo.com/logos/j/56/jee.svg'
-                  className='h-8 w-8 pr-1'
-                  alt='JEE'
-                />
-                Java EE
-              </Badge>
-              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                <img
-                  src='https://static.cdnlogo.com/logos/n/94/nodejs-icon.svg'
-                  className='h-8 w-8 pr-1'
-                  alt='Node.js'
-                />
-                Node.js
-              </Badge>
-              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                <img
-                  src='https://static.cdnlogo.com/logos/p/3/python.svg'
-                  className='h-8 w-8 pr-1'
-                  alt='Python'
-                />
-                Python
-              </Badge>
-              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                <img
-                  src='https://static.cdnlogo.com/logos/t/58/tailwindcss.svg'
-                  className='h-8 w-8 pr-1'
-                  alt='TailwindCSS'
-                />
-                TailwindCSS
-              </Badge>
-              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                <img
-                  src='/img/docker-logo-blue.svg'
-                  className='h-8 w-8 pr-1'
-                  alt='Docker'
-                />
-                Docker
-              </Badge>
-              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                <img src='https://static.cdnlogo.com/logos/g/15/git-icon.svg' className='h-8 w-8 pr-1' alt='Git' />
-                Git
-              </Badge>
-              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                <img
-                  src='https://static.cdnlogo.com/logos/p/93/postgresql.svg'
-                  className='h-8 w-8 pr-1'
-                  alt='PostgreSQL'
-                />
-                PostgreSQL
-              </Badge>
+            <CardContent className={'pt-3'}>
+              <div
+                className={
+                  'align-center flex flex-col justify-center md:flex-row'
+                }
+              >
+                <section className={'md:w-1/2 flex align-center justify-center'}>
+                  <p className={'text-justify'}>
+                    Currently a second-year student in a Bachelor's program in
+                    Computer Science, I am passionate about software development
+                    and system administration. I have acquired skills in Java,
+                    Python, C, HTML, CSS, and JavaScript, as well as experience
+                    with tools such as Docker, Git, IntelliJ IDEA, PostgreSQL,
+                    and Visual Studio Code. I also have hands-on experience in
+                    server configuration and database management.
+                  </p>
+                </section>
+                <section className={`grid md:w-1/2 grid-cols-3 gap-4 md:pl-3 pt-3`}>
+                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                    <img
+                      src='https://static.cdnlogo.com/logos/r/63/react.svg'
+                      className='h-8 w-8 pr-1'
+                      alt='React'
+                    />
+                    React
+                  </Badge>
+                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                    <img
+                      src='https://static.cdnlogo.com/logos/n/80/next-js.svg'
+                      className='h-8 w-8 pr-1'
+                      alt='Next.js'
+                    />
+                    Next.js
+                  </Badge>
+                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                    <img
+                      src='https://static.cdnlogo.com/logos/j/56/jee.svg'
+                      className='h-8 w-8 pr-1'
+                      alt='JEE'
+                    />
+                    Java EE
+                  </Badge>
+                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                    <img
+                      src='https://static.cdnlogo.com/logos/n/94/nodejs-icon.svg'
+                      className='h-8 w-8 pr-1'
+                      alt='Node.js'
+                    />
+                    Node.js
+                  </Badge>
+                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                    <img
+                      src='https://static.cdnlogo.com/logos/p/3/python.svg'
+                      className='h-8 w-8 pr-1'
+                      alt='Python'
+                    />
+                    Python
+                  </Badge>
+                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                    <img
+                      src='https://static.cdnlogo.com/logos/t/58/tailwindcss.svg'
+                      className='h-8 w-8 pr-1'
+                      alt='TailwindCSS'
+                    />
+                    TailwindCSS
+                  </Badge>
+                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                    <img
+                      src='/img/docker-logo-blue.svg'
+                      className='h-8 w-8 pr-1'
+                      alt='Docker'
+                    />
+                    Docker
+                  </Badge>
+                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                    <img
+                      src='https://static.cdnlogo.com/logos/g/15/git-icon.svg'
+                      className='h-8 w-8 pr-1'
+                      alt='Git'
+                    />
+                    Git
+                  </Badge>
+                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                    <img
+                      src='https://static.cdnlogo.com/logos/p/93/postgresql.svg'
+                      className='h-8 w-8 pr-1'
+                      alt='PostgreSQL'
+                    />
+                    PostgreSQL
+                  </Badge>
+                </section>
+              </div>
             </CardContent>
-            <CardFooter>
-              <a href={`#projects`}>
-                <Button
-                  className={`rounded p-2 text-white shadow hover:bg-neutral-900`}
-                >
-                  <h2>
-                    See my projects
-                    <span
-                      className={`absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75`}
-                    ></span>
-                    <span className='absolute right-[-2] top-[-2] rounded-full bg-red-400 p-1'></span>
-                  </h2>
-                </Button>
-              </a>
-            </CardFooter>
           </Card>
+          <a
+            href={`#projects`}
+            className={`hidden justify-center align-middle md:flex md:justify-start pt-6`}
+          >
+            <Button
+              className={`relative rounded p-2 text-white shadow hover:bg-neutral-900`}
+            >
+              <h2>
+                See my projects
+                <span
+                  className={`absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75`}
+                ></span>
+                <span className='absolute right-[-2] top-[-2] rounded-full bg-red-400 p-1'></span>
+              </h2>
+            </Button>
+          </a>
         </div>
       </div>
 
