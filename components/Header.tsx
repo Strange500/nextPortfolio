@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,6 +24,27 @@ const Navbar = () => {
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    // get all a link and apply the same scroll effect
+    const localALinks = document.querySelectorAll('a');
+    const array = [...localALinks];
+    array.filter(a => {
+      const href = a.getAttribute('href');
+      if (!href) {
+        return false;
+      }
+
+      return href.startsWith(window.location.origin);
+    })
+    console.log(array)
+    array.forEach((a)=> {
+      a.addEventListener("click", (event)=> {
+        handleLinkClick((event.currentTarget)?.getAttribute('href') as string);
+        handleSmoothScroll(event);
+      });
+    })
+  }, [])
 
   return (
     <nav className='sticky z-10 top-0 flex w-full items-center justify-between bg-neutral-900 p-4 px-8 shadow-md'>
