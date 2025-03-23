@@ -98,6 +98,8 @@ function replaceBrokenMarkdownLinks(content: string, readmeUrl: string) {
   });
 }
 
+
+
 const projects = [
   {
     order: 36,
@@ -192,11 +194,11 @@ async function ProjectCard({
         </CardTitle>
         <CardDescription className={'text-justify'}>{description}</CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className={'flex flex-row'}>
         {tags.map(tag => (
           <Badge
             key={tag}
-            className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'
+            className='rounded-lg bg-neutral-100 text-sm text-neutral-900 pr-3'
           >
             {tag}
           </Badge>
@@ -212,7 +214,44 @@ async function ProjectCard({
     </Card>
   )
 }
-
+const techno = [
+  {
+    name: "Docker",
+    svg: "/img/docker-logo-blue.svg"
+  },
+  {
+    name: "React",
+    svg: "https://static.cdnlogo.com/logos/r/63/react.svg"
+  },
+  {
+    name: "NextJS",
+    svg: "https://static.cdnlogo.com/logos/n/80/next-js.svg"
+  },
+  {
+    name: "Java EE",
+    svg: "https://static.cdnlogo.com/logos/j/56/jee.svg"
+  },
+  {
+    name: "Node.js",
+    svg: "https://static.cdnlogo.com/logos/n/94/nodejs-icon.svg"
+  },
+  {
+    name: "Python",
+    svg: "https://static.cdnlogo.com/logos/p/3/python.svg"
+  },
+  {
+    name: "TailwindCSS",
+    svg: "https://static.cdnlogo.com/logos/t/58/tailwindcss.svg"
+  },
+  {
+    name: "Git",
+    svg: "https://static.cdnlogo.com/logos/g/15/git-icon.svg"
+  },
+  {
+    name: "PostgresSQL",
+    svg: "https://static.cdnlogo.com/logos/p/93/postgresql.svg"
+  },
+];
 export default function Page() {
 
   return (
@@ -282,78 +321,21 @@ export default function Page() {
                   </p>
                 </section>
                 <section className={`grid md:w-1/2 grid-cols-3 gap-4 md:pl-3 pt-3`}>
-                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                    <img
-                      src='https://static.cdnlogo.com/logos/r/63/react.svg'
-                      className='h-8 w-8 pr-1'
-                      alt='React'
-                    />
-                    React
-                  </Badge>
-                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                    <img
-                      src='https://static.cdnlogo.com/logos/n/80/next-js.svg'
-                      className='h-8 w-8 pr-1'
-                      alt='Next.js'
-                    />
-                    Next.js
-                  </Badge>
-                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                    <img
-                      src='https://static.cdnlogo.com/logos/j/56/jee.svg'
-                      className='h-8 w-8 pr-1'
-                      alt='JEE'
-                    />
-                    Java EE
-                  </Badge>
-                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                    <img
-                      src='https://static.cdnlogo.com/logos/n/94/nodejs-icon.svg'
-                      className='h-8 w-8 pr-1'
-                      alt='Node.js'
-                    />
-                    Node.js
-                  </Badge>
-                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                    <img
-                      src='https://static.cdnlogo.com/logos/p/3/python.svg'
-                      className='h-8 w-8 pr-1'
-                      alt='Python'
-                    />
-                    Python
-                  </Badge>
-                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                    <img
-                      src='https://static.cdnlogo.com/logos/t/58/tailwindcss.svg'
-                      className='h-8 w-8 pr-1'
-                      alt='TailwindCSS'
-                    />
-                    TailwindCSS
-                  </Badge>
-                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                    <img
-                      src='/img/docker-logo-blue.svg'
-                      className='h-8 w-8 pr-1'
-                      alt='Docker'
-                    />
-                    Docker
-                  </Badge>
-                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                    <img
-                      src='https://static.cdnlogo.com/logos/g/15/git-icon.svg'
-                      className='h-8 w-8 pr-1'
-                      alt='Git'
-                    />
-                    Git
-                  </Badge>
-                  <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
-                    <img
-                      src='https://static.cdnlogo.com/logos/p/93/postgresql.svg'
-                      className='h-8 w-8 pr-1'
-                      alt='PostgreSQL'
-                    />
-                    PostgreSQL
-                  </Badge>
+                  {techno.map((tech, index)=> {
+                    return (
+                      <Badge
+                        key={index}
+                        className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'
+                      >
+                        <img
+                          src={tech.svg}
+                          className='h-8 w-8 pr-1'
+                          alt={tech.name}
+                        />
+                        {tech.name}
+                      </Badge>
+                    )
+                  })}
                 </section>
               </div>
             </CardContent>
