@@ -1,5 +1,4 @@
 import { SmallSocialBtn } from '@/components/smallSocialBtn'
-import Header from '@/components/Header'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -217,45 +216,155 @@ async function ProjectCard({
 export default function Page() {
 
   return (
-    <section className='h-full w-screen bg-[--white-transparent]' >
+    <section className='h-full w-screen bg-[--white-transparent]'>
       <div className='container mx-auto h-full' id={'home'}>
         <div className={`pt-28 md:pt-60`}></div>
-          <div className='flex justify-center md:justify-start'>
-            <div className='mx-4 flex flex-col justify-center text-center md:mx-0 md:text-left'>
-              <h1 className='text-2xl font-semibold text-neutral-900 md:text-4xl'>
-                Hi, I&#39;m  <span className='relative animate-[--color-shift] '>
-                          Benjamin Roget
-                          <span className={`absolute top-0 left-0 opacity-75 w-full h-full  animate-[--ping-text]  text-center flex justify-center items-center prenomnom`}>
-                            Benjamin Roget
-                          </span>
-                        </span>
-              </h1>
-              <p className='text-lg text-neutral-900'>
-                I&#39;m a IT student from France
-              </p>
-            </div>
-          </div>
-          <SmallSocialBtn />
-          <div className={`pt-12`}></div>
-          <a
-            href={`#project`}
-            className={`flex justify-center align-middle md:justify-start `}
-          >
-            <Button
-              className={`relative rounded p-2 text-white shadow hover:bg-neutral-900`}
-            >
-              <h2>
-                Explore my projects
+        <div className='flex justify-center md:justify-start'>
+          <div className='mx-4 flex flex-col justify-center text-center md:mx-0 md:text-left'>
+            <h1 className='text-2xl font-semibold text-neutral-900 md:text-4xl'>
+              Hi, I&#39;m{' '}
+              <span className='relative animate-[--color-shift]'>
+                Benjamin Roget
                 <span
-                  className={`absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75`}
-                ></span>
-                <span className='absolute right-[-2] top-[-2] rounded-full bg-red-400 p-1'></span>
-              </h2>
-            </Button>
-          </a>
+                  className={`prenomnom absolute left-0 top-0 flex h-full w-full animate-[--ping-text] items-center justify-center text-center opacity-75`}
+                >
+                  Benjamin Roget
+                </span>
+              </span>
+            </h1>
+            <p className='text-lg text-neutral-900'>
+              I&#39;m a IT student from France
+            </p>
+          </div>
+        </div>
+        <SmallSocialBtn />
+        <div className={`pt-12`}></div>
+        <a
+          href={`#presentation`}
+          className={`hidden justify-center align-middle md:flex md:justify-start`}
+        >
+          <Button
+            className={`relative rounded p-2 text-white shadow hover:bg-neutral-900`}
+          >
+            <h2>
+              See my presentation
+              <span
+                className={`absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75`}
+              ></span>
+              <span className='absolute right-[-2] top-[-2] rounded-full bg-red-400 p-1'></span>
+            </h2>
+          </Button>
+        </a>
       </div>
 
-      <div className='container mx-auto ' id={'project'}>
+      <div className='container mx-auto' id={'presentation'}>
+        <div className={`pt-16 md:pt-96`}></div>
+
+        <div className={'align-center flex flex-col justify-center'}>
+          <h1 className='text-2xl font-semibold md:text-4xl'>Presentation</h1>
+          <section className={`pt-12`}></section>
+          <Card className={`bg-white shadow-md`}>
+            <CardHeader>
+              <CardDescription>
+                Currently a second-year student in a Bachelor's program in
+                Computer Science, I am passionate about software development and
+                system administration. I have acquired skills in Java, Python,
+                C, HTML, CSS, and JavaScript, as well as experience with tools
+                such as Docker, Git, IntelliJ IDEA, PostgreSQL, and Visual
+                Studio Code. I also have hands-on experience in server
+                configuration and database management.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className={`grid grid-cols-6 gap-4`}>
+              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                <img
+                  src='https://static.cdnlogo.com/logos/r/63/react.svg'
+                  className='h-8 w-8 pr-1'
+                  alt='React'
+                />
+                React
+              </Badge>
+              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                <img
+                  src='https://static.cdnlogo.com/logos/n/80/next-js.svg'
+                  className='h-8 w-8 pr-1'
+                  alt='Next.js'
+                />
+                Next.js
+              </Badge>
+              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                <img
+                  src='https://static.cdnlogo.com/logos/j/56/jee.svg'
+                  className='h-8 w-8 pr-1'
+                  alt='JEE'
+                />
+                Java EE
+              </Badge>
+              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                <img
+                  src='https://static.cdnlogo.com/logos/n/94/nodejs-icon.svg'
+                  className='h-8 w-8 pr-1'
+                  alt='Node.js'
+                />
+                Node.js
+              </Badge>
+              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                <img
+                  src='https://static.cdnlogo.com/logos/p/3/python.svg'
+                  className='h-8 w-8 pr-1'
+                  alt='Python'
+                />
+                Python
+              </Badge>
+              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                <img
+                  src='https://static.cdnlogo.com/logos/t/58/tailwindcss.svg'
+                  className='h-8 w-8 pr-1'
+                  alt='TailwindCSS'
+                />
+                TailwindCSS
+              </Badge>
+              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                <img
+                  src='/img/docker-logo-blue.svg'
+                  className='h-8 w-8 pr-1'
+                  alt='Docker'
+                />
+                Docker
+              </Badge>
+              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                <img src='https://static.cdnlogo.com/logos/g/15/git-icon.svg' className='h-8 w-8 pr-1' alt='Git' />
+                Git
+              </Badge>
+              <Badge className='rounded-lg bg-neutral-100 p-1 text-sm text-neutral-900'>
+                <img
+                  src='https://static.cdnlogo.com/logos/p/93/postgresql.svg'
+                  className='h-8 w-8 pr-1'
+                  alt='PostgreSQL'
+                />
+                PostgreSQL
+              </Badge>
+            </CardContent>
+            <CardFooter>
+              <a href={`#projects`}>
+                <Button
+                  className={`rounded p-2 text-white shadow hover:bg-neutral-900`}
+                >
+                  <h2>
+                    See my projects
+                    <span
+                      className={`absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75`}
+                    ></span>
+                    <span className='absolute right-[-2] top-[-2] rounded-full bg-red-400 p-1'></span>
+                  </h2>
+                </Button>
+              </a>
+            </CardFooter>
+          </Card>
+        </div>
+      </div>
+
+      <div className='container mx-auto' id={'project'}>
         <div className={`pt-16 md:pt-96`}></div>
         <h1 className='text-2xl font-semibold md:text-4xl' id={'projects'}>
           Projects I worked on
@@ -273,9 +382,6 @@ export default function Page() {
             ))}
         </ul>
       </div>
-
-
-
     </section>
   )
 }

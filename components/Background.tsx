@@ -162,8 +162,8 @@ const useCanvasAnimation = () => {
       }
       times.push(now);
       fps = times.length;
-      
-      
+
+
       context.clearRect(0, 0, canvas.width, canvas.height);
 
       // Update and render points
