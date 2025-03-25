@@ -23,45 +23,45 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
+  			background: 'rgba(var(--background))',
+  			foreground: 'rgba(var(--foreground))',
   			card: {
-  				DEFAULT: 'hsl(var(--card))',
-  				foreground: 'hsl(var(--card-foreground))'
+  				DEFAULT: 'rgba(var(--card))',
+  				foreground: 'rgba(var(--card-foreground))'
   			},
   			popover: {
-  				DEFAULT: 'hsl(var(--popover))',
-  				foreground: 'hsl(var(--popover-foreground))'
+  				DEFAULT: 'rgba(var(--popover))',
+  				foreground: 'rgba(var(--popover-foreground))'
   			},
   			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
+  				DEFAULT: 'rgba(var(--primary))',
+  				foreground: 'rgba(var(--primary-foreground))'
   			},
   			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
+  				DEFAULT: 'rgba(var(--secondary))',
+  				foreground: 'rgba(var(--secondary-foreground))'
   			},
   			muted: {
-  				DEFAULT: 'hsl(var(--muted))',
-  				foreground: 'hsl(var(--muted-foreground))'
+  				DEFAULT: 'rgba(var(--muted))',
+  				foreground: 'rgba(var(--muted-foreground))'
   			},
   			accent: {
-  				DEFAULT: 'hsl(var(--accent))',
-  				foreground: 'hsl(var(--accent-foreground))'
+  				DEFAULT: 'rgba(var(--accent))',
+  				foreground: 'rgba(var(--accent-foreground))'
   			},
   			destructive: {
-  				DEFAULT: 'hsl(var(--destructive))',
-  				foreground: 'hsl(var(--destructive-foreground))'
+  				DEFAULT: 'rgba(var(--destructive))',
+  				foreground: 'rgba(var(--destructive-foreground))'
   			},
-  			border: 'hsl(var(--border))',
-  			input: 'hsl(var(--input))',
-  			ring: 'hsl(var(--ring))',
+  			border: 'rgba(var(--border))',
+  			input: 'rgba(var(--input))',
+  			ring: 'rgba(var(--ring))',
   			chart: {
-  				'1': 'hsl(var(--chart-1))',
-  				'2': 'hsl(var(--chart-2))',
-  				'3': 'hsl(var(--chart-3))',
-  				'4': 'hsl(var(--chart-4))',
-  				'5': 'hsl(var(--chart-5))'
+  				'1': 'rgba(var(--chart-1))',
+  				'2': 'rgba(var(--chart-2))',
+  				'3': 'rgba(var(--chart-3))',
+  				'4': 'rgba(var(--chart-4))',
+  				'5': 'rgba(var(--chart-5))'
   			}
   		}
   	}
