@@ -26,7 +26,9 @@ export const projects = [
     title: 'Bagarre.io',
     description: `Bagarre.io est un Agar.io-like développé en JavaScript. Le jeu est un jeu multijoueur en temps réel où les joueurs peuvent se battre pour devenir le plus gros joueur.`,
     tags: ['JavaScript', 'Node.js', 'Socket.io'],
-    links: ['https://bagarre.portfolio.qgroget.com']
+    links: ['https://github.com/Strange500/BAGARRE.IO'],
+    readme:
+      'https://raw.githubusercontent.com/Strange500/BAGARRE.IO/refs/heads/main/README.md'
   },
   {
     order: 3,
@@ -34,8 +36,12 @@ export const projects = [
     description:
       'QGChat est une application web permettant aux utilisateurs de créer et gérer des fils de discussion avec un ou plusieurs participants. Chaque utilisateur peut poster et lire des messages dans ces fils. L’application suit une architecture MVC en JEE, avec une interface responsive compatible avec ordinateur et mobile.',
     tags: ['Java', 'JEE', 'MVC', 'Tomcat', 'JavaScript'],
-    links: ['https://github.com/Strange500/QGChat', 'https://tomcat.qgroget.com/sae'],
-    readme: "https://raw.githubusercontent.com/Strange500/QGChat/refs/heads/main/README.md"
+    links: [
+      'https://github.com/Strange500/QGChat',
+      'https://tomcat.qgroget.com/sae'
+    ],
+    readme:
+      'https://raw.githubusercontent.com/Strange500/QGChat/refs/heads/main/README.md'
   },
   {
     order: 5,

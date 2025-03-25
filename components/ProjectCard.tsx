@@ -1,4 +1,11 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
 import { ReadMeDialog } from '@/components/ReadMeDialog'
 import { Badge } from '@/components/ui/badge'
 import { JSX } from 'react'
@@ -65,7 +72,7 @@ function getButtonForLink(url: string): JSX.Element {
   }
   return (
     <Link href={url}>
-      <Button className={"bg-secondary text-primary hover:bg-accent"}>
+      <Button className={'bg-secondary text-primary hover:bg-accent'}>
         {getSvgForLink(url)}
         <span className='ml-2'>{text}</span>
       </Button>
@@ -73,7 +80,7 @@ function getButtonForLink(url: string): JSX.Element {
   )
 }
 
-function fixImgLink(relativeLink: string, readmeUrl:string) {
+function fixImgLink(relativeLink: string, readmeUrl: string) {
   const baseUrl = readmeUrl.split('/').slice(0, -1).join('/')
   return `${baseUrl}/${relativeLink.replace('./', '')}`
 }
@@ -81,11 +88,11 @@ function fixImgLink(relativeLink: string, readmeUrl:string) {
 function replaceBrokenMarkdownLinks(content: string, readmeUrl: string) {
   // test regexp
 
-  return content.replace(/\[.*\]\((\.\/.*)\)/g, (match) => {
-    const tmp = fixImgLink(match.split('](')[1].split(')')[0], readmeUrl);
+  return content.replace(/\[.*\]\((\.\/.*)\)/g, match => {
+    const tmp = fixImgLink(match.split('](')[1].split(')')[0], readmeUrl)
     console.log(match.split('](')[0] + `](${tmp})`)
     return match.split('](')[0] + `](${tmp})`
-  });
+  })
 }
 
 async function getHtmlFromMarkdown(content: string | undefined) {
@@ -93,44 +100,48 @@ async function getHtmlFromMarkdown(content: string | undefined) {
   return marked.parse(content)
 }
 
-
-
-
 export const ProjectCard = async ({
-                                                        title,
-                                                        description,
-                                                        tags,
-                                                        links,
-                                                        readme
-                                                      }: {
-                                                        title: string
-                                                        description: string
-                                                        tags: string[]
-                                                        links: string[]
-                                                        readme: string | undefined
-                                                      }) => {
-  let content = '';
-  let fixedReadme = '';
-  let contentString = '';
+  title,
+  description,
+  tags,
+  links,
+  readme
+}: {
+  title: string
+  description: string
+  tags: string[]
+  links: string[]
+  readme: string | undefined
+}) => {
+  let content = ''
+  let fixedReadme = ''
+  let contentString = ''
   if (readme) {
-    contentString = await fetch(readme).then(res => res.text()).catch(()=>null) || '';
+    contentString =
+      (await fetch(readme)
+        .then(res => res.text())
+        .catch(() => null)) || ''
     fixedReadme = replaceBrokenMarkdownLinks(contentString, readme)
-    content = await getHtmlFromMarkdown(fixedReadme);
+    content = await getHtmlFromMarkdown(fixedReadme)
   }
   return (
-    <Card className={`flex h-full flex-col justify-between bg-foreground shadow-md`}>
+    <Card
+      className={`flex h-full flex-col justify-between bg-foreground shadow-md`}
+    >
       <CardHeader>
         <CardTitle className={`flex flex-row justify-between text-secondary`}>
           {title}
-          {content !== '' && <ReadMeDialog content={content} title={title} /> }
+          {content !== '' && <ReadMeDialog content={content} title={title} />}
         </CardTitle>
-        <CardDescription className={'text-justify text-muted'}>{description}</CardDescription>
+        <CardDescription className={'text-justify text-muted'}>
+          {description}
+        </CardDescription>
       </CardHeader>
       <CardContent className={'flex flex-row'}>
         {tags.map(tag => (
           <Badge
             key={tag}
-            className='rounded-lg bg-foreground hover:bg-primary text-sm text-neutral-900 pr-3'
+            className='rounded-lg bg-foreground pr-3 text-sm text-secondary hover:bg-primary'
           >
             {tag}
           </Badge>
