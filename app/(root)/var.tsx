@@ -96,3 +96,17 @@ export const techno = [
   },
 ];
 
+export const education = [
+  {
+    title: 'Baccalauréat with a specialization in Mathematics and Computer Science',
+    date: 2022,
+    school: 'Jean Racine High School, Montdidier',
+    description: 'Obtained with honors.'
+  },
+  {
+    title: 'Bachelor\'s Degree in Computer Science',
+    date: 2026,
+    school: 'University Institute of Technology of Lille',
+    description: 'Currently studying.'
+  }
+]

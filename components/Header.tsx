@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import { ModeToggle } from '@/components/ModeToggle'
 
 export const handleSmoothScroll = (event: React.MouseEvent<HTMLAnchorElement>) => {
   event.preventDefault();
@@ -50,8 +51,11 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className='sticky z-10 top-0 flex w-full items-center justify-between bg-neutral-900 p-4 px-8 shadow-md'>
-      <div className='text-lg font-semibold text-white'>Portfolio</div>
+    <nav className='sticky z-10 top-0 flex w-full items-center justify-between bg-foreground p-4 px-8 shadow-md'>
+      <div className='text-lg font-semibold text-primary-foreground'>
+        Portfolio
+        <ModeToggle />
+      </div>
       <div className='cursor-pointer md:hidden' onClick={toggleMenu}>
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -69,14 +73,14 @@ const Navbar = () => {
         </svg>
       </div>
       <ul
-        className={`absolute flex-col bg-[--black-transparent] transition-all duration-300 md:static md:flex md:flex-row md:space-x-6 md:bg-transparent ${isOpen ? 'top-16' : 'top-[-200px]'} md:top-0`}
+        className={`absolute flex-col transition-all duration-300 md:static md:flex md:flex-row md:space-x-6 md:bg-transparent ${isOpen ? 'top-16' : 'top-[-200px]'} md:top-0`}
       >
         {sections.map((link, index) => (
           <li key={index} className={`group ${activeLink === link ? 'font-bold' : ''} flex w-16 justify-center align-middle`}>
             <a
               onClick={handleSmoothScroll}
               href={`#${link.toLowerCase()}`}
-              className={`block text-white transition duration-300 hover:text-gray-300`}
+              className={`block ${activeLink === link ? 'text-accent' : 'text-primary-foreground'}  transition duration-300 hover:text-accent-foreground`}
             >
               {link}
             </a>

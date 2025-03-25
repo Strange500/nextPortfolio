@@ -4,7 +4,7 @@ export const SmallSocialBtn = () => {
   return (
     <div className="flex justify-center items-center md:justify-start md:items-start pt-2 space-x-2">
       <a href="https://www.linkedin.com/in/roget-benjamin"
-         className="text-white bg-black p-2 rounded shadow hover:bg-gray-900">
+         className="dark:text-primary text-white bg-secondary p-2 rounded shadow">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-linkedin"
              viewBox="0 0 16 16">
           <path
@@ -12,7 +12,7 @@ export const SmallSocialBtn = () => {
         </svg>
       </a>
 
-      <a href="https://github.com/Strange500" className="text-white bg-black p-2 rounded">
+      <a href="https://github.com/Strange500" className="dark:text-primary text-white bg-secondary p-2 rounded">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-github"
              viewBox="0 0 16 16">
           <path
@@ -20,7 +20,7 @@ export const SmallSocialBtn = () => {
         </svg>
       </a>
 
-      <a href="https://list.qgroget.com/d/share/CV_Benjamin_Roget.pdf?sign=fTKn0PtoHrRUs8AXzpblrywYWVeot0-tWYh0DNpQYbk=:0" className="text-white bg-black p-2 rounded">
+      <a href="https://list.qgroget.com/d/share/CV_Benjamin_Roget.pdf?sign=fTKn0PtoHrRUs8AXzpblrywYWVeot0-tWYh0DNpQYbk=:0" className="dark:text-primary text-white bg-secondary p-2 rounded">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-file-person"
              viewBox="0 0 16 16">
           <path

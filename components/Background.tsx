@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Circle, Quadtree } from '@timohausmann/quadtree-ts';
+import theme from 'tailwindcss/defaultTheme'
 
 const MAX_OBJECTS = 10;
 const MAX_LEVELS = 3;
@@ -15,8 +16,6 @@ const useCanvasAnimation = () => {
 
 
   useEffect(() => {
-
-
     const canvasResizeObserver = new ResizeObserver(resampleCanvas);
 
 
@@ -24,7 +23,6 @@ const useCanvasAnimation = () => {
       canvas.width = canvas.clientWidth;
       canvas.height = canvas.clientHeight;
       NUM_POINTS = Math.floor((canvas.width * canvas.height) / 1000);
-      // rebuild the quadtree and points array
       quadtree = new Quadtree<Point>({
         width: canvas.width,
         height: canvas.height,
@@ -44,8 +42,6 @@ const useCanvasAnimation = () => {
     const context = canvas.getContext("2d") as CanvasRenderingContext2D;
     canvas.width = canvas.clientWidth + 100;
     canvas.height = canvas.clientHeight + 100;
-    //const NUM_POINTS = 1500;
-    // I want a desnity of 1 point per 100 pixels
     let NUM_POINTS = Math.floor((canvas.width * canvas.height) / 1000);
 
 
@@ -69,12 +65,10 @@ const useCanvasAnimation = () => {
       }
 
       update(canvasWidth: number, canvasHeight: number) {
-        // Modify movement speed and add variability to direction
         const speed = 0.3; // Reduced speed
         this.x += Math.cos(this.deg) * speed;
         this.y += Math.sin(this.deg) * speed;
 
-        // Bounce off the walls by reversing the degree and adding some randomness
         if (this.x < 0 || this.x > canvasWidth) {
           this.deg = Math.PI - this.deg + (Math.random() * 0.25 - 0.125); // Small random change
         }
@@ -166,7 +160,6 @@ const useCanvasAnimation = () => {
 
       context.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Update and render points
       points.forEach(point => {
         point.update(canvas.width, canvas.height);
         point.render(context);
@@ -176,7 +169,6 @@ const useCanvasAnimation = () => {
       quadtree.remove(points[0]);
       quadtree.insert(points[0]);
 
-      // Draw connections between close points
       const drawnConnections = new Set(); // Set to keep track of drawn connections
       quadtree.insert(mousePoint);
       points.forEach(point => {
@@ -187,17 +179,14 @@ const useCanvasAnimation = () => {
         }));
         neighbors.forEach(neighbor => {
           if (neighbor !== point && point.distanceTo(neighbor) <= MAX_DISTANCE) {
-            // Create a unique identifier for the connection
             const connectionId = `${Math.min(point.x, neighbor.x)}-${Math.max(point.y, neighbor.y)}`;
 
             if (!drawnConnections.has(connectionId)) {
-              // Only draw if this connection hasn't been drawn before
               context.beginPath();
               context.moveTo(point.x, point.y);
               context.lineTo(neighbor.x, neighbor.y);
               context.strokeStyle = neighbor.color;
               context.stroke();
-              // Add the connection to the set
               drawnConnections.add(connectionId);
             }
           }
