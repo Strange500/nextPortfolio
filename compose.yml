@@ -1,0 +1,16 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    networks:
+      - front
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nextporfolio.entrypoints=websecure
+      - traefik.http.routers.nextporfolio.rule=Host(`portfolio.qgroget.com`)
+      - traefik.http.routers.nextporfolio.tls=true
+      - traefik.http.routers.nextporfolio.tls.certresolver=production
+      - traefik.http.services.nextporfolio.loadbalancer.server.port=3000
+networks:
+  front:
+    external: true
