@@ -1,17 +1,12 @@
 import { SmallSocialBtn } from '@/components/smallSocialBtn'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-} from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ProjectCard } from '@/components/ProjectCard'
 import { education, projects, techno } from '@/app/(root)/var'
 import { handleSmoothScroll } from '@/components/Header'
-import { Separator } from '@/components/ui/separator'
 
 export default function Page() {
-
   return (
     <section className='h-full w-screen bg-background'>
       <div className='container mx-auto h-full' id={'overview'}>
@@ -59,7 +54,7 @@ export default function Page() {
                   {techno.map((tech, index) => (
                     <Badge
                       key={index}
-                      className='rounded-lg bg-foreground hover:bg-primary p-1 text-sm text-secondary'
+                      className='rounded-lg bg-foreground p-1 text-sm text-secondary hover:bg-accent'
                     >
                       <img
                         src={tech.svg}
@@ -82,22 +77,20 @@ export default function Page() {
                 Education
               </h4>
               <section className='pt-4'></section>
-              <ul className='flex flex-col  justify-center '>
-                {education.sort((a, b) => b.date - a.date).
-                  map((edu, index) => (
-                  <li key={index}>
-                    <Card className='bg-foreground shadow-md'>
-                      <CardContent className={"text-secondary"}>
-                        <h2 className='text-xl font-semibold '>
-                          {edu.title}
-                        </h2>
-                        <p>{edu.date}</p>
-                        <p>{edu.description}</p>
-
-                      </CardContent>
-                    </Card>
-                  </li>
-                ))}
+              <ul className='flex flex-col justify-center'>
+                {education
+                  .sort((a, b) => b.date - a.date)
+                  .map((edu, index) => (
+                    <li key={index}>
+                      <Card className='bg-foreground shadow-md'>
+                        <CardContent className={'text-secondary'}>
+                          <h2 className='text-xl font-semibold'>{edu.title}</h2>
+                          <p>{edu.date}</p>
+                          <p>{edu.description}</p>
+                        </CardContent>
+                      </Card>
+                    </li>
+                  ))}
               </ul>
             </div>
           </CardContent>
@@ -107,7 +100,7 @@ export default function Page() {
           onClick={handleSmoothScroll}
           className='hidden justify-start pt-6 md:flex'
         >
-          <Button className='relative rounded p-2 bg-secondary text-primary shadow hover:bg-accent'>
+          <Button className='relative rounded bg-secondary p-2 text-primary shadow hover:bg-accent'>
             <h2>
               See my projects
               <span className='absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75'></span>
@@ -117,9 +110,12 @@ export default function Page() {
         </a>
       </div>
 
-      <div className='container mx-auto' id={'project'}>
-        <div className={`pt-16 md:pt-96`}></div>
-        <h1 className='text-2xl text-secondary font-semibold md:text-4xl' id={'projects'}>
+      <div className='mx-aut" container pb-12' id={'project'}>
+        " <div className={`pt-16 md:pt-96`}></div>
+        <h1
+          className='text-2xl font-semibold text-secondary md:text-4xl'
+          id={'projects'}
+        >
           Projects I worked on
         </h1>
         <section className={`pt-12`}></section>
