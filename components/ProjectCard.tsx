@@ -104,19 +104,21 @@ async function getHtmlFromMarkdown(content: string | undefined) {
   return marked.parse(content)
 }
 
+interface ProjectCardProps {
+  title: string
+  description: string
+  tags: string[]
+  links: string[]
+  readme: string | undefined
+}
+
 export const ProjectCard = async ({
   title,
   description,
   tags,
   links,
   readme
-}: {
-  title: string
-  description: string
-  tags: string[]
-  links: string[]
-  readme: string | undefined
-}) => {
+}: ProjectCardProps) => {
   let content = ''
   let fixedReadme = ''
   let contentString = ''

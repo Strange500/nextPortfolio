@@ -1,9 +1,10 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   experimental: {
-    nextScriptWorkers: true,
-  }
-};
+    nextScriptWorkers: true
+  },
+  output: 'standalone'
+}
 
-export default nextConfig;
+export default nextConfig

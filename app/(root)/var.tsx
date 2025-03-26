@@ -59,7 +59,8 @@ export const projects = [
     description:
       'My homeLab is my domestic server that hosts various services such as a JellyFin instance, a Gitea instance, a Pi-hole instance, and this portfolio! The server runs Unraid as the host OS and uses docker for containerization.',
     tags: ['Unraid', 'Docker', 'Linux', 'Self-hosting'],
-    links: []
+    links: [],
+    readme: ''
   }
 ]
 

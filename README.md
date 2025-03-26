@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# My Portfolio
+
+Welcome to my portfolio! This project is built with React and Next.js, showcasing my skills and projects.
+
+## Table of Contents
+
+- [About](#about)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Getting Started](#getting-started)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
+
+## About
+
+![1743020726_grim.png](docs/img/1743020726_grim.png)
+
+This portfolio is a representation of my work and abilities as a developer. It includes a collection of projects that highlight my skills and experiences. You can find information about my experiences, a list of the technologies I work with, and links to my projects.
+
+## Features
+
+- Responsive design that works on mobile and desktop
+- Smooth navigation between sections
+- Interactive project showcase with detailed descriptions
+
+## Technologies Used
+
+- [Next.js](https://nextjs.org/) - A React framework for building server-side rendered applications
+- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
+- CSS Modules - For styling components
+- Node.js - For the server-side
+- My home server - For hosting the portfolio
 
 ## Getting Started
 
-First, run the development server:
+To get a local copy of this portfolio up and running, follow these steps:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Strange500/nextPortfolio.git
+   cd nextPortfolio
+   ```
+2. Install the dependencies:
+   ```bash
+    npm install
+    ```
+3. Run the development server:
+4. ```bash
+    npm run dev
+    ```
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment with Docker
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To deploy this portfolio with Docker, follow these steps:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Build the Docker image:
+   ```bash
+   docker build -t next-portfolio .
+   ```
+2. Run the Docker container:
+   ```bash
+    docker run -d -p 3000:3000 next-portfolio
+    ```
+3. Open [http://localhost:3000](http://localhost:3000) in your browser

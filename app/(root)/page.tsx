@@ -39,7 +39,7 @@ export default function Page() {
               <Card className='bg-foreground shadow-md md:mr-4'>
                 <CardContent className='flex flex-col items-center justify-center pt-3 md:flex-row'>
                   <article className='flex flex-col items-start justify-center pr-2'>
-                    <section className='flex flex-col items-start rounded-lg p-2 shadow-lg'>
+                    <section className='flex flex-col items-start p-2'>
                       <div className='mb-4 flex flex-row items-center'>
                         <h2 className='ml-4 text-xl font-semibold text-secondary'>
                           About Me
