@@ -97,21 +97,45 @@ export const techno = [
     svg: "https://static.cdnlogo.com/logos/g/15/git-icon.svg"
   },
   {
-    name: "PostgresSQL",
+    name: "Postgres",
     svg: "https://static.cdnlogo.com/logos/p/93/postgresql.svg"
   },
+  {
+    name: "Linux",
+    svg: "https://static.cdnlogo.com/logos/l/11/linux.svg"
+  },
+  {
+    name: "TypeScript",
+    svg: "https://static.cdnlogo.com/logos/t/96/typescript.svg"
+  },
+  {
+    name: "JavaScript",
+    svg: "https://static.cdnlogo.com/logos/j/44/javascript.svg"
+  },
+  {
+    name: "NixOS",
+    svg: "/img/nixos.svg"
+  }
 ];
 
 export const education = [
   {
     title: 'Baccalauréat with a specialization in Mathematics and Computer Science',
     date: 2022,
+    period: '2022',
     school: 'Jean Racine High School, Montdidier',
     description: 'Obtained with honors.'
   },
   {
+    title: 'intensive one-year study course (Classe Préparatoire)',
+    date: 2023,
+    period: '2022 - 2023',
+    school: 'University of Technology of Compiègne',
+  },
+  {
     title: 'Bachelor\'s Degree in Computer Science',
     date: 2026,
+    period: '2023 - now',
     school: 'University Institute of Technology of Lille',
     description: 'Currently studying.'
   }

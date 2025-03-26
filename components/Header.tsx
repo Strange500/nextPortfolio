@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import { ModeToggle } from '@/components/ModeToggle'
 
+export const sections = ['overview', 'projects', 'contact']
+
 export const handleSmoothScroll = (
   event: React.MouseEvent<HTMLAnchorElement>
 ) => {
@@ -25,7 +27,6 @@ const Navbar = () => {
     setIsOpen(!isOpen)
   }
 
-  const sections = ['overview', 'projects', 'contact']
   const handleScroll = () => {
     const scrollPosition = window.scrollY
 

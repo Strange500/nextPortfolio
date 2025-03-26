@@ -33,99 +33,106 @@ export default function Page() {
       </div>
 
       <div className='container mx-auto'>
-        <div className='flex flex-col items-center justify-center md:pt-32'>
-          <section className='pt-12' />
-          <Card className='bg-foreground shadow-md'>
-            <CardContent className='pt-3'>
-              <div className='flex flex-col items-center justify-center md:flex-row'>
-                <article className='flex items-center justify-center pr-2 md:w-1/2'>
-                  <p className='text-justify text-secondary'>
-                    Currently a second-year student in a Bachelor&#39;s program
-                    in Computer Science, I am passionate about software
-                    development and system administration. I have acquired
-                    skills in Java, Python, C, and JavaScript/TypeScript, as
-                    well as experience with tools such as Docker, Podman, git, I
-                    use also frameworks like Next.js, and TailwindCSS. I also
-                    have hands-on experience in server configuration and
-                    database management.
-                  </p>
-                </article>
-                <section className='grid grid-cols-3 gap-4 border-l-2 border-secondary pt-3 md:w-1/2 md:pl-2'>
-                  {techno.map((tech, index) => (
-                    <Badge
-                      key={index}
-                      className='rounded-lg bg-secondary-foreground p-1 text-sm text-muted-foreground hover:bg-accent'
+        <div className='flex flex-col items-center pt-8 md:pt-32'>
+          <div className={'flex flex-col md:w-5/6 md:flex-row'}>
+            <section className={'flex flex-col items-center md:w-3/4'}>
+              <Card className='bg-foreground shadow-md md:mr-4'>
+                <CardContent className='flex flex-col items-center justify-center pt-3 md:flex-row'>
+                  <article className='flex flex-col items-start justify-center pr-2'>
+                    <section className='flex flex-col items-start rounded-lg p-2 shadow-lg'>
+                      <div className='mb-4 flex flex-row items-center'>
+                        <h2 className='ml-4 text-xl font-semibold text-secondary'>
+                          About Me
+                        </h2>
+                      </div>
+                    </section>
+
+                    <p className='text-justify text-secondary'>
+                      Currently a second-year student in a Bachelor&#39;s
+                      program in Computer Science, I am passionate about
+                      software development and system administration. <br />I
+                      have acquired skills in Java, Python, C, and
+                      JavaScript/TypeScript, as well as experience with tools
+                      such as Docker, Podman, git, I use also frameworks like
+                      Next.js, and TailwindCSS. I also have hands-on experience
+                      in server configuration and database management.
+                    </p>
+                    <a
+                      href='#projects'
+                      onClick={handleSmoothScroll}
+                      className='hidden justify-start pt-6 md:flex'
                     >
-                      <img
-                        src={tech.svg}
-                        className='h-8 w-8 pr-1'
-                        alt={tech.name}
-                      />
-                      {tech.name}
-                    </Badge>
-                  ))}
-                </section>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-        <div className='pt-12'></div>
-        <Card className='bg-foreground shadow-md md:w-1/2'>
-          <CardContent>
-            <div className='flex flex-col items-center justify-center'>
-              <h4 className='text-xl font-semibold text-secondary md:text-xl'>
-                Education
-              </h4>
-              <section className='pt-4'></section>
-              <ul className='flex justify-center align-middle'>
-                <div
-                  className={'mr-2 h-auto w-[8px] bg-primary md:mr-[1%]'}
-                ></div>
-                <div className={'flex flex-col'}>
-                  {education
-                    .sort((a, b) => b.date - a.date)
-                    .map((edu, index) => (
-                      <li key={index} className={'relative pt-2'}>
-                        <div
-                          className={
-                            'absolute left-[-5%] top-[-1%] flex h-4 w-4 items-center justify-center rounded bg-secondary align-middle md:left-[-2.7%]'
-                          }
+                      <Button className='relative rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'>
+                        <h2>
+                          See my projects
+                          <span className='absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75'></span>
+                          <span className='absolute right-[-2] top-[-2] rounded-full bg-red-400 p-1'></span>
+                        </h2>
+                      </Button>
+                    </a>
+                  </article>
+                </CardContent>
+              </Card>
+
+              <Card className='mt-4 h-1/2 bg-foreground shadow-md md:mr-4'>
+                <CardContent>
+                  <div className='flex flex-col items-center justify-center'>
+                    <section className='pt-4'></section>
+                    <section
+                      className={'flex flex-row flex-wrap justify-start'}
+                    >
+                      {techno.map((tech, index) => (
+                        <Badge
+                          key={index}
+                          className='m-1 rounded-lg bg-secondary-foreground p-1 text-sm text-muted-foreground hover:bg-accent'
                         >
-                          <div
-                            className={'h-2 w-2 rounded bg-foreground'}
-                          ></div>
-                        </div>
-                        <Card className='bg-transparent shadow-md'>
-                          <CardContent className={'text-secondary'}>
-                            <h2 className='text-xl font-semibold'>
-                              {edu.title}
-                            </h2>
-                            <p className={'text-muted'}>{edu.date}</p>
-                            <p className={'text-muted-foreground'}>
-                              {edu.description}
-                            </p>
-                          </CardContent>
-                        </Card>
-                      </li>
-                    ))}
+                          <img
+                            src={tech.svg}
+                            className='h-8 w-8 pr-1'
+                            alt={tech.name}
+                          />
+                          {tech.name}
+                        </Badge>
+                      ))}
+                    </section>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
+
+            <Card className='mt-4 bg-foreground shadow-md md:mt-0'>
+              <CardContent className='pt-3'>
+                <div className='flex flex-col items-center justify-center md:flex-row'>
+                  <section className='border-muted pt-3 md:pl-2'>
+                    <div className={'flex flex-col'}>
+                      <ol className={'relative border-s border-muted'}>
+                        {education
+                          .sort((a, b) => b.date - a.date)
+                          .map((edu, index) => (
+                            <li className='mb-10 ms-4' key={index}>
+                              <div className='absolute -start-1.5 mt-1.5 h-3 w-3 rounded-full border border-secondary bg-accent'></div>
+                              <time className='mb-1 text-sm font-normal leading-none text-muted-foreground'>
+                                {edu.period}
+                              </time>
+                              <h3 className='text-lg font-semibold text-secondary'>
+                                {edu.title}
+                              </h3>
+                              <p className='mb-4 text-base font-normal text-muted'>
+                                {edu.school}
+                              </p>
+                              <p className='mb-4 text-base font-normal text-muted-foreground'>
+                                {edu.description}
+                              </p>
+                            </li>
+                          ))}
+                      </ol>
+                    </div>
+                  </section>
                 </div>
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
-        <a
-          href='#projects'
-          onClick={handleSmoothScroll}
-          className='hidden justify-start pt-6 md:flex'
-        >
-          <Button className='relative rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'>
-            <h2>
-              See my projects
-              <span className='absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75'></span>
-              <span className='absolute right-[-2] top-[-2] rounded-full bg-red-400 p-1'></span>
-            </h2>
-          </Button>
-        </a>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
 
       <div className='mx-aut" container pb-12' id={'project'}>
