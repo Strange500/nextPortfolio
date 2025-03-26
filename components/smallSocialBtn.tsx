@@ -5,7 +5,7 @@ export const SmallSocialBtn = () => {
     <div className='flex items-center justify-center space-x-2 pt-2 md:items-start md:justify-start'>
       <a
         href='https://www.linkedin.com/in/roget-benjamin'
-        className='rounded bg-secondary p-2 text-white shadow dark:text-primary'
+        className='rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'
       >
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -21,7 +21,7 @@ export const SmallSocialBtn = () => {
 
       <a
         href='https://github.com/Strange500'
-        className='rounded bg-secondary p-2 text-white shadow dark:text-primary'
+        className='rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'
       >
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -37,7 +37,7 @@ export const SmallSocialBtn = () => {
 
       <a
         href='https://list.qgroget.com/d/share/CV_Benjamin_Roget.pdf?sign=fTKn0PtoHrRUs8AXzpblrywYWVeot0-tWYh0DNpQYbk=:0'
-        className='rounded bg-secondary p-2 text-white shadow dark:text-primary'
+        className='rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'
       >
         <svg
           xmlns='http://www.w3.org/2000/svg'

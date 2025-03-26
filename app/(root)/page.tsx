@@ -54,7 +54,7 @@ export default function Page() {
                   {techno.map((tech, index) => (
                     <Badge
                       key={index}
-                      className='rounded-lg bg-foreground p-1 text-sm text-secondary hover:bg-accent'
+                      className='rounded-lg bg-secondary-foreground p-1 text-sm text-muted-foreground hover:bg-accent'
                     >
                       <img
                         src={tech.svg}
@@ -70,27 +70,45 @@ export default function Page() {
           </Card>
         </div>
         <div className='pt-12'></div>
-        <Card className='bg-foreground shadow-md'>
+        <Card className='bg-foreground shadow-md md:w-1/2'>
           <CardContent>
             <div className='flex flex-col items-center justify-center'>
               <h4 className='text-xl font-semibold text-secondary md:text-xl'>
                 Education
               </h4>
               <section className='pt-4'></section>
-              <ul className='flex flex-col justify-center'>
-                {education
-                  .sort((a, b) => b.date - a.date)
-                  .map((edu, index) => (
-                    <li key={index}>
-                      <Card className='bg-foreground shadow-md'>
-                        <CardContent className={'text-secondary'}>
-                          <h2 className='text-xl font-semibold'>{edu.title}</h2>
-                          <p>{edu.date}</p>
-                          <p>{edu.description}</p>
-                        </CardContent>
-                      </Card>
-                    </li>
-                  ))}
+              <ul className='flex justify-center align-middle'>
+                <div
+                  className={'mr-2 h-auto w-[8px] bg-primary md:mr-[1%]'}
+                ></div>
+                <div className={'flex flex-col'}>
+                  {education
+                    .sort((a, b) => b.date - a.date)
+                    .map((edu, index) => (
+                      <li key={index} className={'relative pt-2'}>
+                        <div
+                          className={
+                            'absolute left-[-5%] top-[-1%] flex h-4 w-4 items-center justify-center rounded bg-secondary align-middle md:left-[-2.7%]'
+                          }
+                        >
+                          <div
+                            className={'h-2 w-2 rounded bg-foreground'}
+                          ></div>
+                        </div>
+                        <Card className='bg-transparent shadow-md'>
+                          <CardContent className={'text-secondary'}>
+                            <h2 className='text-xl font-semibold'>
+                              {edu.title}
+                            </h2>
+                            <p className={'text-muted'}>{edu.date}</p>
+                            <p className={'text-muted-foreground'}>
+                              {edu.description}
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </li>
+                    ))}
+                </div>
               </ul>
             </div>
           </CardContent>
@@ -100,7 +118,7 @@ export default function Page() {
           onClick={handleSmoothScroll}
           className='hidden justify-start pt-6 md:flex'
         >
-          <Button className='relative rounded bg-secondary p-2 text-primary shadow hover:bg-accent'>
+          <Button className='relative rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'>
             <h2>
               See my projects
               <span className='absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75'></span>
@@ -111,7 +129,7 @@ export default function Page() {
       </div>
 
       <div className='mx-aut" container pb-12' id={'project'}>
-        " <div className={`pt-16 md:pt-96`}></div>
+        <div className={`pt-16 md:pt-96`}></div>
         <h1
           className='text-2xl font-semibold text-secondary md:text-4xl'
           id={'projects'}

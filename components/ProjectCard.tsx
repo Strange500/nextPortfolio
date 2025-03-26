@@ -72,7 +72,11 @@ function getButtonForLink(url: string): JSX.Element {
   }
   return (
     <Link href={url}>
-      <Button className={'bg-secondary text-primary hover:bg-accent'}>
+      <Button
+        className={
+          'bg-accent text-foreground hover:bg-muted hover:text-foreground'
+        }
+      >
         {getSvgForLink(url)}
         <span className='ml-2'>{text}</span>
       </Button>
@@ -133,7 +137,7 @@ export const ProjectCard = async ({
           {title}
           {content !== '' && <ReadMeDialog content={content} title={title} />}
         </CardTitle>
-        <CardDescription className={'text-justify text-muted'}>
+        <CardDescription className={'text-justify text-muted-foreground'}>
           {description}
         </CardDescription>
       </CardHeader>
@@ -141,7 +145,7 @@ export const ProjectCard = async ({
         {tags.map(tag => (
           <Badge
             key={tag}
-            className='rounded-lg bg-foreground pr-3 text-sm text-secondary hover:bg-primary'
+            className='rounded-lg bg-secondary-foreground pr-3 text-sm text-muted-foreground hover:bg-accent'
           >
             {tag}
           </Badge>
