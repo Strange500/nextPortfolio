@@ -67,55 +67,68 @@ export const projects = [
 export const techno = [
   {
     name: "Docker",
-    svg: "/logo/docker-logo-blue.svg"
+    svg: "/logo/docker-logo-blue.svg",
+    light_svg: "/logo/docker-logo-blue.svg"
   },
   {
     name: "React",
-    svg: "/logo/react.svg"
+    svg: "/logo/react.svg",
+    light_svg: "/logo/react.svg"
   },
   {
     name: "NextJS",
-    svg: "/logo/next-js.svg"
+    svg: "/logo/next-js.svg",
+    light_svg: "/logo/next-js.svg"
   },
   {
     name: "Java EE",
-    svg: "/logo/jee.svg"
+    svg: "/logo/jee.svg",
+    light_svg: "/logo/jee.svg"
   },
   {
     name: "Node.js",
-    svg: "/logo/nodejs-icon.svg"
+    svg: "/logo/nodejs-icon.svg",
+    light_svg: "/logo/nodejs-icon.svg"
   },
   {
     name: "Python",
-    svg: "/logo/python.svg"
+    svg: "/logo/python.svg",
+    light_svg: "/logo/python.svg"
   },
   {
     name: "TailwindCSS",
-    svg: "/logo/tailwindcss.svg"
+    svg: "/logo/tailwindcss.svg",
+    light_svg: "/logo/tailwindcss.svg"
   },
   {
     name: "Git",
-    svg: "/logo/git-icon.svg"
+    svg: "/logo/git-icon.svg",
+    light_svg: "/logo/git-icon.svg"
   },
   {
     name: "Postgres",
-    svg: "/logo/postgresql.svg"
+    svg: "/logo/postgresql.svg",
+    light_svg: "/logo/postgresql.svg"
   },
   {
     name: "Linux",
-    svg: "/logo/linux.svg"
+    svg: "/logo/linux.svg",
+    light_svg: "/logo/linux.svg"
   },
   {
     name: "TypeScript",
-    svg: "/logo/typescript.svg"
+    svg: "/logo/typescript.svg",
+    light_svg : "/logo/typescript.svg"
   },
   {
     name: "JavaScript",
-    svg: "/logo/javascript.svg"
+    svg: "/logo/javascript.svg",
+    light_svg : "/logo/javascript.svg"
   },
   {
     name: "NixOS",
-    svg: "/logo/nixos.svg"
+    svg: "/logo/nixos.svg",
+    light_svg : "/logo/nix-snowflake-colours.svg"
   }
 ];
 

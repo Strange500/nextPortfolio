@@ -87,8 +87,13 @@ export default function Page() {
                           className='m-1 rounded-lg bg-secondary-foreground p-1 text-sm text-muted-foreground hover:bg-accent'
                         >
                           <img
+                            src={tech.light_svg}
+                            className='h-8 w-8 pr-1 dark:hidden'
+                            alt={tech.name}
+                          />
+                          <img
                             src={tech.svg}
-                            className='h-8 w-8 pr-1'
+                            className='hidden h-8 w-8 pr-1 dark:block'
                             alt={tech.name}
                           />
                           {tech.name}
