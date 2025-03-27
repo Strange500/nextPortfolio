@@ -67,55 +67,55 @@ export const projects = [
 export const techno = [
   {
     name: "Docker",
-    svg: "/img/docker-logo-blue.svg"
+    svg: "/logo/docker-logo-blue.svg"
   },
   {
     name: "React",
-    svg: "https://static.cdnlogo.com/logos/r/63/react.svg"
+    svg: "/logo/react.svg"
   },
   {
     name: "NextJS",
-    svg: "https://static.cdnlogo.com/logos/n/80/next-js.svg"
+    svg: "/logo/next-js.svg"
   },
   {
     name: "Java EE",
-    svg: "https://static.cdnlogo.com/logos/j/56/jee.svg"
+    svg: "/logo/jee.svg"
   },
   {
     name: "Node.js",
-    svg: "https://static.cdnlogo.com/logos/n/94/nodejs-icon.svg"
+    svg: "/logo/nodejs-icon.svg"
   },
   {
     name: "Python",
-    svg: "https://static.cdnlogo.com/logos/p/3/python.svg"
+    svg: "/logo/python.svg"
   },
   {
     name: "TailwindCSS",
-    svg: "https://static.cdnlogo.com/logos/t/58/tailwindcss.svg"
+    svg: "/logo/tailwindcss.svg"
   },
   {
     name: "Git",
-    svg: "https://static.cdnlogo.com/logos/g/15/git-icon.svg"
+    svg: "/logo/git-icon.svg"
   },
   {
     name: "Postgres",
-    svg: "https://static.cdnlogo.com/logos/p/93/postgresql.svg"
+    svg: "/logo/postgresql.svg"
   },
   {
     name: "Linux",
-    svg: "https://static.cdnlogo.com/logos/l/11/linux.svg"
+    svg: "/logo/linux.svg"
   },
   {
     name: "TypeScript",
-    svg: "https://static.cdnlogo.com/logos/t/96/typescript.svg"
+    svg: "/logo/typescript.svg"
   },
   {
     name: "JavaScript",
-    svg: "https://static.cdnlogo.com/logos/j/44/javascript.svg"
+    svg: "/logo/javascript.svg"
   },
   {
     name: "NixOS",
-    svg: "/img/nixos.svg"
+    svg: "/logo/nixos.svg"
   }
 ];
 

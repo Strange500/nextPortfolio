@@ -90,8 +90,6 @@ function fixImgLink(relativeLink: string, readmeUrl: string) {
 }
 
 function replaceBrokenMarkdownLinks(content: string, readmeUrl: string) {
-  // test regexp
-
   return content.replace(/\[.*\]\(((\.\/.*)|([a-zA-Z]*\/.*))\)/g, match => {
     const tmp = fixImgLink(match.split('](')[1].split(')')[0], readmeUrl)
     console.log(match.split('](')[0] + `](${tmp})`)
