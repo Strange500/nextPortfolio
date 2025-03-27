@@ -2,7 +2,7 @@ export const projects = [
   {
     order: 36,
     title: 'Classification-K-NN',
-    description: `Dans ce projet, nous avons développé une application de visualisation de données en 2D, offrant des fonctionnalités telles que la classification K-NN, des tests de robustesse et des prédictions. L'application a été implémentée selon le modèle MVC en Java, utilisant la bibliothèque graphique JavaFX.`,
+    description: `In this project, we developed a 2D data visualization application, offering features such as K-NN classification, robustness testing, and predictions. The application was implemented according to the MVC model in Java, using the JavaFX graphical library.`,
     tags: ['Java', 'JavaFX', 'MVC'],
     links: ['https://github.com/Strange500/Classification-K-NN'],
     readme:
@@ -15,8 +15,7 @@ export const projects = [
       'This project is a web application built with Next.js that provides an interactive interface for displaying information about video games using the RAWG API. Users can search for games, view detailed information, and download games directly from the server.',
     tags: ['React', 'Next.js', 'TailwindCSS', 'Docker', 'JavaScript'],
     links: [
-      'https://github.com/Strange500/GameList',
-      'https://gamelist.portfolio.qgroget.com'
+      'https://github.com/Strange500/GameList'
     ],
     readme:
       'https://raw.githubusercontent.com/Strange500/GameList/refs/heads/main/README.md'
@@ -24,7 +23,7 @@ export const projects = [
   {
     order: 2,
     title: 'Bagarre.io',
-    description: `Bagarre.io est un Agar.io-like développé en JavaScript. Le jeu est un jeu multijoueur en temps réel où les joueurs peuvent se battre pour devenir le plus gros joueur.`,
+    description: `Bagarre.io is an Agar.io-like game developed in JavaScript. The game is a real-time multiplayer game where players can fight to become the biggest player.`,
     tags: ['JavaScript', 'Node.js', 'Socket.io'],
     links: ['https://github.com/Strange500/BAGARRE.IO'],
     readme:
@@ -34,7 +33,7 @@ export const projects = [
     order: 3,
     title: 'QGChat',
     description:
-      'QGChat est une application web permettant aux utilisateurs de créer et gérer des fils de discussion avec un ou plusieurs participants. Chaque utilisateur peut poster et lire des messages dans ces fils. L’application suit une architecture MVC en JEE, avec une interface responsive compatible avec ordinateur et mobile.',
+      'QGChat is a web application that allows users to create and manage discussion threads with one or more participants. Each user can post and read messages in these threads. The application follows an MVC architecture in JEE, with a responsive interface compatible with both desktop and mobile.',
     tags: ['Java', 'JEE', 'MVC', 'Tomcat', 'JavaScript'],
     links: [
       'https://github.com/Strange500/QGChat',
