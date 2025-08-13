@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   experimental: {
     nextScriptWorkers: true
   },
-  output: 'standalone'
+  // output: 'standalone'
 }
 
 export default nextConfig
