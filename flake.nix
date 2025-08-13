@@ -1,23 +1,19 @@
 {
   description = "NextJS Template";
-
+  
   inputs = {
-    nixpkgs.url = "nixpkgs";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     systems.url = "github:nix-systems/x86_64-linux";
     flake-utils = {
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
     };
   };
-
-  outputs = {
-    nixpkgs,
-    flake-utils,
-    ...
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
+  
+  outputs = { self, nixpkgs, flake-utils, ... }:
+    (flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
-      pname = "setup"; # <same as package.json name>
+      pname = "portofolio";
       version = "0.1.0";
       buildInputs = with pkgs; [
         nodejs_20
@@ -32,6 +28,7 @@
           #!/usr/bin/env bash
         '';
       };
+      
       packages.default = pkgs.buildNpmPackage {
         inherit pname version buildInputs npmDepsHash nativeBuildInputs;
         src = ./.;
@@ -43,10 +40,35 @@
           touch $exe
           chmod +x $exe
           echo "
-              #!/usr/bin/env bash
-              cd $lib
-              ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start" > $exe
+          #!/usr/bin/env bash
+          cd $lib
+          ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start" > $exe
         '';
       };
-    });
+    })) // {
+      nixosModules.default = { config, lib, pkgs, ... }: {
+        options.services.portfolio = {
+          enable = lib.mkEnableOption "Portfolio service";
+        };
+        
+        config = lib.mkIf config.services.portfolio.enable {
+          systemd.services.portfolio = {
+            description = "Portfolio NextJS app";
+            after = [ "network.target" ];
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              ExecStart = "${self.packages.${pkgs.system}.default}/bin/portofolio";
+              Restart = "always";
+              User = "portfolio";
+            };
+          };
+          
+          users.users.portfolio = {
+            isSystemUser = true;
+            group = "portfolio";
+          };
+          users.groups.portfolio = {};
+        };
+      };
+    };
 }
