@@ -1,10 +1,11 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  distDir: 'dist',
   experimental: {
     nextScriptWorkers: true
   },
-  output: 'standalone'
+  output: 'export'
 }
 
 export default nextConfig
