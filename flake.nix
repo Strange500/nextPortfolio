@@ -42,13 +42,20 @@
           echo "
           #!/usr/bin/env bash
           cd $lib
-          ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start" > $exe
+          # first arg is the port
+          ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start --port \$1
+          " > $exe
         '';
       };
     })) // {
       nixosModules.default = { config, lib, pkgs, ... }: {
         options.services.portfolio = {
           enable = lib.mkEnableOption "Portfolio service";
+          port = lib.mkOption {
+            type = lib.types.port;
+            default = 3000;
+            description = "Port on which the Portfolio service will run.";
+          };
         };
         
         config = lib.mkIf config.services.portfolio.enable {
@@ -57,7 +64,7 @@
             after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
             serviceConfig = {
-              ExecStart = "${self.packages.${pkgs.system}.default}/bin/portofolio";
+              ExecStart = "${self.packages.${pkgs.system}.default}/bin/portofolio ${toString config.services.portfolio.port}";
               Restart = "always";
               User = "portfolio";
             };
