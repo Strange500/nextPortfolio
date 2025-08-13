@@ -40,7 +40,6 @@
           touch $exe
           chmod +x $exe
           echo "
-          #!/usr/bin/env bash
           cd $lib
           # first arg is the port
           ${pkgs.nodePackages_latest.pnpm}/bin/pnpm run start --port \$1
