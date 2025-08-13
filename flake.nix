@@ -65,15 +65,9 @@
             serviceConfig = {
               ExecStart = "${self.packages.${pkgs.system}.default}/bin/portofolio ${toString config.services.portfolio.port}";
               Restart = "always";
-              User = "portfolio";
             };
           };
-          
-          users.users.portfolio = {
-            isSystemUser = true;
-            group = "portfolio";
-          };
-          users.groups.portfolio = {};
+        
         };
       };
     };
