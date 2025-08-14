@@ -63,11 +63,10 @@
             after = [ "network.target" ];
             wantedBy = [ "multi-user.target" ];
             serviceConfig = {
-              ExecStart = "${self.packages.${pkgs.system}.default}/bin/portofolio ${toString config.services.portfolio.port}";
+              ExecStart = "${self.packages.${pkgs.system}.default}/bin/portfolio ${toString config.services.portfolio.port}";
               Restart = "always";
             };
           };
-        
         };
       };
     };
