@@ -47,10 +47,44 @@ To get a local copy of this portfolio up and running, follow these steps:
     npm install
     ```
 3. Run the development server:
-4. ```bash
+   ```bash
     npm run dev
     ```
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Configuration
+
+### Custom Projects Data File
+
+By default, project information is loaded from `data/projects.json`. You can specify a custom projects file using the `PROJECTS_FILE_PATH` environment variable:
+
+```bash
+# Use a custom projects file
+PROJECTS_FILE_PATH=path/to/your/projects.json npm run build
+
+# Or in development
+PROJECTS_FILE_PATH=path/to/your/projects.json npm run dev
+```
+
+The projects JSON file should follow this structure:
+```json
+[
+  {
+    "order": 1,
+    "title": "Project Name",
+    "description": "Project description",
+    "tags": ["Tag1", "Tag2"],
+    "links": ["https://github.com/user/repo"],
+    "readme": "https://raw.githubusercontent.com/user/repo/main/README.md"
+  }
+]
+```
+
+**Path Support**: The `PROJECTS_FILE_PATH` environment variable supports both relative and absolute paths:
+- Relative paths (e.g., `custom/projects.json`) are resolved from the project root
+- Absolute paths (e.g., `/opt/data/projects.json`) allow loading files from anywhere on the system
+
+**Error Handling**: If the specified file doesn't exist, contains invalid JSON, or is empty, the application will gracefully fall back to the default projects (same as `data/projects.json`) and log appropriate error messages. This ensures the portfolio always displays content even when custom project files have issues.
 
 ## Deployment with Docker
 
