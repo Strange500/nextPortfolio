@@ -3,10 +3,13 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ProjectCard } from '@/components/ProjectCard'
-import { education, projects, techno } from '@/app/(root)/var'
+import { education, techno } from '@/app/(root)/var'
 import { handleSmoothScroll } from '@/components/Header'
+import { loadProjects, type Project } from '@/lib/loadProjects'
 
-export default function Page() {
+export default async function Page() {
+  // Load projects from external JSON file
+  const projects: Project[] = await loadProjects();
   return (
     <section className='h-full w-screen bg-background'>
       <div className='container mx-auto h-full' id={'overview'}>
