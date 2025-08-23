@@ -6,7 +6,13 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 
-export const ReadMeDialog = ({ content, title }: { content: string, title: string }) => {
+export const ReadMeDialog = ({
+  content,
+  title
+}: {
+  content: string
+  title: string
+}) => {
   return (
     <Dialog>
       <DialogTrigger>
@@ -34,12 +40,13 @@ export const ReadMeDialog = ({ content, title }: { content: string, title: strin
           </svg>
         </div>
       </DialogTrigger>
-      <DialogContent className={`max-h-[80vh] w-full md:max-w-[1500px] max-w-[468px] overflow-x-hidden overflow-y-visible p-2`}>
+      <DialogContent
+        className={`max-h-[80vh] w-full max-w-[468px] overflow-x-hidden overflow-y-visible p-2 md:max-w-[1500px]`}
+      >
         <DialogTitle className={`hidden`}>{title}</DialogTitle>
         <section
-          className={`markdown-body p-[15px] md:max-w-[1500px] max-w-[400px] md:p-[45px]`}
+          className={`markdown-body max-w-[400px] p-[15px] md:max-w-[1500px] md:p-[45px]`}
           dangerouslySetInnerHTML={{ __html: content }}
-
         ></section>
       </DialogContent>
     </Dialog>

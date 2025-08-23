@@ -1,5 +1,3 @@
-
-
 export const SmallSocialBtn = () => {
   return (
     <div className='flex items-center justify-center space-x-2 pt-2 md:items-start md:justify-start'>

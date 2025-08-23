@@ -1,0 +1,11 @@
+{
+  "app": {
+    "[project]/app/(root)/page": [
+      "static/media/Geist_Regular-s.p.e5d811f7.woff2",
+      "static/media/GeistMono_Regular-s.p.ccc826d8.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": true,
+  "pages": {},
+  "pagesUsingSizeAdjust": false
+}
