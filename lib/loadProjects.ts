@@ -69,22 +69,45 @@ const DEFAULT_PROJECTS: Project[] = [
 
 /**
  * Loads projects from an external JSON file
- * Uses environment variable PROJECTS_FILE_PATH if provided, otherwise defaults to data/projects.json
+ * Uses environment variable PROJECTS_FILE_PATH if provided, with fallback to data/projects.json
  * Supports both relative paths (from project root) and absolute paths
  * Implements error handling with graceful fallback to default projects
  */
 export async function loadProjects(): Promise<Project[]> {
+  // Try to load from environment variable path first (if set)
+  if (process.env.PROJECTS_FILE_PATH) {
+    try {
+      // Resolve the absolute path - supports both relative and absolute paths
+      // Relative paths are resolved from process.cwd() (project root)
+      // Absolute paths are used as-is, allowing files outside the project
+      const absolutePath = path.resolve(process.cwd(), process.env.PROJECTS_FILE_PATH);
+      
+      // Read and parse the JSON file
+      const fileContent = await fs.readFile(absolutePath, 'utf-8');
+      const projects: Project[] = JSON.parse(fileContent);
+      
+      // Validate that the parsed data is an array and not empty
+      if (!Array.isArray(projects)) {
+        throw new Error('Projects data must be an array');
+      }
+      
+      if (projects.length === 0) {
+        throw new Error('Projects array is empty');
+      }
+      
+      console.log(`Successfully loaded ${projects.length} projects from ${process.env.PROJECTS_FILE_PATH}`);
+      return projects;
+      
+    } catch (error) {
+      console.error(`Error loading projects from environment path ${process.env.PROJECTS_FILE_PATH}:`, error);
+      console.warn('Falling back to default projects file...');
+    }
+  }
+  
+  // Fallback to default projects file (data/projects.json)
   try {
-    // Get the projects file path from environment variable or use default
-    const projectsFilePath = process.env.PROJECTS_FILE_PATH || DEFAULT_PROJECTS_PATH;
-    
-    // Resolve the absolute path - supports both relative and absolute paths
-    // Relative paths are resolved from process.cwd() (project root)
-    // Absolute paths are used as-is, allowing files outside the project
-    const absolutePath = path.resolve(process.cwd(), projectsFilePath);
-    
-    // Read and parse the JSON file
-    const fileContent = await fs.readFile(absolutePath, 'utf-8');
+    const defaultPath = path.resolve(process.cwd(), DEFAULT_PROJECTS_PATH);
+    const fileContent = await fs.readFile(defaultPath, 'utf-8');
     const projects: Project[] = JSON.parse(fileContent);
     
     // Validate that the parsed data is an array and not empty
@@ -96,15 +119,15 @@ export async function loadProjects(): Promise<Project[]> {
       throw new Error('Projects array is empty');
     }
     
-    console.log(`Successfully loaded ${projects.length} projects from ${projectsFilePath}`);
+    console.log(`Successfully loaded ${projects.length} projects from default file ${DEFAULT_PROJECTS_PATH}`);
     return projects;
     
   } catch (error) {
-    console.error('Error loading projects:', error);
+    console.error(`Error loading projects from default file ${DEFAULT_PROJECTS_PATH}:`, error);
     
-    // Return default projects as fallback to ensure the application displays content
-    // This maintains functionality even when custom project files are missing or invalid
-    console.warn('Falling back to default projects');
+    // Final fallback to hardcoded projects to ensure the application displays content
+    // This maintains functionality even when all project files are missing or invalid
+    console.warn('Falling back to hardcoded default projects');
     return DEFAULT_PROJECTS;
   }
 }
