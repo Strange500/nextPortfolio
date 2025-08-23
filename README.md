@@ -47,10 +47,40 @@ To get a local copy of this portfolio up and running, follow these steps:
     npm install
     ```
 3. Run the development server:
-4. ```bash
+   ```bash
     npm run dev
     ```
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Configuration
+
+### Custom Projects Data File
+
+By default, project information is loaded from `data/projects.json`. You can specify a custom projects file using the `PROJECTS_FILE_PATH` environment variable:
+
+```bash
+# Use a custom projects file
+PROJECTS_FILE_PATH=path/to/your/projects.json npm run build
+
+# Or in development
+PROJECTS_FILE_PATH=path/to/your/projects.json npm run dev
+```
+
+The projects JSON file should follow this structure:
+```json
+[
+  {
+    "order": 1,
+    "title": "Project Name",
+    "description": "Project description",
+    "tags": ["Tag1", "Tag2"],
+    "links": ["https://github.com/user/repo"],
+    "readme": "https://raw.githubusercontent.com/user/repo/main/README.md"
+  }
+]
+```
+
+If the specified file doesn't exist or contains invalid JSON, the application will gracefully fall back to an empty projects array and log appropriate error messages.
 
 ## Deployment with Docker
 
