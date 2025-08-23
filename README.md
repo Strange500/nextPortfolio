@@ -1,6 +1,7 @@
 # My Portfolio
 
-Welcome to my portfolio! This project is built with React and Next.js, showcasing my skills and projects.
+Welcome to my portfolio! This project is built with React and Next.js,
+showcasing my skills and projects.
 
 ## Table of Contents
 
@@ -17,7 +18,10 @@ Welcome to my portfolio! This project is built with React and Next.js, showcasin
 
 ![1743020726_grim.png](docs/img/1743020726_grim.png)
 
-This portfolio is a representation of my work and abilities as a developer. It includes a collection of projects that highlight my skills and experiences. You can find information about my experiences, a list of the technologies I work with, and links to my projects.
+This portfolio is a representation of my work and abilities as a developer. It
+includes a collection of projects that highlight my skills and experiences. You
+can find information about my experiences, a list of the technologies I work
+with, and links to my projects.
 
 ## Features
 
@@ -27,8 +31,10 @@ This portfolio is a representation of my work and abilities as a developer. It i
 
 ## Technologies Used
 
-- [Next.js](https://nextjs.org/) - A React framework for building server-side rendered applications
-- [React](https://reactjs.org/) - A JavaScript library for building user interfaces
+- [Next.js](https://nextjs.org/) - A React framework for building server-side
+  rendered applications
+- [React](https://reactjs.org/) - A JavaScript library for building user
+  interfaces
 - CSS Modules - For styling components
 - Node.js - For the server-side
 - My home server - For hosting the portfolio
@@ -45,11 +51,11 @@ To get a local copy of this portfolio up and running, follow these steps:
 2. Install the dependencies:
    ```bash
     npm install
-    ```
+   ```
 3. Run the development server:
 4. ```bash
-    npm run dev
-    ```
+   npm run dev
+   ```
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Deployment with Docker
@@ -63,5 +69,5 @@ To deploy this portfolio with Docker, follow these steps:
 2. Run the Docker container:
    ```bash
     docker run -d -p 3000:3000 next-portfolio
-    ```
+   ```
 3. Open [http://localhost:3000](http://localhost:3000) in your browser
