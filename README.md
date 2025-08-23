@@ -80,7 +80,11 @@ The projects JSON file should follow this structure:
 ]
 ```
 
-If the specified file doesn't exist or contains invalid JSON, the application will gracefully fall back to an empty projects array and log appropriate error messages.
+**Path Support**: The `PROJECTS_FILE_PATH` environment variable supports both relative and absolute paths:
+- Relative paths (e.g., `custom/projects.json`) are resolved from the project root
+- Absolute paths (e.g., `/opt/data/projects.json`) allow loading files from anywhere on the system
+
+**Error Handling**: If the specified file doesn't exist, contains invalid JSON, or is empty, the application will gracefully fall back to the default projects (same as `data/projects.json`) and log appropriate error messages. This ensures the portfolio always displays content even when custom project files have issues.
 
 ## Deployment with Docker
 
