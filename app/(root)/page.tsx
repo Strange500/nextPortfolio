@@ -1,6 +1,5 @@
 import { SmallSocialBtn } from '@/components/smallSocialBtn'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ProjectCard } from '@/components/ProjectCard'
 import { education, techno } from '@/app/(root)/var'
