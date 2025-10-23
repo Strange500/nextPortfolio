@@ -7,6 +7,7 @@ import { useTheme } from 'next-themes'
 const MAX_OBJECTS = 10
 const MAX_LEVELS = 3
 const MAX_DISTANCE = 30
+const MAX_DISTANCE_SQUARED = MAX_DISTANCE * MAX_DISTANCE
 const RADIUS = 3
 const COLORS = ['#0F0F0F', '#2D2E2E', '#716969']
 
@@ -82,6 +83,10 @@ const useCanvasAnimation = () => {
 
       distanceTo(other: Point): number {
         return Math.sqrt((this.x - other.x) ** 2 + (this.y - other.y) ** 2)
+      }
+
+      distanceSquaredTo(other: Point): number {
+        return (this.x - other.x) ** 2 + (this.y - other.y) ** 2
       }
     }
 
@@ -168,19 +173,18 @@ const useCanvasAnimation = () => {
 
       context.clearRect(0, 0, canvas.width, canvas.height)
 
+      // Update all points and rebuild quadtree once
+      quadtree.clear()
       points.forEach(point => {
         point.update(canvas.width, canvas.height)
         point.render(context)
-        // remove but don't optimize yet
-        quadtree.remove(point, true)
         quadtree.insert(point)
       })
-      // Re-insert first point to trigger quadtree optimization
-      quadtree.remove(points[0])
-      quadtree.insert(points[0])
 
-      const drawnConnections = new Set() // Set to keep track of drawn connections
+      // Draw connections - use Set outside loop to track all drawn connections
+      const drawnConnections = new Set<string>()
       quadtree.insert(mousePoint)
+      
       points.forEach(point => {
         const neighbors = quadtree.retrieve(
           new Circle({
@@ -190,25 +194,28 @@ const useCanvasAnimation = () => {
           })
         )
         neighbors.forEach(neighbor => {
-          if (
-            neighbor !== point &&
-            point.distanceTo(neighbor) <= MAX_DISTANCE
-          ) {
-            const connectionId = `${Math.min(point.x, neighbor.x)}-${Math.max(point.y, neighbor.y)}`
+          if (neighbor !== point) {
+            // Use squared distance to avoid expensive Math.sqrt
+            const distSquared = point.distanceSquaredTo(neighbor)
+            if (distSquared <= MAX_DISTANCE_SQUARED) {
+              // Create consistent connection ID using sorted coordinates
+              const connectionId = point.x < neighbor.x || (point.x === neighbor.x && point.y < neighbor.y)
+                ? `${point.x},${point.y}-${neighbor.x},${neighbor.y}`
+                : `${neighbor.x},${neighbor.y}-${point.x},${point.y}`
 
-            if (!drawnConnections.has(connectionId)) {
-              context.beginPath()
-              context.moveTo(point.x, point.y)
-              context.lineTo(neighbor.x, neighbor.y)
-              context.strokeStyle = neighbor.color
-              context.stroke()
-              drawnConnections.add(connectionId)
+              if (!drawnConnections.has(connectionId)) {
+                context.beginPath()
+                context.moveTo(point.x, point.y)
+                context.lineTo(neighbor.x, neighbor.y)
+                context.strokeStyle = neighbor.color
+                context.stroke()
+                drawnConnections.add(connectionId)
+              }
             }
           }
         })
-        quadtree.remove(point, true)
-        drawnConnections.clear()
       })
+      quadtree.remove(mousePoint)
 
       requestAnimationFrame(animate)
     }
