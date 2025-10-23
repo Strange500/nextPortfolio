@@ -2,7 +2,7 @@
 
 export const SmallSocialBtn = () => {
   return (
-    <div className='flex items-center justify-center space-x-2 pt-2 md:items-start md:justify-start'>
+    <div className='flex items-center justify-center space-x-2 pt-2 md:items-start '>
       <a
         href='https://www.linkedin.com/in/roget-benjamin'
         className='rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'

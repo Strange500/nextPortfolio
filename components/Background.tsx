@@ -6,7 +6,7 @@ import { useTheme } from 'next-themes'
 
 const MAX_OBJECTS = 10
 const MAX_LEVELS = 3
-const MAX_DISTANCE = 60
+const MAX_DISTANCE = 30
 const RADIUS = 3
 const COLORS = ['#0F0F0F', '#2D2E2E', '#716969']
 
@@ -38,13 +38,15 @@ const useCanvasAnimation = () => {
     const context = canvas.getContext('2d') as CanvasRenderingContext2D
     canvas.width = canvas.clientWidth + 100
     canvas.height = canvas.clientHeight + 100
-    let NUM_POINTS = Math.floor((canvas.width * canvas.height) / 1000)
+    let NUM_POINTS = Math.floor(canvas.width)
+    // make speed relative to canvas size
+    const speed = 0.6
 
     canvasResizeObserver.observe(canvas)
 
     let quadtree = new Quadtree<Point>({
-      width: canvas.width + 100,
-      height: canvas.height + 100,
+      width: canvas.width ,
+      height: canvas.height ,
       maxObjects: MAX_OBJECTS,
       maxLevels: MAX_LEVELS
     })
@@ -59,8 +61,7 @@ const useCanvasAnimation = () => {
         this.color = color
       }
 
-      update(canvasWidth: number, canvasHeight: number) {
-        const speed = 0.3 // Reduced speed
+      update(canvasWidth: number, canvasHeight: number) { 
         this.x += Math.cos(this.deg) * speed
         this.y += Math.sin(this.deg) * speed
 
@@ -125,8 +126,7 @@ const useCanvasAnimation = () => {
     let fps: number = 0
 
     const interval = setInterval(() => {
-      console.log(fps)
-      if (fps < 60) {
+      if (fps <= 55) {
         for (let i = 0; i < 10; i++) {
           const p = points.pop()
           if (p) {
@@ -171,9 +171,11 @@ const useCanvasAnimation = () => {
       points.forEach(point => {
         point.update(canvas.width, canvas.height)
         point.render(context)
+        // remove but don't optimize yet
         quadtree.remove(point, true)
         quadtree.insert(point)
       })
+      // Re-insert first point to trigger quadtree optimization
       quadtree.remove(points[0])
       quadtree.insert(points[0])
 

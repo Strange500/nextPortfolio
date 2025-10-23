@@ -4,8 +4,8 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ProjectCard } from '@/components/ProjectCard'
 import { education, techno } from '@/app/(root)/var'
-import { handleSmoothScroll } from '@/components/Header'
 import { loadProjects, type Project } from '@/lib/loadProjects'
+import { handleSmoothScroll } from '@/components/ReadMeDialog'
 
 export default async function Page() {
   // Load projects from external JSON file
@@ -14,14 +14,14 @@ export default async function Page() {
     <section className='h-full w-screen bg-background'>
       <div className='container mx-auto h-full' id={'overview'}>
         <div className={`pt-28 md:pt-60`}></div>
-        <div className='flex justify-center md:justify-start'>
-          <div className='mx-4 flex flex-col justify-center text-center md:mx-0 md:text-left'>
+        <div className='flex justify-center '>
+          <div className='mx-4 flex flex-col justify-center text-center md:mx-0 '>
             <h1 className='text-2xl font-semibold text-secondary md:text-4xl'>
               Hi, I&#39;m{' '}
               <span className='relative animate-[--color-shift]'>
                 Benjamin Roget
                 <span
-                  className={`prenomnom absolute left-0 top-0 flex h-full w-full animate-[--ping-text] items-center justify-center text-center opacity-75`}
+                  className={`absolute left-0 top-0 flex h-full w-full animate-[--ping-text] items-center justify-center text-center opacity-75`}
                 >
                   Benjamin Roget
                 </span>
@@ -39,8 +39,6 @@ export default async function Page() {
         <div className='flex flex-col items-center pt-8 md:pt-32'>
           <div className={'flex flex-col md:w-5/6 md:flex-row'}>
             <section className={'flex flex-col items-center md:w-3/4'}>
-              <Card className='bg-foreground shadow-md md:mr-4'>
-                <CardContent className='flex flex-col items-center justify-center pt-3 md:flex-row'>
                   <article className='flex flex-col items-start justify-center pr-2'>
                     <section className='flex flex-col items-start p-2'>
                       <div className='mb-4 flex flex-row items-center'>
@@ -51,14 +49,16 @@ export default async function Page() {
                     </section>
 
                     <p className='text-justify text-secondary'>
-                      Currently a second-year student in a Bachelor&#39;s
-                      program in Computer Science, I am passionate about
-                      software development and system administration. <br />I
-                      have acquired skills in Java, Python, C, and
-                      JavaScript/TypeScript, as well as experience with tools
-                      such as Docker, Podman, git, I use also frameworks like
-                      Next.js, and TailwindCSS. I also have hands-on experience
-                      in server configuration and database management.
+                      I am currently a first-year engineering student 
+                      specializing in software development, completing my studies through 
+                      an apprenticeship program (work-study arrangement) at Numih France, 
+                      a software company specialized in healthcare solutions.
+                      <br/>
+                      I am passionate about software development and system administration, 
+                      and have developed skills in Java, Python, C, and JavaScript/TypeScript. 
+                      I also work with tools such as Docker, Podman, and Git, as well as 
+                      frameworks like Next.js and TailwindCSS. Additionally, I have hands-on 
+                      experience in server configuration and database management.
                     </p>
                     <a
                       href='#projects'
@@ -74,11 +74,7 @@ export default async function Page() {
                       </Button>
                     </a>
                   </article>
-                </CardContent>
-              </Card>
 
-              <Card className='mt-4 h-1/2 bg-foreground shadow-md md:mr-4'>
-                <CardContent>
                   <div className='flex flex-col items-center justify-center'>
                     <section className='pt-4'></section>
                     <section
@@ -87,7 +83,7 @@ export default async function Page() {
                       {techno.map((tech, index) => (
                         <Badge
                           key={index}
-                          className='m-1 rounded-lg bg-secondary-foreground p-1 text-sm text-muted-foreground hover:bg-accent'
+                          className='m-1 rounded-lg bg-foreground p-1 text-sm text-muted-foreground hover:bg-accent'
                         >
                           <img
                             src={tech.light_svg}
@@ -104,20 +100,17 @@ export default async function Page() {
                       ))}
                     </section>
                   </div>
-                </CardContent>
-              </Card>
             </section>
 
-            <Card className='mt-4 bg-foreground shadow-md md:mt-0'>
-              <CardContent className='pt-3'>
                 <div className='flex flex-col items-center justify-center md:flex-row'>
                   <section className='border-muted pt-3 md:pl-2'>
                     <div className={'flex flex-col'}>
-                      <ol className={'relative border-s border-muted'}>
+                      <ol className='relative flex h-full flex-col  border-s border-muted'>
                         {education
                           .sort((a, b) => b.date - a.date)
                           .map((edu, index) => (
-                            <li className='mb-10 ms-4' key={index}>
+                            <li className='ms-4 mb-4  pb-6 pl-6 rounded-lg shadow-md'
+                            key={index}>
                               <div className='absolute -start-1.5 mt-1.5 h-3 w-3 rounded-full border border-secondary bg-accent'></div>
                               <time className='mb-1 text-sm font-normal leading-none text-muted-foreground'>
                                 {edu.period}
@@ -137,8 +130,6 @@ export default async function Page() {
                     </div>
                   </section>
                 </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>

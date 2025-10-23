@@ -11,6 +11,11 @@ export const techno = [
     light_svg: "/logo/docker-logo-blue.svg"
   },
   {
+    name: "Spring Boot",
+    svg: "/logo/spring-icon.svg",
+    light_svg: "/logo/spring-icon.svg"
+  },
+  {
     name: "React",
     svg: "/logo/react.svg",
     light_svg: "/logo/react.svg"
@@ -87,10 +92,17 @@ export const education = [
     school: 'University of Technology of Compiègne',
   },
   {
-    title: 'Bachelor\'s Degree in Computer Science',
-    date: 2026,
-    period: '2023 - now',
+    title: 'Associate’s Degree in Computer Science',
+    date: 2025,
+    period: '2023 - 2025',
     school: 'University Institute of Technology of Lille',
+    description: 'Graduated top of the class'
+  },
+  {
+    title: 'Engineering degree in Software Development',
+    date: 2028,
+    period: '2025 - now',
+    school: 'IMT Nord Europe, Institut Mines-Télécom',
     description: 'Currently studying.'
   }
 ]

@@ -6,6 +6,21 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 
+export const handleSmoothScroll = (
+  event: React.MouseEvent<HTMLAnchorElement>
+) => {
+  event.preventDefault()
+  const targetId = event.currentTarget.getAttribute('href')
+  if (!targetId) return
+  const targetElement = document.querySelector(targetId)
+  if (!targetElement) return
+
+  targetElement.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start'
+  })
+}
+
 export const ReadMeDialog = ({ content, title }: { content: string, title: string }) => {
   return (
     <Dialog>

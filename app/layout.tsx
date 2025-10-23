@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from '@/components/Header'
 import BG from '@/components/Background'
-import Footer from '@/components/Footer'
 import { ThemeProvider } from '@/components/theme-provider'
 import localFont from 'next/font/local'
 
@@ -28,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="light">
+    <html lang="en" data-theme="light" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-primary overflow-x-hidden `}
       >
@@ -38,11 +36,9 @@ export default function RootLayout({
         enableSystem
         disableTransitionOnChange
       >
-        <Header />
 
         <BG />
           {children}
-        <Footer/>
       </ThemeProvider>
       </body>
     </html>
