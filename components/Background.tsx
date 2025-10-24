@@ -20,7 +20,7 @@ const useCanvasAnimation = () => {
     function resampleCanvas() {
       canvas.width = canvas.clientWidth
       canvas.height = canvas.clientHeight
-      NUM_POINTS = Math.floor((canvas.width * canvas.height) / 1000)
+      NUM_POINTS = Math.floor(canvas.width)
       quadtree = new Quadtree<Point>({
         width: canvas.width,
         height: canvas.height,
@@ -41,7 +41,7 @@ const useCanvasAnimation = () => {
     canvas.height = canvas.clientHeight + 100
     let NUM_POINTS = Math.floor(canvas.width)
     // make speed relative to canvas size
-    const speed = 0.6
+    const speed = 0.3
 
     canvasResizeObserver.observe(canvas)
 
@@ -55,16 +55,27 @@ const useCanvasAnimation = () => {
     class Point extends Circle {
       deg: number
       color: string
+      speed: number
 
       constructor(x: number, y: number, deg: number, color: string) {
         super({ x, y, r: RADIUS })
         this.deg = deg
         this.color = color
+        this.speed = speed
       }
 
       update(canvasWidth: number, canvasHeight: number) { 
-        this.x += Math.cos(this.deg) * speed
-        this.y += Math.sin(this.deg) * speed
+        // reduce speed gradually back to normal using logarithmic decay
+        // Assuming these properties exist:
+        // this.x, this.y, this.speed, this.deg
+        // speed = target speed (e.g. 0 when no input)
+
+        const targetSpeed = speed; // your intended target (could be 0)
+        this.speed += (targetSpeed - this.speed) * 0.01; // smooth interpolation (inertia)
+
+        // Apply movement
+        this.x += Math.cos(this.deg) * this.speed;
+        this.y += Math.sin(this.deg) * this.speed;
 
         if (this.x < 0 || this.x > canvasWidth) {
           this.deg = Math.PI - this.deg + (Math.random() * 0.25 - 0.125) // Small random change
@@ -109,17 +120,98 @@ const useCanvasAnimation = () => {
       return point
     })
 
-    const handleMouseMove = (event: MouseEvent) => {
+    
+    
+
+    let rightMouseDown = false
+    let leftMouseDown = false
+
+    document.addEventListener('contextmenu', (e) => e.preventDefault())
+
+    document.addEventListener('mousedown', (e) => {
+      if (e.button === 2) rightMouseDown = true
+      if (e.button === 0) leftMouseDown = true
+    })
+
+    document.addEventListener('mouseup', (e) => {
+      if (e.button === 2) rightMouseDown = false
+      if (e.button === 0) leftMouseDown = false
+    })
+
+    document.addEventListener('mousemove', (e) => {
       if (canvas) {
         const rect = canvas.getBoundingClientRect()
         setMousePos({
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
         })
       }
+    })
+    // animation loop with throttling control
+    let lastTime = 0
+    const throttleDelay = 50 // in ms (~20fps)
+
+
+    function genWave() {
+      if (!canvas) return
+
+      const rect = canvas.getBoundingClientRect()
+      const mouseX = mousePoint.x - rect.left
+      const mouseY = mousePoint.y - rect.top
+
+      const waveRadius = MAX_DISTANCE_SQUARED * 10
+
+      quadtree.retrieve(mousePoint).forEach(point => {
+        const dx = point.x - mouseX
+        const dy = point.y - mouseY
+        const distance = point.distanceSquaredTo(mousePoint)
+
+        if (distance > waveRadius) return
+
+        const angle = Math.atan2(dy, dx)
+
+        // Wave strength fades with distance
+        const strength = (1 - distance / waveRadius) ** 2
+
+        // Small impulse instead of massive speed jump
+        point.speed += 3 * strength
+
+        // Add randomness to direction for realism
+        const randomOffset = (Math.random() - 0.5) * 0.2
+        point.deg = angle + randomOffset
+      })
     }
 
-    document.addEventListener('mousemove', handleMouseMove)
+    function attractToMouse() {
+      if (!canvas) return
+
+      const rect = canvas.getBoundingClientRect()
+      const mouseX = mousePoint.x - rect.left
+      const mouseY = mousePoint.y - rect.top
+
+      const attractRadius = MAX_DISTANCE_SQUARED * 20
+
+      quadtree.retrieve(mousePoint).forEach(point => {
+        const dx = mouseX - point.x
+        const dy = mouseY - point.y
+        const distance = point.distanceSquaredTo(mousePoint)
+
+        if (distance > attractRadius) return
+
+        const angle = Math.atan2(dy, dx)
+
+        // Attraction strength fades with distance
+        const strength = (1 - distance / attractRadius) ** 2
+
+        // Small impulse towards mouse
+        point.speed += 2 * strength
+
+        // Add randomness to direction for realism
+        const randomOffset = (Math.random() - 0.5) * 0.2
+        point.deg = angle + randomOffset
+      })
+    }
+
 
     const mousePoint: Point = new Point(-100, -100, 0, 'red')
     function setMousePos(param: { x: number; y: number }) {
@@ -130,26 +222,36 @@ const useCanvasAnimation = () => {
     const times: number[] = []
     let fps: number = 0
 
+    const TARGET_FPS = 60
     const interval = setInterval(() => {
-      if (fps <= 55) {
-        for (let i = 0; i < 10; i++) {
+      const diff = TARGET_FPS - fps // positive if fps < 60, negative if fps > 60
+
+      // Use a proportional factor (clamped to avoid extremes)
+      const intensity = Math.min(Math.abs(diff) / 5, 4) // e.g., 0–4 scaling
+      const baseChange = 20 // base number of points to add/remove
+      const count = Math.round(baseChange * intensity)
+
+      if (fps < TARGET_FPS - 1) {
+        // FPS is low → remove points
+        for (let i = 0; i < count; i++) {
           const p = points.pop()
-          if (p) {
-            quadtree.remove(p, true)
-          }
+          if (p) quadtree.remove(p, true)
         }
-      } else {
-        for (let i = 0; i < 10; i++) {
+      } else if (fps > TARGET_FPS + 1) {
+        // FPS is high → add points
+        for (let i = 0; i < count; i++) {
           const p = genRandomPoint(canvas.width, canvas.height)
           points.push(p)
           quadtree.insert(p)
         }
       }
-    }, 1000)
+    }, 500)
+
+
 
     let stop = false
 
-    const animate = () => {
+    const animate = (timestamp) => {
       if (stop) {
         return
       }
@@ -180,6 +282,15 @@ const useCanvasAnimation = () => {
         point.render(context)
         quadtree.insert(point)
       })
+
+      if (timestamp - lastTime > throttleDelay) {
+        if (rightMouseDown) {
+          attractToMouse()
+        } else if (leftMouseDown) {
+          genWave()
+        }
+        lastTime = timestamp
+      }
 
       // Draw connections - use Set outside loop to track all drawn connections
       const drawnConnections = new Set<string>()
