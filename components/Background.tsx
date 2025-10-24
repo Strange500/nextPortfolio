@@ -138,7 +138,7 @@ const useCanvasAnimation = () => {
       if (e.button === 0) leftMouseDown = false
     })
 
-    document.addEventListener('mousemove', (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       if (canvas) {
         const rect = canvas.getBoundingClientRect()
         setMousePos({
@@ -146,7 +146,9 @@ const useCanvasAnimation = () => {
           y: e.clientY - rect.top
         })
       }
-    })
+    }
+
+    document.addEventListener('mousemove', handleMouseMove)
     // animation loop with throttling control
     let lastTime = 0
     const throttleDelay = 50 // in ms (~20fps)
@@ -155,15 +157,11 @@ const useCanvasAnimation = () => {
     function genWave() {
       if (!canvas) return
 
-      const rect = canvas.getBoundingClientRect()
-      const mouseX = mousePoint.x - rect.left
-      const mouseY = mousePoint.y - rect.top
-
       const waveRadius = MAX_DISTANCE_SQUARED * 10
 
       quadtree.retrieve(mousePoint).forEach(point => {
-        const dx = point.x - mouseX
-        const dy = point.y - mouseY
+        const dx = point.x - mousePoint.x
+        const dy = point.y - mousePoint.y
         const distance = point.distanceSquaredTo(mousePoint)
 
         if (distance > waveRadius) return
@@ -185,15 +183,11 @@ const useCanvasAnimation = () => {
     function attractToMouse() {
       if (!canvas) return
 
-      const rect = canvas.getBoundingClientRect()
-      const mouseX = mousePoint.x - rect.left
-      const mouseY = mousePoint.y - rect.top
-
       const attractRadius = MAX_DISTANCE_SQUARED * 20
 
       quadtree.retrieve(mousePoint).forEach(point => {
-        const dx = mouseX - point.x
-        const dy = mouseY - point.y
+        const dx = mousePoint.x - point.x
+        const dy = mousePoint.y - point.y
         const distance = point.distanceSquaredTo(mousePoint)
 
         if (distance > attractRadius) return
@@ -251,7 +245,7 @@ const useCanvasAnimation = () => {
 
     let stop = false
 
-    const animate = (timestamp) => {
+    const animate = (timestamp: number) => {
       if (stop) {
         return
       }
@@ -331,7 +325,7 @@ const useCanvasAnimation = () => {
       requestAnimationFrame(animate)
     }
 
-    animate()
+    animate(0)
 
     return () => {
       document.removeEventListener('mousemove', handleMouseMove)
