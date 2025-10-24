@@ -19,6 +19,7 @@ const ATTRACT_RADIUS_MULTIPLIER = 20
 const TARGET_FPS = 60
 const FPS_ADJUST_INTERVAL = 500
 const THROTTLE_DELAY = 50
+const CANVAS_PADDING = 100
 const LIGHT_COLORS = ['#0F0F0F', '#2D2E2E', '#716969']
 const DARK_COLORS = ['#9f9f9f', '#565c5c', '#222121']
 
@@ -220,19 +221,20 @@ function updatePoints(
 }
 
 /**
- * Update colors based on theme
+ * Update colors based on theme (without mutation)
  */
 function updateColors(theme: string | undefined, colors: string[], mousePoint: Point) {
-  if (theme === 'light') {
-    colors[0] = LIGHT_COLORS[0]
-    colors[1] = LIGHT_COLORS[1]
-    colors[2] = LIGHT_COLORS[2]
-    mousePoint.color = 'blue'
-  } else {
-    colors[0] = DARK_COLORS[0]
-    colors[1] = DARK_COLORS[1]
-    colors[2] = DARK_COLORS[2]
-    mousePoint.color = 'red'
+  const targetColors = theme === 'light' ? LIGHT_COLORS : DARK_COLORS
+  const targetMouseColor = theme === 'light' ? 'blue' : 'red'
+  
+  // Update colors array only if changed
+  if (colors[0] !== targetColors[0]) {
+    colors.splice(0, colors.length, ...targetColors)
+  }
+  
+  // Update mouse point color only if changed
+  if (mousePoint.color !== targetMouseColor) {
+    mousePoint.color = targetMouseColor
   }
 }
 
@@ -265,8 +267,8 @@ const useCanvasAnimation = () => {
     })
 
     // Initialize canvas
-    canvas.width = canvas.clientWidth + 100
-    canvas.height = canvas.clientHeight + 100
+    canvas.width = canvas.clientWidth + CANVAS_PADDING
+    canvas.height = canvas.clientHeight + CANVAS_PADDING
     const initResult = initializeCanvas(canvas, points, quadtree, colors)
     quadtree = initResult.quadtree
 
