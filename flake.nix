@@ -21,7 +21,7 @@
       pname = "portfolio";
       version = "0.1.0";
       buildInputs = with pkgs; [
-        nodejs_20
+        nodejs_22
         pnpm
       ];
       nativeBuildInputs = buildInputs;
