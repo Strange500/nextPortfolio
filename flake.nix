@@ -22,7 +22,7 @@
       version = "0.1.0";
       buildInputs = with pkgs; [
         nodejs_20
-        nodePackages_latest.pnpm
+        pnpm
       ];
       nativeBuildInputs = buildInputs;
       npmDepsHash = "sha256-KTl+aW6zIHwqnyF0nC5GfOJn7/F/zZsRzkaHmEtWt30="; # <prefetch-npm-deps package-lock.json>

@@ -7,7 +7,7 @@ pkgs.mkShell {
     pkgs.pnpm   # If you are using Yarn as your package manager
     pkgs.git    # For version control
     pkgs.vite   # If you're planning to use Vite for development
-    pkgs.nodePackages."@tailwindcss/language-server"
+    pkgs.tailwindcss-language-server
   ];
 
 
