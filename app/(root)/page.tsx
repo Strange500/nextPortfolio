@@ -4,155 +4,117 @@ import { Badge } from '@/components/ui/badge'
 import { ProjectCard } from '@/components/ProjectCard'
 import { education, techno } from '@/app/(root)/var'
 import { loadProjects, type Project } from '@/lib/loadProjects'
-import { handleSmoothScroll } from '@/components/ReadMeDialog'
+import { ArrowRight } from 'lucide-react'
 
 export default async function Page() {
-  // Load projects from external JSON file
   const projects: Project[] = await loadProjects();
+
   return (
-    <section className='h-full w-screen bg-background'>
-      <div className='container mx-auto h-full' id={'overview'}>
-        <div className={`pt-28 md:pt-60`}></div>
-        <div className='flex justify-center '>
-          <div className='mx-4 flex flex-col justify-center text-center md:mx-0 '>
-            <h1 className='text-2xl font-semibold text-secondary md:text-4xl'>
-              Hi, I&#39;m{' '}
-              <span className='relative animate-[--color-shift]'>
-                Benjamin Roget
-                <span
-                  className={`absolute left-0 top-0 flex h-full w-full animate-[--ping-text] items-center justify-center text-center opacity-75`}
-                >
-                  Benjamin Roget
-                </span>
-              </span>
-            </h1>
-            <p className='text-lg text-secondary'>
-              I&#39;m a IT student from France
-            </p>
+    <section className="min-h-screen w-full bg-background selection:bg-primary/20">
+      {/* Hero Section */}
+      <div className="container mx-auto flex min-h-[75vh] flex-col justify-center px-4 md:px-8">
+        <div className="flex flex-col items-start max-w-3xl space-y-6">
+          <Badge variant="outline" className="font-mono text-xs font-normal text-muted-foreground border-border/50">
+            System Admin & Software Developer
+          </Badge>
+          
+          <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+            Building resilient systems and scalable applications.
+          </h1>
+          
+          <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
+            I&#39;m Benjamin Roget, an engineering student specializing in software architecture and declarative DevOps. I bridge the gap between infrastructure and high-performance frontend interfaces.
+          </p>
+          
+          <div className="flex items-center gap-4 pt-4">
+            <Button asChild className="group rounded-full px-6">
+              <a href="#projects">
+                View Architecture & Projects
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </a>
+            </Button>
+            <SmallSocialBtn />
           </div>
         </div>
-        <SmallSocialBtn />
       </div>
 
-      <div className='container mx-auto'>
-        <div className='flex flex-col items-center pt-8 md:pt-32'>
-          <div className={'flex flex-col md:w-5/6 md:flex-row'}>
-            <section className={'flex flex-col items-center md:w-3/4'}>
-                  <article className='flex flex-col items-start justify-center pr-2'>
-                    <section className='flex flex-col items-start p-2'>
-                      <div className='mb-4 flex flex-row items-center'>
-                        <h2 className='ml-4 text-xl font-semibold text-secondary'>
-                          About Me
-                        </h2>
-                      </div>
-                    </section>
-
-                    <p className='text-justify text-secondary'>
-                      I am currently a first-year engineering student 
-                      specializing in software development, completing my studies through 
-                      an apprenticeship program (work-study arrangement) at Numih France, 
-                      a software company specialized in healthcare solutions.
-                      <br/>
-                      I am passionate about software development and system administration, 
-                      and have developed skills in Java, Python, C, and JavaScript/TypeScript. 
-                      I also work with tools such as Docker, Podman, and Git, as well as 
-                      frameworks like Next.js and TailwindCSS. Additionally, I have hands-on 
-                      experience in server configuration and database management.
-                    </p>
-                    <a
-                      href='#projects'
-                      onClick={handleSmoothScroll}
-                      className='hidden justify-start pt-6 md:flex'
-                    >
-                      <Button className='relative rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'>
-                        <h2>
-                          See my projects
-                          <span className='absolute right-[-2] top-[-2] animate-ping rounded-full bg-red-600 p-1 opacity-75'></span>
-                          <span className='absolute right-[-2] top-[-2] rounded-full bg-red-400 p-1'></span>
-                        </h2>
-                      </Button>
-                    </a>
-                  </article>
-
-                  <div className='flex flex-col items-center justify-center'>
-                    <section className='pt-4'></section>
-                    <section
-                      className={'flex flex-row flex-wrap justify-start'}
-                    >
-                      {techno.map((tech, index) => (
-                        <Badge
-                          key={index}
-                          className='m-1 rounded-lg bg-foreground p-1 text-sm text-muted-foreground hover:bg-accent'
-                        >
-                          <img
-                            src={tech.light_svg}
-                            className='h-8 w-8 pr-1 dark:hidden'
-                            alt={tech.name}
-                          />
-                          <img
-                            src={tech.svg}
-                            className='hidden h-8 w-8 pr-1 dark:block'
-                            alt={tech.name}
-                          />
-                          {tech.name}
-                        </Badge>
-                      ))}
-                    </section>
-                  </div>
+      {/* About & Timeline Section */}
+      <div className="container mx-auto px-4 md:px-8 py-24">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
+          
+          {/* Left Column: About & Skills */}
+          <div className="flex flex-col space-y-12 lg:col-span-7">
+            <section className="space-y-6">
+              <h2 className="text-2xl font-medium tracking-tight text-foreground">Background</h2>
+              <div className="prose prose-neutral dark:prose-invert text-muted-foreground">
+                <p>
+                  I am currently a first-year engineering student completing my studies through an apprenticeship at Numih France, a software company specializing in healthcare solutions.
+                </p>
+                <p>
+                  My expertise spans from low-level systems programming to modern web frameworks. I focus heavily on infrastructure as code, containerization, and building tools that improve developer experience and system reliability.
+                </p>
+              </div>
             </section>
 
-                <div className='flex flex-col items-center justify-center md:flex-row'>
-                  <section className='border-muted pt-3 md:pl-2'>
-                    <div className={'flex flex-col'}>
-                      <ol className='relative flex h-full flex-col  border-s border-muted'>
-                        {education
-                          .sort((a, b) => b.date - a.date)
-                          .map((edu, index) => (
-                            <li className='ms-4 mb-4  pb-6 pl-6 rounded-lg shadow-md'
-                            key={index}>
-                              <div className='absolute -start-1.5 mt-1.5 h-3 w-3 rounded-full border border-secondary bg-accent'></div>
-                              <time className='mb-1 text-sm font-normal leading-none text-muted-foreground'>
-                                {edu.period}
-                              </time>
-                              <h3 className='text-lg font-semibold text-secondary'>
-                                {edu.title}
-                              </h3>
-                              <p className='mb-4 text-base font-normal text-muted'>
-                                {edu.school}
-                              </p>
-                              <p className='mb-4 text-base font-normal text-muted-foreground'>
-                                {edu.description}
-                              </p>
-                            </li>
-                          ))}
-                      </ol>
-                    </div>
-                  </section>
-                </div>
+            <section className="space-y-6">
+              <h2 className="text-2xl font-medium tracking-tight text-foreground">Technical Arsenal</h2>
+              <div className="flex flex-wrap gap-2">
+                {techno.map((tech, index) => (
+                  <Badge
+                    key={index}
+                    variant="secondary"
+                    className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-colors hover:bg-muted/80"
+                  >
+                    <img src={tech.light_svg} className="h-4 w-4 dark:hidden" alt={tech.name} />
+                    <img src={tech.svg} className="hidden h-4 w-4 dark:block" alt={tech.name} />
+                    {tech.name}
+                  </Badge>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* Right Column: Timeline */}
+          <div className="lg:col-span-4 lg:col-start-9">
+            <h2 className="mb-8 text-2xl font-medium tracking-tight text-foreground">Education</h2>
+            <ol className="relative space-y-8 border-s border-border/40">
+              {education
+                .sort((a, b) => b.date - a.date)
+                .map((edu, index) => (
+                  <li key={index} className="ms-6">
+                    <span className="absolute -start-1.5 mt-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-muted ring-4 ring-background"></span>
+                    <time className="mb-2 block font-mono text-xs font-medium tracking-widest text-muted-foreground/80 uppercase">
+                      {edu.period}
+                    </time>
+                    <h3 className="text-base font-medium text-foreground">
+                      {edu.title}
+                    </h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {edu.school}
+                    </p>
+                  </li>
+                ))}
+            </ol>
           </div>
         </div>
       </div>
 
-      <div className='mx-aut" container pb-12' id={'project'}>
-        <div className={`pt-16 md:pt-96`}></div>
-        <h1
-          className='text-2xl font-semibold text-secondary md:text-4xl'
-          id={'projects'}
-        >
-          Projects I worked on
-        </h1>
-        <section className={`pt-12`}></section>
-        <ul
-          className={`grid h-[80%] grid-cols-1 gap-4 overflow-y-scroll md:h-auto md:grid-cols-2 md:overflow-auto lg:grid-cols-3`}
-        >
+      {/* Projects Grid */}
+      <div className="container mx-auto px-4 md:px-8 py-24" id="projects">
+        <div className="mb-12 flex flex-col space-y-4">
+          <h2 className="text-3xl font-medium tracking-tight text-foreground">
+            Selected Work
+          </h2>
+          <p className="text-muted-foreground">A collection of systems I&#39;ve built and configured.</p>
+        </div>
+        
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects
             .sort((a, b) => a.order - b.order)
             .map((project, index) => (
-              <li key={index} className={`rounded-lg`}>
-                <ProjectCard {...project} />
-              </li>
+              <ProjectCard key={index} {...project} />
             ))}
-        </ul>
+        </div>
       </div>
     </section>
   )
