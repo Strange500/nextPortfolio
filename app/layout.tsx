@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import BG from '@/components/Background'
 import { ThemeProvider } from '@/components/theme-provider'
+import { ModeToggle } from '@/components/ModeToggle'
 import localFont from 'next/font/local'
 
 
@@ -38,7 +39,10 @@ export default function RootLayout({
       >
 
         <BG />
-          {children}
+        <div className="fixed top-4 right-4 z-50">
+          <ModeToggle />
+        </div>
+        {children}
       </ThemeProvider>
       </body>
     </html>
