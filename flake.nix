@@ -44,7 +44,8 @@
           ln -sfn ${ascii-cube-rs.packages.${system}.default} ./wasm-cube
         '';
         postInstall = ''
-          cp -rf dist/* $out/
+          ln -sfn ${ascii-cube-rs.packages.${system}.default} $out/lib/node_modules/portofolio/wasm-cube
+          cp -rf dist/* $out/ 2>/dev/null || true
         '';
       };
     }))
