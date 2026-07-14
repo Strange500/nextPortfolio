@@ -49,5 +49,21 @@
     "tags": ["Unraid", "Docker", "Linux", "Self-hosting"],
     "links": [],
     "readme": ""
+  },
+  {
+    "order": 6,
+    "title": "nixos-config",
+    "description": "My declarative NixOS system configurations and dotfiles, allowing fully reproducible developer environments and system states.",
+    "tags": ["Nix", "NixOS", "Linux", "IaC"],
+    "links": ["https://github.com/Strange500/nixos-config"],
+    "readme": "https://raw.githubusercontent.com/Strange500/nixos-config/refs/heads/main/README.md"
+  },
+  {
+    "order": 7,
+    "title": "min-btc-node",
+    "description": "A minimalist, lightweight Bitcoin node implementation built from scratch in Rust.",
+    "tags": ["Rust", "Bitcoin", "Networking"],
+    "links": ["https://github.com/Strange500/min-btc-node"],
+    "readme": "https://raw.githubusercontent.com/Strange500/min-btc-node/refs/heads/main/README.md"
   }
 ]

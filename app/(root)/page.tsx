@@ -48,10 +48,10 @@ export default async function Page() {
               <h2 className="text-2xl font-medium tracking-tight text-foreground">Background</h2>
               <div className="prose prose-neutral dark:prose-invert text-muted-foreground">
                 <p>
-                  I am currently a first-year engineering student completing my studies through an apprenticeship at Numih France, a software company specializing in healthcare solutions.
+                  I am currently an engineering student at IMT Nord Europe, completing my studies through an apprenticeship. During my apprenticeship, I am architecting and developing an enterprise automated testing framework built with Java Spring Boot, Selenium, and an Angular frontend.
                 </p>
                 <p>
-                  My expertise spans from low-level systems programming to modern web frameworks. I focus heavily on infrastructure as code, containerization, and building tools that improve developer experience and system reliability.
+                  My expertise spans from systems programming in Rust to modern web frameworks like Next.js. I focus heavily on infrastructure as code (specifically NixOS), containerization, and building tools that improve developer experience and system reliability.
                 </p>
               </div>
             </section>

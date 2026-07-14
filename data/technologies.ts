@@ -74,5 +74,20 @@ export const technologies: Technology[] = [
     name: "NixOS",
     svg: "/logo/nixos.svg",
     light_svg: "/logo/nix-snowflake-colours.svg"
+  },
+  {
+    name: "Rust",
+    svg: "/logo/rust.svg",
+    light_svg: "/logo/rust.svg"
+  },
+  {
+    name: "Angular",
+    svg: "/logo/angular.svg",
+    light_svg: "/logo/angular.svg"
+  },
+  {
+    name: "Selenium",
+    svg: "/logo/selenium.png",
+    light_svg: "/logo/selenium.png"
   }
 ];
