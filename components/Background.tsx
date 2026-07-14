@@ -7,7 +7,7 @@ import { useTheme } from 'next-themes'
 // Constants
 const MAX_OBJECTS = 10
 const MAX_LEVELS = 3
-const MAX_DISTANCE = 30
+const MAX_DISTANCE = 120
 const MAX_DISTANCE_SQUARED = MAX_DISTANCE * MAX_DISTANCE
 const RADIUS = 1.5
 const BASE_SPEED = 0.15
@@ -99,7 +99,8 @@ function initializeCanvas(
 ): { quadtree: Quadtree<Point>; numPoints: number } {
   canvas.width = canvas.clientWidth
   canvas.height = canvas.clientHeight
-  const numPoints = Math.floor(canvas.width)
+  // Drastically reduce points (e.g. 1920 width -> 128 points, max 150)
+  const numPoints = Math.min(Math.floor(canvas.width / 15), 150)
 
   const newQuadtree = new Quadtree<Point>({
     width: canvas.width,
@@ -258,7 +259,6 @@ const useCanvasAnimation = () => {
     const points: Point[] = []
     const mousePoint = new Point(-100, -100, 0, 'rgba(0,0,0,0)')
     const mouseState = { left: false, right: false }
-    const fpsTracker = { times: [] as number[], current: 0 }
     let lastInteractionTime = 0
     let quadtree = new Quadtree<Point>({
       width: canvas.width,
@@ -307,27 +307,7 @@ const useCanvasAnimation = () => {
     document.addEventListener('mousemove', handleMouseMove)
     document.addEventListener('contextmenu', handleContextMenu)
 
-    // FPS-based point adjustment
-    const fpsInterval = setInterval(() => {
-      const diff = TARGET_FPS - fpsTracker.current
-      const intensity = Math.min(Math.abs(diff) / 5, 4)
-      const count = Math.round(20 * intensity)
-
-      if (fpsTracker.current < TARGET_FPS - 1) {
-        // Remove points to improve FPS
-        for (let i = 0; i < count; i++) {
-          const p = points.pop()
-          if (p) quadtree.remove(p, true)
-        }
-      } else if (fpsTracker.current > TARGET_FPS + 1) {
-        // Add points when FPS is high
-        for (let i = 0; i < count; i++) {
-          const p = createRandomPoint(canvas.width, canvas.height, colors)
-          points.push(p)
-          quadtree.insert(p)
-        }
-      }
-    }, FPS_ADJUST_INTERVAL)
+    // Removed FPS dynamic scaling logic to prevent infinite point generation on high refresh rate monitors
 
     // Animation loop
     const animate = (timestamp: number) => {
@@ -335,14 +315,6 @@ const useCanvasAnimation = () => {
 
       // Update theme colors
       updateColors(theme, colors, mousePoint)
-
-      // Track FPS
-      const now = performance.now()
-      while (fpsTracker.times.length > 0 && fpsTracker.times[0] <= now - 1000) {
-        fpsTracker.times.shift()
-      }
-      fpsTracker.times.push(now)
-      fpsTracker.current = fpsTracker.times.length
 
       // Clear canvas
       context.clearRect(0, 0, canvas.width, canvas.height)
@@ -380,7 +352,6 @@ const useCanvasAnimation = () => {
       document.removeEventListener('mouseup', handleMouseUp)
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('contextmenu', handleContextMenu)
-      clearInterval(fpsInterval)
     }
   }, [theme])
 }
