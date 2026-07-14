@@ -9,19 +9,20 @@ const MAX_OBJECTS = 10
 const MAX_LEVELS = 3
 const MAX_DISTANCE = 30
 const MAX_DISTANCE_SQUARED = MAX_DISTANCE * MAX_DISTANCE
-const RADIUS = 3
-const BASE_SPEED = 0.3
+const RADIUS = 1.5
+const BASE_SPEED = 0.15
 const SPEED_DECAY = 0.01
-const WAVE_STRENGTH_MULTIPLIER = 3
-const ATTRACT_STRENGTH_MULTIPLIER = 2
+const WAVE_STRENGTH_MULTIPLIER = 2
+const ATTRACT_STRENGTH_MULTIPLIER = 1.5
 const WAVE_RADIUS_MULTIPLIER = 10
 const ATTRACT_RADIUS_MULTIPLIER = 20
 const TARGET_FPS = 60
 const FPS_ADJUST_INTERVAL = 500
 const THROTTLE_DELAY = 50
 const CANVAS_PADDING = 100
-const LIGHT_COLORS = ['#0F0F0F', '#2D2E2E', '#716969']
-const DARK_COLORS = ['#9f9f9f', '#565c5c', '#222121']
+// Slightly higher opacities so it's visible but still subtle
+const LIGHT_COLORS = ['rgba(0, 0, 0, 0.15)', 'rgba(0, 0, 0, 0.2)', 'rgba(0, 0, 0, 0.1)']
+const DARK_COLORS = ['rgba(255, 255, 255, 0.15)', 'rgba(255, 255, 255, 0.2)', 'rgba(255, 255, 255, 0.1)']
 
 /**
  * Point class representing an animated dot in the canvas
@@ -225,7 +226,7 @@ function updatePoints(
  */
 function updateColors(theme: string | undefined, colors: string[], mousePoint: Point) {
   const targetColors = theme === 'light' ? LIGHT_COLORS : DARK_COLORS
-  const targetMouseColor = theme === 'light' ? 'blue' : 'red'
+  const targetMouseColor = theme === 'light' ? 'rgba(0,0,0,0.0)' : 'rgba(255,255,255,0.0)'
   
   // Update colors array only if changed
   if (colors[0] !== targetColors[0]) {
@@ -255,7 +256,7 @@ const useCanvasAnimation = () => {
     // Initialize state
     const colors = [...LIGHT_COLORS]
     const points: Point[] = []
-    const mousePoint = new Point(-100, -100, 0, 'blue')
+    const mousePoint = new Point(-100, -100, 0, 'rgba(0,0,0,0)')
     const mouseState = { left: false, right: false }
     const fpsTracker = { times: [] as number[], current: 0 }
     let lastInteractionTime = 0

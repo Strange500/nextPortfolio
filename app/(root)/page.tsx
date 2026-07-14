@@ -10,7 +10,7 @@ export default async function Page() {
   const projects: Project[] = await loadProjects();
 
   return (
-    <section className="min-h-screen w-full bg-background selection:bg-primary/20">
+    <section className="min-h-screen w-full selection:bg-primary/20">
       {/* Hero Section */}
       <div className="container mx-auto flex min-h-[75vh] flex-col justify-center px-4 md:px-8">
         <div className="flex flex-col items-start max-w-3xl space-y-6">
