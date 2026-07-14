@@ -64,7 +64,7 @@ export const ProjectCard = async ({
     content = await getHtmlFromMarkdown(fixedReadme)
   }
   return (
-    <Card className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-background/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/30 hover:shadow-[0_0_30px_-15px_rgba(255,255,255,0.1)]">
+    <Card className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-border/80">
       <CardHeader className="p-6 pb-4">
         <div className="flex items-start justify-between gap-4">
           <CardTitle className="font-sans text-xl font-medium tracking-tight text-foreground">
@@ -78,13 +78,12 @@ export const ProjectCard = async ({
       </CardHeader>
       <CardContent className="flex flex-wrap gap-2 px-6 pb-4">
         {tags.map(tag => (
-          <Badge
+          <span
             key={tag}
-            variant="secondary"
-            className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground/80 transition-colors group-hover:text-foreground/80"
+            className="font-mono text-[10px] border-l-2 border-primary/40 pl-1.5 uppercase tracking-wider text-muted-foreground transition-colors group-hover:text-foreground/80"
           >
             {tag}
-          </Badge>
+          </span>
         ))}
       </CardContent>
       <CardFooter className="mt-auto p-6 pt-0">
