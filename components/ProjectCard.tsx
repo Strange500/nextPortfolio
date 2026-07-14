@@ -7,7 +7,6 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { ReadMeDialog } from '@/components/ReadMeDialog'
-import { Badge } from '@/components/ui/badge'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Github, Linkedin, ExternalLink } from 'lucide-react'
