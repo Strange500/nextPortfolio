@@ -5,6 +5,7 @@ import { ProjectCard } from '@/components/ProjectCard'
 import { education, techno } from '@/app/(root)/var'
 import { loadProjects, type Project } from '@/lib/loadProjects'
 import { ArrowRight } from 'lucide-react'
+import AsciiCube from '@/components/AsciiCube'
 
 export default async function Page() {
   const projects: Project[] = await loadProjects();
@@ -12,8 +13,8 @@ export default async function Page() {
   return (
     <section className="min-h-screen w-full selection:bg-primary/20">
       {/* Hero Section */}
-      <div className="container mx-auto flex min-h-[75vh] flex-col justify-center px-4 md:px-8">
-        <div className="flex flex-col items-start max-w-3xl space-y-6">
+      <div className="container mx-auto flex min-h-[75vh] items-center justify-between px-4 md:px-8 py-20 lg:py-0">
+        <div className="flex flex-col items-start max-w-3xl space-y-6 z-10">
           <Badge variant="outline" className="font-mono text-xs font-normal text-muted-foreground border-border/50">
             System Admin & Software Developer
           </Badge>
@@ -35,6 +36,9 @@ export default async function Page() {
             </Button>
             <SmallSocialBtn />
           </div>
+        </div>
+        <div className="hidden lg:flex justify-center items-center opacity-80 pl-8">
+          <AsciiCube />
         </div>
       </div>
 

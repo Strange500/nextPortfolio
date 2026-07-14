@@ -8,12 +8,14 @@
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
     };
+    ascii-cube-rs.url = "github:Strange500/ascii-cube-rs";
   };
 
   outputs = {
     self,
     nixpkgs,
     flake-utils,
+    ascii-cube-rs,
     ...
   }:
     (flake-utils.lib.eachDefaultSystem (system: let
@@ -31,6 +33,7 @@
         inherit buildInputs;
         shellHook = ''
           #!/usr/bin/env bash
+          ln -sfn ${ascii-cube-rs.packages.${system}.default} ./wasm-cube
         '';
       };
 
