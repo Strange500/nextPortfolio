@@ -114,14 +114,22 @@ export default function AsciiCube() {
           }
         }, 2000);
 
-        const animate = () => {
+        let lastTime = 0;
+        const animate = (time: number) => {
           if (!active) return;
+          
+          requestRef.current = requestAnimationFrame(animate);
+          
+          // Cap at ~60 FPS (16ms per frame) to prevent acceleration bursts after tab restore
+          // and to normalize speed on high refresh rate (144Hz+) monitors
+          if (time - lastTime < 16) return;
+          lastTime = time;
+          
           if (cubeInstance) {
             const rawFrame = cubeInstance.next_frame();
             // The WASM hardcodes default faces to white inline styles. Strip it so Tailwind dark/light mode works!
             setFrame(rawFrame.replaceAll('style="color:#ffffff"', ''));
           }
-          requestRef.current = requestAnimationFrame(animate);
         };
 
         requestRef.current = requestAnimationFrame(animate);
