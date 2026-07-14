@@ -21,7 +21,7 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
       const imageData = ctx.getImageData(0, 0, width, height);
       const data = imageData.data;
       
-      const chars = ['█', '▓', '▒', '░', '+', '-', '.', ' '];
+      const chars = ['█', '▓', '▒', '░'];
       let asciiArt = "";
       
       for (let y = 0; y < height; y++) {
@@ -35,9 +35,9 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
           if (alpha < 128) {
             asciiArt += " ";
           } else {
+            // Guarantee no holes for opaque pixels, use dense blocks for better silhouettes
             const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-            const charIndex = Math.floor((brightness / 255) * (chars.length - 1));
-            asciiArt += chars[charIndex];
+            asciiArt += brightness < 128 ? "█" : "▒";
           }
         }
         asciiArt += "\n";
@@ -121,7 +121,9 @@ export default function AsciiCube() {
         const animate = () => {
           if (!active) return;
           if (cubeInstance) {
-            setFrame(cubeInstance.next_frame());
+            const rawFrame = cubeInstance.next_frame();
+            // The WASM hardcodes default faces to white inline styles. Strip it so Tailwind dark/light mode works!
+            setFrame(rawFrame.replaceAll('style="color:#ffffff"', ''));
           }
           requestRef.current = requestAnimationFrame(animate);
         };
@@ -148,7 +150,7 @@ export default function AsciiCube() {
 
   return (
     <pre 
-      className="font-mono text-[8px] leading-none whitespace-pre text-muted-foreground"
+      className="font-mono text-[8px] font-bold leading-none whitespace-pre text-foreground"
       dangerouslySetInnerHTML={{ __html: frame }}
     />
   );
