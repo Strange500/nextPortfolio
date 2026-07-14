@@ -37,8 +37,16 @@ export default async function Page() {
             <SmallSocialBtn />
           </div>
         </div>
-        <div className="hidden lg:flex justify-center items-center opacity-80 pl-8">
+        <div className="hidden lg:flex flex-col justify-center items-center opacity-80 pl-8">
           <AsciiCube />
+          <a 
+            href="https://github.com/Strange500/ascii-cube-rs" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="mt-4 text-xs font-mono text-muted-foreground/60 hover:text-foreground transition-colors"
+          >
+            Powered by WebAssembly & Rust (ascii-cube-rs)
+          </a>
         </div>
       </div>
 

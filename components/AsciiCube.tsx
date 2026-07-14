@@ -67,19 +67,15 @@ export default function AsciiCube() {
         cubeInstance = new wasm.Cube(120, 60);
         cubeInstance.set_zoom(1500);
 
-        // Load requested SVGs
-        const techNames = ["NixOS", "Java EE", "Docker", "Rust", "React", "Git", "Angular"];
         const loadedLogos: string[] = [];
         
-        for (const name of techNames) {
-          const tech = technologies.find(t => t.name === name);
-          if (tech) {
-            try {
-              const ascii = await svgToAscii(tech.svg);
-              loadedLogos.push(ascii);
-            } catch (e) {
-              console.error(`Failed to load SVG for ${name}`, e);
-            }
+        // Load ALL SVGs/logos from the technologies data
+        for (const tech of technologies) {
+          try {
+            const ascii = await svgToAscii(tech.svg);
+            loadedLogos.push(ascii);
+          } catch (e) {
+            console.error(`Failed to load SVG for ${tech.name}`, e);
           }
         }
         
