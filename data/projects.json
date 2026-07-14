@@ -17,6 +17,14 @@
   },
   {
     "order": 3,
+    "title": "pixel-war",
+    "description": "A Web3 pixel-canvas decentralized application (dApp). Users can bid on-chain to own and color pixels, claim refunds when outbid, and mint ERC-721 snapshots of the grid. Built with Solidity and JavaScript.",
+    "tags": ["Web3", "Solidity", "JavaScript", "Blockchain"],
+    "links": ["https://github.com/Strange500/pixel-war"],
+    "readme": "https://raw.githubusercontent.com/Strange500/pixel-war/refs/heads/main/README.md"
+  },
+  {
+    "order": 4,
     "title": "HomeLab Infrastructure",
     "description": "A domestic server that hosts various services such as a JellyFin instance, a Gitea instance, and Pi-hole. The server runs Unraid as the host OS and uses Docker for containerization.",
     "tags": ["Unraid", "Docker", "Linux", "Self-hosting"],
@@ -24,7 +32,7 @@
     "readme": ""
   },
   {
-    "order": 4,
+    "order": 5,
     "title": "Bagarre.io",
     "description": "Bagarre.io is a real-time multiplayer Agar.io-like game developed in JavaScript, leveraging WebSockets for low-latency server-client communication.",
     "tags": ["JavaScript", "Node.js", "Socket.io"],
@@ -32,7 +40,7 @@
     "readme": "https://raw.githubusercontent.com/Strange500/BAGARRE.IO/refs/heads/main/README.md"
   },
   {
-    "order": 5,
+    "order": 6,
     "title": "GameList",
     "description": "A web application built with Next.js that provides an interactive interface for displaying information about video games using the RAWG API, containerized with Docker.",
     "tags": ["React", "Next.js", "TailwindCSS", "Docker"],

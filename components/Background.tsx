@@ -16,8 +16,6 @@ const WAVE_STRENGTH_MULTIPLIER = 2
 const ATTRACT_STRENGTH_MULTIPLIER = 1.5
 const WAVE_RADIUS_MULTIPLIER = 10
 const ATTRACT_RADIUS_MULTIPLIER = 20
-const TARGET_FPS = 60
-const FPS_ADJUST_INTERVAL = 500
 const THROTTLE_DELAY = 50
 const CANVAS_PADDING = 100
 // Slightly higher opacities so it's visible but still subtle
