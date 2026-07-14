@@ -17,8 +17,6 @@ export default function AsciiCube() {
         if (!active) return;
         
         cubeInstance = new wasm.Cube(80, 40);
-        cubeInstance.set_face_color(4, "#22c55e"); // Front face green (Tailwind text-green-500)
-        cubeInstance.set_face_color(2, "#3b82f6"); // Left face blue (Tailwind text-blue-500)
         
         const myLogo = 
 `  XXXX

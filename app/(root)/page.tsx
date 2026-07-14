@@ -67,7 +67,7 @@ export default async function Page() {
                   <h3 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Systems & IaC</h3>
                   <div className="flex flex-wrap gap-2">
                     {techno.filter(t => ['NixOS', 'Linux', 'Docker', 'Git'].includes(t.name)).map((tech, i) => (
-                      <Badge key={i} variant="secondary" className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-colors hover:bg-muted/80">
+                      <Badge key={i} variant="secondary" className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-all duration-300 hover:border-muted-foreground/50 hover:bg-muted/50 hover:text-foreground">
                         <img src={tech.light_svg} className="h-4 w-4 dark:hidden" alt={tech.name} />
                         <img src={tech.svg} className="hidden h-4 w-4 dark:block" alt={tech.name} />
                         {tech.name}
@@ -79,7 +79,7 @@ export default async function Page() {
                   <h3 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Backend & Testing</h3>
                   <div className="flex flex-wrap gap-2">
                     {techno.filter(t => ['Rust', 'Java EE', 'Spring Boot', 'Selenium', 'Postgres', 'Python'].includes(t.name)).map((tech, i) => (
-                      <Badge key={i} variant="secondary" className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-colors hover:bg-muted/80">
+                      <Badge key={i} variant="secondary" className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-all duration-300 hover:border-muted-foreground/50 hover:bg-muted/50 hover:text-foreground">
                         <img src={tech.light_svg} className="h-4 w-4 dark:hidden" alt={tech.name} />
                         <img src={tech.svg} className="hidden h-4 w-4 dark:block" alt={tech.name} />
                         {tech.name}
@@ -91,7 +91,7 @@ export default async function Page() {
                   <h3 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Web</h3>
                   <div className="flex flex-wrap gap-2">
                     {techno.filter(t => !['NixOS', 'Linux', 'Docker', 'Git', 'Rust', 'Java EE', 'Spring Boot', 'Selenium', 'Postgres', 'Python'].includes(t.name)).map((tech, i) => (
-                      <Badge key={i} variant="secondary" className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-colors hover:bg-muted/80">
+                      <Badge key={i} variant="secondary" className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-all duration-300 hover:border-muted-foreground/50 hover:bg-muted/50 hover:text-foreground">
                         <img src={tech.light_svg} className="h-4 w-4 dark:hidden" alt={tech.name} />
                         <img src={tech.svg} className="hidden h-4 w-4 dark:block" alt={tech.name} />
                         {tech.name}
