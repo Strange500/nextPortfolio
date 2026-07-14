@@ -23,7 +23,7 @@ export default async function Page() {
           </h1>
           
           <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
-            I&#39;m Benjamin Roget, an engineering student specializing in <span className="font-mono text-foreground/80 text-sm">systems engineering</span> and <span className="font-mono text-foreground/80 text-sm">declarative DevOps</span>. I focus on designing and executing robust automated integration tests and highly resilient backend infrastructures.
+            I am a software engineering student specializing in <span className="font-mono text-foreground/80 text-sm">robust backend development</span> and systems architecture. By combining a strong foundation in automated testing with declarative infrastructure, I build reliable, production-ready applications.
           </p>
           
           <div className="flex items-center gap-4 pt-4">
@@ -48,23 +48,10 @@ export default async function Page() {
               <h2 className="text-2xl font-medium tracking-tight text-foreground">Background</h2>
               <div className="prose prose-neutral dark:prose-invert text-muted-foreground">
                 <p>
-                  I am currently an engineering student at IMT Nord Europe, completing my studies through an apprenticeship. My core focus is architecting and executing comprehensive automated integration test strategies to ensure enterprise-grade reliability.
+                  I am an engineering student at IMT Nord Europe, currently completing my apprenticeship. I began my professional journey by architecting an enterprise automated testing framework, utilizing Java Spring Boot and Selenium. Building complex data-isolation systems and robust test suites gave me a deep understanding of software reliability and lifecycle management.
                 </p>
-                <div className="not-prose my-6 rounded-lg border border-primary/20 bg-primary/5 p-4">
-                  <div className="flex items-start gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                      <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-mono text-sm font-semibold text-foreground">Production Deployment</h4>
-                      <p className="mt-1 text-sm text-muted-foreground leading-snug">Successfully architected and deployed a Java Spring Boot rotation support application into production, ensuring robust system uptime and alignment for enterprise operations.</p>
-                    </div>
-                  </div>
-                </div>
                 <p>
-                  My expertise spans from systems programming in Rust to infrastructure as code (specifically NixOS) and containerization. I build tools that improve developer experience and guarantee system integrity.
+                  I am now bringing that quality-first perspective directly into application development, joining the core team to rewrite and modernize our internal framework modules. Whether I am writing systems-level Rust, deploying utility applications in Spring Boot, or maintaining reproducible environments with NixOS, my goal is always to engineer resilient, maintainable software.
                 </p>
               </div>
             </section>

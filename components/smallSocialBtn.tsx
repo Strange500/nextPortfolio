@@ -36,7 +36,7 @@ export const SmallSocialBtn = () => {
       </a>
 
       <a
-        href='https://list.qgroget.com/d/share/CV_Benjamin_Roget.pdf?sign=fTKn0PtoHrRUs8AXzpblrywYWVeot0-tWYh0DNpQYbk=:0'
+        href='/CV_Benjamin_Roget_v2.pdf'
         className='rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'
       >
         <svg
