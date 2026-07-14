@@ -21,7 +21,6 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
       const imageData = ctx.getImageData(0, 0, width, height);
       const data = imageData.data;
       
-      const chars = ['█', '▓', '▒', '░'];
       let asciiArt = "";
       
       for (let y = 0; y < height; y++) {
@@ -55,6 +54,7 @@ export default function AsciiCube() {
 
   useEffect(() => {
     let active = true;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let cubeInstance: any = null;
     let cycleInterval: NodeJS.Timeout | undefined;
 

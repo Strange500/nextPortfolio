@@ -27,7 +27,7 @@
         pnpm
       ];
       nativeBuildInputs = buildInputs;
-      npmDepsHash = "sha256-KTl+aW6zIHwqnyF0nC5GfOJn7/F/zZsRzkaHmEtWt30="; # <prefetch-npm-deps package-lock.json>
+      npmDepsHash = "sha256-kgxc5jsbOhchnU9Nfb7hGwozzjB/7y/F2xv5Yj0xk4w=";
     in {
       devShells.default = pkgs.mkShell {
         inherit buildInputs;
@@ -40,6 +40,9 @@
       packages.default = pkgs.buildNpmPackage {
         inherit pname version buildInputs npmDepsHash nativeBuildInputs;
         src = ./.;
+        prePatch = ''
+          ln -sfn ${ascii-cube-rs.packages.${system}.default} ./wasm-cube
+        '';
         postInstall = ''
           cp -rf dist/* $out/
         '';
