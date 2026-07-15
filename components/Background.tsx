@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { Circle, Quadtree } from '@timohausmann/quadtree-ts'
 import { useTheme } from 'next-themes'
 
 // Constants
@@ -25,13 +24,18 @@ const DARK_COLORS = ['rgba(255, 255, 255, 0.15)', 'rgba(255, 255, 255, 0.2)', 'r
 /**
  * Point class representing an animated dot in the canvas
  */
-class Point extends Circle {
+class Point {
+  x: number
+  y: number
+  r: number
   deg: number
   color: string
   speed: number
 
   constructor(x: number, y: number, deg: number, color: string) {
-    super({ x, y, r: RADIUS })
+    this.x = x
+    this.y = y
+    this.r = RADIUS
     this.deg = deg
     this.color = color
     this.speed = BASE_SPEED
@@ -92,38 +96,29 @@ function createRandomPoint(maxWidth: number, maxHeight: number, colors: string[]
 function initializeCanvas(
   canvas: HTMLCanvasElement,
   points: Point[],
-  quadtree: Quadtree<Point>,
   colors: string[]
-): { quadtree: Quadtree<Point>; numPoints: number } {
+): { numPoints: number } {
   canvas.width = canvas.clientWidth
   canvas.height = canvas.clientHeight
   // Drastically reduce points (e.g. 1920 width -> 128 points, max 150)
   const numPoints = Math.min(Math.floor(canvas.width / 15), 150)
 
-  const newQuadtree = new Quadtree<Point>({
-    width: canvas.width,
-    height: canvas.height,
-    maxObjects: MAX_OBJECTS,
-    maxLevels: MAX_LEVELS
-  })
-
   points.length = 0
   for (let i = 0; i < numPoints; i++) {
     const point = createRandomPoint(canvas.width, canvas.height, colors)
-    newQuadtree.insert(point)
     points.push(point)
   }
 
-  return { quadtree: newQuadtree, numPoints }
+  return { numPoints }
 }
 
 /**
  * Apply wave effect radiating from a point
  */
-function applyWaveEffect(mousePoint: Point, quadtree: Quadtree<Point>) {
+function applyWaveEffect(mousePoint: Point, points: Point[]) {
   const waveRadius = MAX_DISTANCE_SQUARED * WAVE_RADIUS_MULTIPLIER
 
-  quadtree.retrieve(mousePoint).forEach(point => {
+  points.forEach(point => {
     const dx = point.x - mousePoint.x
     const dy = point.y - mousePoint.y
     const distanceSquared = point.distanceSquaredTo(mousePoint)
@@ -142,10 +137,10 @@ function applyWaveEffect(mousePoint: Point, quadtree: Quadtree<Point>) {
 /**
  * Apply attraction effect towards a point
  */
-function applyAttractionEffect(mousePoint: Point, quadtree: Quadtree<Point>) {
+function applyAttractionEffect(mousePoint: Point, points: Point[]) {
   const attractRadius = MAX_DISTANCE_SQUARED * ATTRACT_RADIUS_MULTIPLIER
 
-  quadtree.retrieve(mousePoint).forEach(point => {
+  points.forEach(point => {
     const dx = mousePoint.x - point.x
     const dy = mousePoint.y - point.y
     const distanceSquared = point.distanceSquaredTo(mousePoint)
@@ -166,17 +161,14 @@ function applyAttractionEffect(mousePoint: Point, quadtree: Quadtree<Point>) {
  */
 function renderConnections(
   points: Point[],
-  quadtree: Quadtree<Point>,
+  mousePoint: Point,
   context: CanvasRenderingContext2D
 ) {
   const drawnConnections = new Set<string>()
+  const allPoints = [...points, mousePoint]
 
   points.forEach(point => {
-    const neighbors = quadtree.retrieve(
-      new Circle({ x: point.x, y: point.y, r: MAX_DISTANCE })
-    )
-
-    neighbors.forEach(neighbor => {
+    allPoints.forEach(neighbor => {
       if (neighbor === point) return
 
       const distSquared = point.distanceSquaredTo(neighbor)
@@ -205,19 +197,13 @@ function renderConnections(
  */
 function updatePoints(
   points: Point[],
-  quadtree: Quadtree<Point>,
   canvas: HTMLCanvasElement,
   context: CanvasRenderingContext2D
-): Quadtree<Point> {
-  quadtree.clear()
-
+) {
   points.forEach(point => {
     point.update(canvas.width, canvas.height)
     point.render(context)
-    quadtree.insert(point)
   })
-
-  return quadtree
 }
 
 /**
@@ -258,23 +244,15 @@ const useCanvasAnimation = () => {
     const mousePoint = new Point(-100, -100, 0, 'rgba(0,0,0,0)')
     const mouseState = { left: false, right: false }
     let lastInteractionTime = 0
-    let quadtree = new Quadtree<Point>({
-      width: canvas.width,
-      height: canvas.height,
-      maxObjects: MAX_OBJECTS,
-      maxLevels: MAX_LEVELS
-    })
 
     // Initialize canvas
     canvas.width = canvas.clientWidth + CANVAS_PADDING
     canvas.height = canvas.clientHeight + CANVAS_PADDING
-    const initResult = initializeCanvas(canvas, points, quadtree, colors)
-    quadtree = initResult.quadtree
+    initializeCanvas(canvas, points, colors)
 
     // Canvas resize handler
     const handleResize = () => {
-      const result = initializeCanvas(canvas, points, quadtree, colors)
-      quadtree = result.quadtree
+      initializeCanvas(canvas, points, colors)
     }
 
     const resizeObserver = new ResizeObserver(handleResize)
@@ -318,22 +296,20 @@ const useCanvasAnimation = () => {
       context.clearRect(0, 0, canvas.width, canvas.height)
 
       // Update and render points
-      quadtree = updatePoints(points, quadtree, canvas, context)
+      updatePoints(points, canvas, context)
 
       // Apply mouse interactions (throttled)
       if (timestamp - lastInteractionTime > THROTTLE_DELAY) {
         if (mouseState.right) {
-          applyAttractionEffect(mousePoint, quadtree)
+          applyAttractionEffect(mousePoint, points)
         } else if (mouseState.left) {
-          applyWaveEffect(mousePoint, quadtree)
+          applyWaveEffect(mousePoint, points)
         }
         lastInteractionTime = timestamp
       }
 
       // Render connections
-      quadtree.insert(mousePoint)
-      renderConnections(points, quadtree, context)
-      quadtree.remove(mousePoint)
+      renderConnections(points, mousePoint, context)
 
       requestAnimationFrame(animate)
     }

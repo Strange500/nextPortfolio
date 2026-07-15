@@ -31,10 +31,7 @@ function replaceBrokenMarkdownLinks(content: string, readmeUrl: string) {
   })
 }
 
-async function getHtmlFromMarkdown(content: string | undefined) {
-  if (!content) return ''
-  return marked.parse(content)
-}
+
 
 interface ProjectCardProps {
   title: string
@@ -60,7 +57,7 @@ export const ProjectCard = async ({
         .then(res => res.text())
         .catch(() => null)) || ''
     fixedReadme = replaceBrokenMarkdownLinks(contentString, readme)
-    content = await getHtmlFromMarkdown(fixedReadme)
+    content = fixedReadme ? await marked.parse(fixedReadme) : ''
   }
   return (
     <Card className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-border/80">
