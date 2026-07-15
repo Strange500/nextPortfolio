@@ -48,9 +48,30 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
   });
 }
 
+const BASELINE_SPEED = { da: 0.0075, db: 0.005, dc: 0.01 };
+
 export default function AsciiCube() {
   const [frame, setFrame] = useState<string>("");
   const requestRef = useRef<number | null>(null);
+  
+  // Interaction state
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const cubeRef = useRef<any>(null);
+  const isDragging = useRef(false);
+  const previousMousePosition = useRef({ x: 0, y: 0 });
+  const rotationSpeed = useRef({ ...BASELINE_SPEED });
+
+  useEffect(() => {
+    const handleGlobalUp = () => {
+      isDragging.current = false;
+    };
+    window.addEventListener('pointerup', handleGlobalUp);
+    window.addEventListener('pointercancel', handleGlobalUp);
+    return () => {
+      window.removeEventListener('pointerup', handleGlobalUp);
+      window.removeEventListener('pointercancel', handleGlobalUp);
+    };
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -73,6 +94,7 @@ export default function AsciiCube() {
         if (!active) return;
         
         cubeInstance = new wasm.Cube(120, 60);
+        cubeRef.current = cubeInstance;
         cubeInstance.set_zoom(1500);
 
         const loadedLogos: (string | HTMLVideoElement)[] = [];
@@ -197,6 +219,18 @@ export default function AsciiCube() {
           }
           
           if (cubeInstance) {
+            // Apply friction towards baseline speed
+            if (!isDragging.current) {
+               rotationSpeed.current.da += (BASELINE_SPEED.da - rotationSpeed.current.da) * 0.05;
+               rotationSpeed.current.db += (BASELINE_SPEED.db - rotationSpeed.current.db) * 0.05;
+               rotationSpeed.current.dc += (BASELINE_SPEED.dc - rotationSpeed.current.dc) * 0.05;
+            }
+
+            cubeInstance.set_rotation_speed(
+               rotationSpeed.current.da,
+               rotationSpeed.current.db,
+               rotationSpeed.current.dc
+            );
 
             const rawFrame = cubeInstance.next_frame();
             // The WASM hardcodes default faces to white inline styles. Strip it so Tailwind dark/light mode works!
@@ -224,9 +258,45 @@ export default function AsciiCube() {
     };
   }, []);
 
+  const handlePointerDown = (e: React.PointerEvent) => {
+    console.log("Pointer Down!");
+    isDragging.current = true;
+    previousMousePosition.current = { x: e.clientX, y: e.clientY };
+    if (e.target instanceof Element) {
+      e.target.setPointerCapture(e.pointerId);
+    }
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging.current) return;
+    const deltaX = e.clientX - previousMousePosition.current.x;
+    const deltaY = e.clientY - previousMousePosition.current.y;
+    
+    // Modify rotation speed based on drag distance
+    rotationSpeed.current.da += deltaY * 0.001; 
+    rotationSpeed.current.db -= deltaX * 0.001; // Cache bust: using new WASM with Quaternions!
+    
+    console.log("Dragging! New speeds:", rotationSpeed.current.da, rotationSpeed.current.db);
+    
+    previousMousePosition.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    console.log("Pointer Up!");
+    isDragging.current = false;
+    if (e.target instanceof Element) {
+      e.target.releasePointerCapture(e.pointerId);
+    }
+  };
+
   return (
     <pre 
-      className="font-mono text-[8px] font-bold leading-none whitespace-pre text-foreground"
+      className="relative z-20 font-mono text-[8px] font-bold leading-none whitespace-pre text-foreground cursor-grab active:cursor-grabbing select-none"
+      style={{ touchAction: 'none' }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
       dangerouslySetInnerHTML={{ __html: frame }}
     />
   );

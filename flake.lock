@@ -7,17 +7,14 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1784143770,
-        "narHash": "sha256-77+mFxEFv4mnq+mejXh8tpYLXMdRO7D438byz1vtAps=",
-        "owner": "Strange500",
-        "repo": "ascii-cube-rs",
-        "rev": "1e0f33d7c009973d718fc3d47851b1b646fd6e8c",
-        "type": "github"
+        "lastModified": 1784148152,
+        "narHash": "sha256-6sebLoVmeVnI69TIQyNZ1z4bpt1Ep2N8U71z0KrjYUU=",
+        "path": "/home/strange/Documents/ascii-cube-rs",
+        "type": "path"
       },
       "original": {
-        "owner": "Strange500",
-        "repo": "ascii-cube-rs",
-        "type": "github"
+        "path": "/home/strange/Documents/ascii-cube-rs",
+        "type": "path"
       }
     },
     "flake-utils": {

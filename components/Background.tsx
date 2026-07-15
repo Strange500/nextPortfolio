@@ -4,8 +4,6 @@ import { useEffect, useRef } from 'react'
 import { useTheme } from 'next-themes'
 
 // Constants
-const MAX_OBJECTS = 10
-const MAX_LEVELS = 3
 const MAX_DISTANCE = 120
 const MAX_DISTANCE_SQUARED = MAX_DISTANCE * MAX_DISTANCE
 const RADIUS = 1.5
