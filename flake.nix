@@ -8,7 +8,7 @@
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
     };
-    ascii-cube-rs.url = "path:/home/strange/Documents/ascii-cube-rs";
+    ascii-cube-rs.url = "github:Strange500/ascii-cube-rs";
   };
 
   outputs = {
