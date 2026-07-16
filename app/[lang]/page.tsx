@@ -54,6 +54,11 @@ export default async function Page({
                 {t.hero.resume}
               </a>
             </Button>
+            <Button asChild variant="outline" className="rounded-full px-6 border-primary/20 hover:bg-primary/5">
+              <a href={`/${lang}/blog`}>
+                {t.hero.blog}
+              </a>
+            </Button>
             <SmallSocialBtn />
           </div>
         </div>

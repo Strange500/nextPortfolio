@@ -12,6 +12,7 @@ export const dictionaries = {
       description_2: " and systems tooling. By combining rigorous automated testing with declarative environments (NixOS, Docker), I build reliable, maintainable applications.",
       cta: "View Architecture & Projects",
       resume: "Download Resume",
+      blog: "Read Blog",
       powered_by: "Powered by WebAssembly & Rust (ascii-cube-rs)"
     },
     about: {
@@ -67,6 +68,7 @@ export const dictionaries = {
       description_2: " et l'outillage système. En combinant tests automatisés et environnements déclaratifs (NixOS, Docker), je conçois des applications fiables et maintenables.",
       cta: "Voir les Projets",
       resume: "Télécharger mon CV",
+      blog: "Lire le Blog",
       powered_by: "Propulsé par WebAssembly & Rust (ascii-cube-rs)"
     },
     about: {

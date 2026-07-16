@@ -41,7 +41,7 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
         }
         asciiArt += "\n";
       }
-      resolve(asciiArt);
+      resolve(asciiArt.trimEnd());
     };
     img.onerror = reject;
     img.src = imageUrl;
@@ -210,6 +210,7 @@ export default function AsciiCube() {
               }
               asciiArt += "\n";
             }
+            asciiArt = asciiArt.trimEnd();
             
             for (let i = 0; i < 6; i++) {
               if (faceSources[i] === video) {
