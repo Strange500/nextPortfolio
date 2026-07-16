@@ -7,7 +7,6 @@ export interface Project {
   description: string;
   tags: string[];
   links: string[];
-  readme: string;
 }
 
 export async function loadProjects(lang: string = 'en'): Promise<Project[]> {

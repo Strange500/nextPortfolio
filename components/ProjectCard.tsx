@@ -6,11 +6,9 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import { ReadMeDialog } from '@/components/ReadMeDialog'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Github, Linkedin, ExternalLink } from 'lucide-react'
-import { MDXRemote } from 'next-mdx-remote/rsc'
 
 function getLinkConfig(url: string) {
   if (url.includes('github.com')) return { icon: <Github size={16} />, text: 'GitHub' }
@@ -18,45 +16,19 @@ function getLinkConfig(url: string) {
   return { icon: <ExternalLink size={16} />, text: 'Visit' }
 }
 
-function fixImgLink(relativeLink: string, readmeUrl: string) {
-  const baseUrl = readmeUrl.split('/').slice(0, -1).join('/')
-  return `${baseUrl}/${relativeLink.replace('./', '')}`
-}
-
-function replaceBrokenMarkdownLinks(content: string, readmeUrl: string) {
-  return content.replace(/\[.*\]\(((\.\/.*)|([a-zA-Z]*\/.*))\)/g, match => {
-    const tmp = fixImgLink(match.split('](')[1].split(')')[0], readmeUrl)
-    console.log(match.split('](')[0] + `](${tmp})`)
-    return match.split('](')[0] + `](${tmp})`
-  })
-}
-
 interface ProjectCardProps {
   title: string
   description: string
   tags: string[]
   links: string[]
-  readme: string | undefined
 }
 
-export const ProjectCard = async ({
+export const ProjectCard = ({
   title,
   description,
   tags,
-  links,
-  readme
+  links
 }: ProjectCardProps) => {
-  let content: React.ReactNode = null
-  let fixedReadme = ''
-  let contentString = ''
-  if (readme) {
-    contentString =
-      (await fetch(readme)
-        .then(res => res.text())
-        .catch(() => null)) || ''
-    fixedReadme = replaceBrokenMarkdownLinks(contentString, readme)
-    content = fixedReadme ? <MDXRemote source={fixedReadme} /> : null
-  }
   return (
     <Card className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-border/80">
       <CardHeader className="p-6 pb-4">
@@ -64,7 +36,6 @@ export const ProjectCard = async ({
           <CardTitle className="font-sans text-xl font-medium tracking-tight text-foreground">
             {title}
           </CardTitle>
-          {content !== null && <ReadMeDialog content={content} title={title} />}
         </div>
         <CardDescription className="mt-3 line-clamp-3 font-sans text-sm leading-relaxed text-muted-foreground">
           {description}
