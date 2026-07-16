@@ -8,6 +8,16 @@ import { ArrowRight } from 'lucide-react'
 import AsciiCube from '@/components/AsciiCube'
 import { dictionaries } from '@/data/dictionaries'
 
+function calculateAge(birthDate: Date): number {
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const m = today.getMonth() - birthDate.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+}
+
 export async function generateStaticParams() {
   return [{ lang: 'en' }, { lang: 'fr' }];
 }
@@ -23,6 +33,9 @@ export default async function Page({
   // Pass lang to loadProjects
   const projects: Project[] = await loadProjects(lang);
   const education = eduData[lang as keyof typeof eduData] || eduData.en;
+  
+  const age = calculateAge(new Date('2004-08-12'));
+  const description1 = t.hero.description_1.replace('{age}', age.toString());
 
   return (
     <section className="min-h-screen w-full selection:bg-primary/20">
@@ -33,12 +46,12 @@ export default async function Page({
             {t.hero.badge}
           </Badge>
           
-          <h1 className="font-sans text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="font-sans text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl whitespace-pre-line">
             {t.hero.title_start}<span className="font-mono text-primary">{t.hero.title_highlight}</span>{t.hero.title_end}
           </h1>
           
           <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
-            {t.hero.description_1}<span className="font-mono text-foreground/80 text-sm">{t.hero.description_highlight}</span>{t.hero.description_2}
+            {description1}<span className="font-mono text-foreground/80 text-sm">{t.hero.description_highlight}</span>{t.hero.description_2}
           </p>
           
           <div className="flex items-center gap-4 pt-4">

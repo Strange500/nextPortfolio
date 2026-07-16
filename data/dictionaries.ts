@@ -4,10 +4,10 @@ export const dictionaries = {
   en: {
     hero: {
       badge: "System Admin & Software Developer",
-      title_start: "Building ",
-      title_highlight: "resilient systems",
-      title_end: " and scalable architecture.",
-      description_1: "I am a software engineering student specializing in ",
+      title_start: "Hi, I'm ",
+      title_highlight: "Benjamin Roget",
+      title_end: ".\nBuilding resilient systems and scalable architecture.",
+      description_1: "I am a {age}-year-old software engineering student specializing in ",
       description_highlight: "robust backend development",
       description_2: " and systems architecture. By combining a strong foundation in automated testing with declarative infrastructure, I build reliable, production-ready applications.",
       cta: "View Architecture & Projects",
@@ -33,10 +33,10 @@ export const dictionaries = {
   fr: {
     hero: {
       badge: "Administrateur Système & Développeur Logiciel",
-      title_start: "Création de ",
-      title_highlight: "systèmes résilients",
-      title_end: " et d'architectures évolutives.",
-      description_1: "Je suis étudiant en génie logiciel, spécialisé dans le ",
+      title_start: "Bonjour, je suis ",
+      title_highlight: "Benjamin Roget",
+      title_end: ".\nCréation de systèmes résilients et d'architectures évolutives.",
+      description_1: "Je suis un étudiant en génie logiciel de {age} ans, spécialisé dans le ",
       description_highlight: "développement backend robuste",
       description_2: " et l'architecture système. En combinant de solides bases en tests automatisés et une infrastructure déclarative, je conçois des applications fiables et prêtes pour la production.",
       cta: "Voir l'Architecture & les Projets",
