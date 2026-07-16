@@ -27,13 +27,23 @@ export const dictionaries = {
       title: "Experience",
       jobs: [
         {
-          role: "Backend Engineering Apprentice",
-          company: "[Add Company Name]",
-          date: "[Add Dates, e.g., 2023 - Present]",
+          role: "Software Developer Apprentice",
+          company: "Numih France (DOGRH)",
+          date: "Sept 2025 – Present",
           bullets: [
-            "Architected an enterprise automated testing framework utilizing Java Spring Boot and Selenium.",
-            "Designed complex data-isolation systems and robust test suites, improving lifecycle management.",
-            "Joined the core development team to rewrite and modernize legacy internal framework modules."
+            "Architected and executed the automated integration test suite for the Hôpital Numérique platform.",
+            "Massively refactored the test architecture to unify execution via API or maven, optimizing developer workflow.",
+            "Created abstractions and data isolation tools via Jenkins for reproducible test environments.",
+            "Developed and deployed a Spring Boot internal tool to production."
+          ]
+        },
+        {
+          role: "Fullstack Developer Intern",
+          company: "Ekeep-IT",
+          date: "April 2025 – June 2025",
+          bullets: [
+            "Developed a web application within an Agile environment.",
+            "Utilized Spring Boot for the backend and Next.js for the frontend."
           ]
         }
       ]
@@ -72,13 +82,23 @@ export const dictionaries = {
       title: "Expérience",
       jobs: [
         {
-          role: "Apprenti Ingénieur Backend",
-          company: "[Ajouter le nom de l'entreprise]",
-          date: "[Ajouter les dates, ex: 2023 - Présent]",
+          role: "Développeur Logiciel (Apprenti)",
+          company: "Numih France (DOGRH)",
+          date: "Sept 2025 – Présent",
           bullets: [
-            "Architecture d'un framework de tests automatisés d'entreprise avec Java Spring Boot et Selenium.",
-            "Conception de systèmes complexes d'isolation de données et de suites de tests robustes.",
-            "Intégration à l'équipe de développement principale pour réécrire et moderniser les modules internes."
+            "Architecture et exécution de la suite de tests d'intégration automatisés pour la plateforme Hôpital Numérique.",
+            "Refactoring massif de l'architecture de test permettant l'exécution unifiée via API ou mvn test.",
+            "Création d'abstractions et d'outils d'isolation de données via Jenkins pour des tests reproductibles.",
+            "Développement et déploiement en production d'un outil interne Spring Boot."
+          ]
+        },
+        {
+          role: "Développeur Fullstack (Stagiaire)",
+          company: "Ekeep-IT",
+          date: "Avril 2025 – Juin 2025",
+          bullets: [
+            "Développement d'une application web en environnement et rituels Agile.",
+            "Utilisation de Spring Boot pour le backend et Next.js (React) pour le frontend."
           ]
         }
       ]
