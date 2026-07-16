@@ -8,6 +8,7 @@ import { loadProjects, type Project } from '@/lib/loadProjects'
 import { ArrowRight } from 'lucide-react'
 import AsciiCube from '@/components/AsciiCube'
 import { dictionaries } from '@/data/dictionaries'
+import Link from 'next/link'
 
 export async function generateStaticParams() {
   return [{ lang: 'en' }, { lang: 'fr' }];
@@ -55,9 +56,9 @@ export default async function Page({
               </a>
             </Button>
             <Button asChild variant="outline" className="rounded-full px-6 border-primary/20 hover:bg-primary/5">
-              <a href={`/${lang}/blog`}>
+              <Link href={`/${lang}/blog`}>
                 {t.hero.blog}
-              </a>
+              </Link>
             </Button>
             <SmallSocialBtn />
           </div>

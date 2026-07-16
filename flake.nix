@@ -78,6 +78,10 @@
               }
             ];
             root = "${pkg}";
+            extraConfig = ''
+              port_in_redirect off;
+              absolute_redirect off;
+            '';
           };
         };
       };
