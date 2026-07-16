@@ -5,11 +5,11 @@ export const dictionaries = {
     hero: {
       badge: "Benjamin Roget — Software & Systems",
       title_start: "Building ",
-      title_highlight: "resilient systems",
-      title_end: "\nand scalable architecture.",
-      description_1: "I am a Backend Engineer specializing in ",
-      description_highlight: "high-performance architecture",
-      description_2: ". By combining rigorous automated testing with declarative infrastructure, I ship code that stays up when it counts.",
+      title_highlight: "robust backend systems",
+      title_end: "\nand declarative infrastructure.",
+      description_1: "Software Engineer focused on ",
+      description_highlight: "backend development",
+      description_2: " and systems tooling. By combining rigorous automated testing with declarative environments (NixOS, Docker), I build reliable, maintainable applications.",
       cta: "View Architecture & Projects",
       resume: "Download Resume",
       powered_by: "Powered by WebAssembly & Rust (ascii-cube-rs)"
@@ -60,11 +60,11 @@ export const dictionaries = {
     hero: {
       badge: "Benjamin Roget — Logiciels & Systèmes",
       title_start: "Conception de ",
-      title_highlight: "systèmes robustes",
-      title_end: "\net d'architectures scalables.",
-      description_1: "Ingénieur Backend spécialisé dans les ",
-      description_highlight: "architectures haute performance",
-      description_2: ". En alliant tests automatisés et infrastructure déclarative, je conçois des applications taillées pour la production.",
+      title_highlight: "systèmes backend robustes",
+      title_end: "\net d'infrastructures déclaratives.",
+      description_1: "Ingénieur Logiciel axé sur le ",
+      description_highlight: "développement backend",
+      description_2: " et l'outillage système. En combinant tests automatisés et environnements déclaratifs (NixOS, Docker), je conçois des applications fiables et maintenables.",
       cta: "Voir les Projets",
       resume: "Télécharger mon CV",
       powered_by: "Propulsé par WebAssembly & Rust (ascii-cube-rs)"
