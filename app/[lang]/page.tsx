@@ -2,21 +2,12 @@ import { SmallSocialBtn } from '@/components/smallSocialBtn'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ProjectCard } from '@/components/ProjectCard'
-import { education as eduData, techno } from '@/app/[lang]/var'
+import { education as eduData } from '@/data/education'
+import { technologies as techno } from '@/data/technologies'
 import { loadProjects, type Project } from '@/lib/loadProjects'
 import { ArrowRight } from 'lucide-react'
 import AsciiCube from '@/components/AsciiCube'
 import { dictionaries } from '@/data/dictionaries'
-
-function calculateAge(birthDate: Date): number {
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const m = today.getMonth() - birthDate.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-    age--;
-  }
-  return age;
-}
 
 export async function generateStaticParams() {
   return [{ lang: 'en' }, { lang: 'fr' }];
@@ -34,9 +25,6 @@ export default async function Page({
   const projects: Project[] = await loadProjects(lang);
   const education = eduData[lang as keyof typeof eduData] || eduData.en;
   
-  const age = calculateAge(new Date('2004-08-12'));
-  const description1 = t.hero.description_1.replace('{age}', age.toString());
-
   return (
     <section className="min-h-screen w-full selection:bg-primary/20">
       {/* Hero Section */}
@@ -51,7 +39,7 @@ export default async function Page({
           </h1>
           
           <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
-            {description1}<span className="font-mono text-foreground/80 text-sm">{t.hero.description_highlight}</span>{t.hero.description_2}
+            {t.hero.description_1}<span className="font-mono text-foreground/80 text-sm">{t.hero.description_highlight}</span>{t.hero.description_2}
           </p>
           
           <div className="flex flex-wrap items-center gap-4 pt-4">

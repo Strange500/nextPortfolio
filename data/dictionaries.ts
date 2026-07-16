@@ -3,13 +3,13 @@ export type Dictionary = typeof dictionaries.en;
 export const dictionaries = {
   en: {
     hero: {
-      badge: "Software Developer & System Admin",
-      title_start: "Hi, I'm ",
-      title_highlight: "Benjamin Roget",
-      title_end: ".\nBuilding resilient systems and scalable architecture.",
-      description_1: "I am a {age}-year-old Backend Engineer specializing in ",
-      description_highlight: "robust backend development",
-      description_2: " and systems architecture. By combining a strong foundation in automated testing with declarative infrastructure, I build reliable, production-ready applications.",
+      badge: "Benjamin Roget — Software & Systems",
+      title_start: "Building ",
+      title_highlight: "resilient systems",
+      title_end: "\nand scalable architecture.",
+      description_1: "I am a Backend Engineer specializing in ",
+      description_highlight: "high-performance architecture",
+      description_2: ". By combining rigorous automated testing with declarative infrastructure, I ship code that stays up when it counts.",
       cta: "View Architecture & Projects",
       resume: "Download Resume",
       powered_by: "Powered by WebAssembly & Rust (ascii-cube-rs)"
@@ -48,13 +48,13 @@ export const dictionaries = {
   },
   fr: {
     hero: {
-      badge: "Développeur Logiciel & Administrateur Système",
-      title_start: "Bonjour, je suis ",
-      title_highlight: "Benjamin Roget",
-      title_end: ".\nCréation de systèmes résilients et d'architectures évolutives.",
-      description_1: "Je suis un Ingénieur Backend de {age} ans, spécialisé dans le ",
-      description_highlight: "développement backend robuste",
-      description_2: " et l'architecture système. En combinant de solides bases en tests automatisés et une infrastructure déclarative, je conçois des applications fiables et prêtes pour la production.",
+      badge: "Benjamin Roget — Logiciels & Systèmes",
+      title_start: "Conception de ",
+      title_highlight: "systèmes robustes",
+      title_end: "\net d'architectures scalables.",
+      description_1: "Ingénieur Backend spécialisé dans les ",
+      description_highlight: "architectures haute performance",
+      description_2: ". En alliant tests automatisés et infrastructure déclarative, je conçois des applications taillées pour la production.",
       cta: "Voir les Projets",
       resume: "Télécharger mon CV",
       powered_by: "Propulsé par WebAssembly & Rust (ascii-cube-rs)"
