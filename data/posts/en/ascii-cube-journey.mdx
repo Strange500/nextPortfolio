@@ -1,0 +1,61 @@
+---
+title: "From Bitcoin CLI to WebAssembly: The Journey of Ascii-Cube"
+date: "2026-07-16"
+summary: "How I transformed a native Rust CLI application into a high-performance WebAssembly component for my portfolio, diving deep into NixOS, Quaternions, and WASM."
+tags: ["Rust", "WebAssembly", "Mathematics", "Nix"]
+---
+
+# The Origins: A Bitcoin-Powered Terminal Cube
+
+The `ascii-cube-rs` project didn't start as a web component. Back in January 2026, it was a native Rust CLI application. 
+
+The original architecture was bizarre but fun: it was a 3D ASCII cube running in the terminal whose **rotation speed was synchronized in real-time with the live price of Bitcoin**. If the market was volatile, the cube spun out of control!
+
+While fun, I eventually realized this engine had much more potential as a visual centerpiece for my web portfolio.
+
+---
+
+# The Great WebAssembly Pivot
+
+In mid-July 2026, I made the architectural decision to strip out the native CLI and network dependencies (goodbye Bitcoin fetching) and compile the pure mathematical rendering engine to **WebAssembly (WASM)**.
+
+<Alert variant="info">
+  **Architecture Choice:** I chose `wasm-bindgen` to generate the JavaScript bindings. This allowed me to easily instantiate the Rust `Cube` struct directly inside my Next.js React components.
+</Alert>
+
+### Reproducible Builds with Nix
+Because compiling Rust to WASM requires specific targets and toolchains, I introduced a `flake.nix`. This declarative approach ensures that my build environment is 100% reproducible. Anyone can clone the repo and run `nix build` without wrestling with `rustup` targets.
+
+---
+
+# Rendering SVG Logos in 3D
+
+The next major challenge was making the cube showcase my skills. I introduced `FaceConfig` into the Rust engine, allowing each of the 6 faces of the cube to hold distinct string buffers.
+
+To optimize performance, I also added an `is_face_visible` method. Since the WASM module computes the face normals, it can tell JavaScript which faces are facing away from the camera. This allows the JS thread to cycle logos **only** on hidden faces, creating seamless transitions!
+
+---
+
+# The Math Upgrade: Battling Gimbal Lock
+
+As soon as I added interactive mouse-dragging to the cube, I ran into a classic 3D graphics problem: **Gimbal Lock**.
+
+Originally, the rotation was calculated using simple Euler angles (pitch, yaw, roll). When dragging the cube across multiple axes, the axes would align and the cube would spin weirdly. 
+
+**The Solution:**
+I refactored the physics engine. First, I introduced a strict `RotationMatrix`, but ultimately replaced it entirely with **Quaternions** on July 15th. Quaternions calculate rotations on a 4D sphere, completely eliminating gimbal lock and resulting in the buttery-smooth dragging you see on the homepage today.
+
+```rust
+// A snippet of the refactored WASM interface
+#[wasm_bindgen]
+impl Cube {
+    pub fn set_rotation_speed(&mut self, da: f32, db: f32, dc: f32) {
+        // Quaternions at work!
+        self.angular_velocity = Quaternion::from_euler(da, db, dc);
+    }
+}
+```
+
+# Conclusion
+
+Building `ascii-cube-rs` was an incredible exercise in bridging low-level system languages with modern web frameworks. The resulting bundle is tiny, executes at native speeds, and provides a deeply interactive experience!

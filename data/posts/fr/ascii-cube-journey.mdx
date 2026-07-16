@@ -1,0 +1,61 @@
+---
+title: "Du CLI Bitcoin à WebAssembly : La conception de Ascii-Cube"
+date: "2026-07-16"
+summary: "Comment j'ai transformé une application CLI native en Rust en un composant WebAssembly ultra-performant pour mon portfolio, avec une plongée dans NixOS, les Quaternions et WASM."
+tags: ["Rust", "WebAssembly", "Mathématiques", "Nix"]
+---
+
+# Les Origines : Un cube dans le terminal synchronisé au Bitcoin
+
+Le projet `ascii-cube-rs` n'a pas commencé comme un composant web. En janvier 2026, c'était une application CLI native en Rust. 
+
+L'architecture initiale était un peu folle mais très amusante : c'était un cube 3D en ASCII qui tournait dans le terminal, dont la **vitesse de rotation était synchronisée en temps réel avec le cours du Bitcoin**. Quand le marché s'emballait, le cube tournait à toute vitesse !
+
+Bien que très fun, j'ai fini par réaliser que ce moteur de rendu avait beaucoup plus de potentiel en tant que pièce maîtresse visuelle pour mon portfolio web.
+
+---
+
+# Le grand virage vers WebAssembly
+
+À la mi-juillet 2026, j'ai pris la décision architecturale de retirer le CLI natif et les dépendances réseau (adieu la récupération du prix du Bitcoin) pour compiler ce pur moteur de rendu mathématique en **WebAssembly (WASM)**.
+
+<Alert variant="info">
+  **Choix d'architecture :** J'ai choisi `wasm-bindgen` pour générer les liaisons JavaScript (bindings). Cela m'a permis d'instancier facilement la structure Rust `Cube` directement dans mes composants React sous Next.js.
+</Alert>
+
+### Des builds reproductibles avec Nix
+Étant donné que la compilation de Rust vers WASM nécessite des cibles et des chaînes d'outils spécifiques, j'ai introduit un `flake.nix`. Cette approche déclarative garantit que mon environnement de compilation est reproductible à 100%. N'importe qui peut cloner le dépôt et lancer `nix build` sans se battre avec les cibles `rustup`.
+
+---
+
+# Rendu de logos SVG en 3D
+
+Le défi suivant a été de faire en sorte que le cube mette en valeur mes compétences. J'ai introduit `FaceConfig` dans le moteur Rust, permettant à chacune des 6 faces du cube de contenir des buffers de texte distincts.
+
+Pour optimiser les performances, j'ai également ajouté une méthode `is_face_visible`. Comme le module WASM calcule les normales des faces, il est capable d'indiquer à JavaScript quelles faces sont tournées vers l'arrière (invisibles à l'écran). Cela permet au thread JS de ne remplacer les logos **que** sur les faces masquées, créant ainsi des transitions fluides et invisibles !
+
+---
+
+# L'amélioration mathématique : Vaincre le blocage de cardan (Gimbal Lock)
+
+Dès que j'ai ajouté l'interaction à la souris pour faire tourner le cube, j'ai rencontré un problème classique de la 3D : **le blocage de cardan** (ou Gimbal Lock).
+
+À l'origine, la rotation était calculée à l'aide de simples angles d'Euler (tangage, lacet, roulis). Lorsqu'on faisait glisser le cube sur plusieurs axes, ceux-ci finissaient par s'aligner et le cube se mettait à tourner de façon erratique.
+
+**La Solution :**
+J'ai remanié le moteur physique. J'ai d'abord introduit une stricte `RotationMatrix`, mais je l'ai finalement remplacée par des **Quaternions** le 15 juillet. Les quaternions calculent les rotations sur une sphère en 4D, éliminant complètement le blocage de cardan et offrant la rotation ultra-fluide que vous voyez aujourd'hui sur la page d'accueil.
+
+```rust
+// Un extrait de l'interface WASM remaniée
+#[wasm_bindgen]
+impl Cube {
+    pub fn set_rotation_speed(&mut self, da: f32, db: f32, dc: f32) {
+        // La magie des Quaternions en action !
+        self.angular_velocity = Quaternion::from_euler(da, db, dc);
+    }
+}
+```
+
+# Conclusion
+
+Développer `ascii-cube-rs` a été un excellent exercice pour faire le pont entre des langages système de bas niveau et des frameworks web modernes. Le bundle final est minuscule, s'exécute à une vitesse native et offre une expérience profondément interactive !
