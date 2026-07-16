@@ -4,7 +4,7 @@ import BG from '@/components/Background'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ModeToggle } from '@/components/ModeToggle'
 import localFont from 'next/font/local'
-
+import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
 const geistSans = localFont({
   src: '../public/fonts/Sans/Geist-Regular.woff2',
@@ -28,6 +28,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          try {
+            if (window.location.pathname.startsWith('/fr')) {
+              document.documentElement.lang = 'fr';
+            }
+          } catch (e) {}
+        `}} />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background overflow-x-hidden`}
       >
@@ -37,9 +46,9 @@ export default function RootLayout({
         enableSystem
         disableTransitionOnChange
       >
-
         <BG />
-        <div className="fixed top-4 right-4 z-50">
+        <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+          <LanguageSwitcher />
           <ModeToggle />
         </div>
         {children}
