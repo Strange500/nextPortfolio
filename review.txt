@@ -1,0 +1,43 @@
+### 1. First Impression & Navigation UX
+
+  • The 3-Second Test: You pass the 3-second test, but just barely. Your headline ("Building resilient systems and scalable architecture") and badge ("System Admin &
+  Software Developer") are strong. However, you immediately shoot yourself in the foot by leading your description with "I am a 21-year-old software engineering
+  student..." Stop doing that. I am hiring engineers, not students. Lead with your value: "Backend Engineer specializing in robust backend development and systems
+  architecture..."
+  • Friction & Flow: A single-page layout is excellent. I don't want to click through 5 pages to figure out what you do. However, you are missing the most critical
+  call-to-action a recruiter looks for: A clear, obvious "Download Resume/CV" button. You have a "View Architecture & Projects" button and some social links, but if I
+  want to download your PDF to put into my ATS (Applicant Tracking System), I shouldn't have to hunt for it.
+
+  ### 2. The "Noise" (What We Don't Care About)
+
+  You've avoided the cardinal sin of "Skill Progress Bars" (thank god), but you still have fluff weighing you down:
+
+  • High School & CPGE in Education: Delete "Baccalauréat" and "Classe Préparatoire" immediately. Nobody cares what high school you went to when you are deploying
+  enterprise Spring Boot apps and writing bare-metal Rust. It screams "junior." Keep the BUT and the Engineering degree.
+  • Basic API Fetching Projects: You have a custom Bitcoin node in Rust and declarative NixOS environments... and then you have "GameList" (a Next.js app fetching
+  data from the RAWG API). The latter looks like a weekend bootcamp tutorial. It dilutes the absolute powerhouse systems-level work you've done. Cut the generic web
+  apps and lean heavily into your complex, infrastructure-heavy projects.
+
+  ### 3. The "Missing Pieces" (What Is Not Told)
+
+  • Buried Experience (The biggest red flag): You casually mention in a wall of text that you "architected an enterprise automated testing framework" and are "joining
+  the core team to rewrite... internal framework modules." Where is your "Experience" section? Recruiters skim; we do not read paragraphs. You are hiding actual, paid,
+  enterprise impact inside an "About Me" block. Extract this into a dedicated timeline that shows the company name, your title, and dates.
+  • Zero Impact Metrics: You built an enterprise testing framework. Great. Did it run 10,000 tests a night? Did it reduce QA manual testing hours by 40%? Did it
+  increase deployment confidence? I need numbers, scale, and business impact. Without metrics, it's just a task list.
+  • The "Why" in Projects: Your project descriptions tell me what you built ("A minimalist Bitcoin node"), but not why or how it proves you're a good engineer. Add
+  one sentence to each project detailing the hardest technical hurdle you overcame (e.g., "Implemented custom TCP handshakes for peer discovery" or "Handled
+  concurrent UTXO state-locking").
+
+  ### 4. Bottom Line & Quick Wins
+
+  • Hireability Score: Medium-High (You have the raw technical chops of a High-tier candidate, but your portfolio is packaged like a standard junior, dragging your
+  score down).
+
+  Top 3 Actionable Fixes:
+
+  1. Extract your Apprenticeship into an "Experience" section. Bullet points, action verbs, and hard metrics (percentages, numbers, scale). Stop hiding your real-
+  world experience in a paragraph.
+  2. Add a "Download Resume" CTA directly in the Hero section next to the "View Projects" button. Make it impossible for me to leave without your PDF.
+  3. Trim the Fat. Remove high school from your timeline, drop "GameList" and "Bagarre.io" from your featured work, and own your identity as a hardcore
+  backend/systems engineer. Drop the word "student" from your headline.

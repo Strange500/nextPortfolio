@@ -54,11 +54,16 @@ export default async function Page({
             {description1}<span className="font-mono text-foreground/80 text-sm">{t.hero.description_highlight}</span>{t.hero.description_2}
           </p>
           
-          <div className="flex items-center gap-4 pt-4">
+          <div className="flex flex-wrap items-center gap-4 pt-4">
             <Button asChild className="group rounded-full px-6">
               <a href="#projects">
                 {t.hero.cta}
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </a>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full px-6 border-primary/20 hover:bg-primary/5">
+              <a href="/CV_Benjamin_Roget_v2.pdf" target="_blank" rel="noopener noreferrer">
+                {t.hero.resume}
               </a>
             </Button>
             <SmallSocialBtn />
@@ -81,13 +86,25 @@ export default async function Page({
       <div className="container mx-auto px-4 md:px-8 py-24">
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
           
-          {/* Left Column: About & Skills */}
+          {/* Left Column: Experience & Skills */}
           <div className="flex flex-col space-y-12 lg:col-span-7">
             <section className="space-y-6">
-              <h2 className="text-2xl font-medium tracking-tight text-foreground">{t.about.background_title}</h2>
-              <div className="prose prose-neutral dark:prose-invert text-muted-foreground">
-                <p>{t.about.background_p1}</p>
-                <p>{t.about.background_p2}</p>
+              <h2 className="text-2xl font-medium tracking-tight text-foreground">{t.experience.title}</h2>
+              <div className="space-y-8">
+                {t.experience.jobs.map((job, index) => (
+                  <div key={index} className="flex flex-col space-y-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between">
+                      <h3 className="text-lg font-semibold text-foreground">{job.role}</h3>
+                      <span className="font-mono text-xs text-muted-foreground">{job.date}</span>
+                    </div>
+                    <p className="font-medium text-primary text-sm">{job.company}</p>
+                    <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground mt-2">
+                      {job.bullets.map((bullet, i) => (
+                        <li key={i}>{bullet}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </section>
 

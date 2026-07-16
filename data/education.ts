@@ -9,19 +9,6 @@ export interface Education {
 export const education: Record<'en' | 'fr', Education[]> = {
   en: [
     {
-      title: 'Baccalauréat with a specialization in Mathematics and Computer Science',
-      date: 2022,
-      period: '2022',
-      school: 'Jean Racine High School, Montdidier',
-      description: 'Obtained with honors.'
-    },
-    {
-      title: 'intensive one-year study course (Classe Préparatoire)',
-      date: 2023,
-      period: '2022 - 2023',
-      school: 'University of Technology of Compiègne',
-    },
-    {
       title: "Associate's Degree in Computer Science",
       date: 2025,
       period: '2023 - 2025',
@@ -37,19 +24,6 @@ export const education: Record<'en' | 'fr', Education[]> = {
     }
   ],
   fr: [
-    {
-      title: 'Baccalauréat spécialité Mathématiques et Informatique',
-      date: 2022,
-      period: '2022',
-      school: 'Lycée Jean Racine, Montdidier',
-      description: 'Obtenu avec mention.'
-    },
-    {
-      title: 'Classe Préparatoire aux Grandes Écoles (CPGE)',
-      date: 2023,
-      period: '2022 - 2023',
-      school: 'Université de Technologie de Compiègne',
-    },
     {
       title: "BUT Informatique (Bachelor Universitaire de Technologie)",
       date: 2025,

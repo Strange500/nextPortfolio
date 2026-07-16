@@ -2,7 +2,7 @@
   {
     "order": 1,
     "title": "min-btc-node",
-    "description": "Une implémentation minimaliste et légère d'un nœud Bitcoin, construite de zéro en Rust. Gère le réseau bas niveau et les règles du protocole.",
+    "description": "Une implémentation minimaliste et légère d'un nœud Bitcoin, construite de zéro en Rust. Gère le réseau bas niveau et les règles du protocole. Conçu pour maîtriser les connexions concurrentes et la sérialisation binaire du protocole.",
     "tags": ["Rust", "Bitcoin", "Réseau"],
     "links": ["https://github.com/Strange500/min-btc-node"],
     "readme": "https://raw.githubusercontent.com/Strange500/min-btc-node/refs/heads/main/README.md"
@@ -10,7 +10,7 @@
   {
     "order": 2,
     "title": "nixos-config",
-    "description": "Mes configurations système déclaratives NixOS et dotfiles, permettant des environnements de développement et des états système entièrement reproductibles via l'Infrastructure as Code (IaC).",
+    "description": "Mes configurations système déclaratives NixOS et dotfiles, permettant des environnements de développement et des états système entièrement reproductibles via l'Infrastructure as Code (IaC). Résout le problème 'ça marche sur ma machine' au niveau de l'OS.",
     "tags": ["Nix", "NixOS", "Linux", "IaC"],
     "links": ["https://github.com/Strange500/nixos-config"],
     "readme": "https://raw.githubusercontent.com/Strange500/nixos-config/refs/heads/main/README.md"
@@ -18,7 +18,7 @@
   {
     "order": 3,
     "title": "pixel-war",
-    "description": "Une application décentralisée (dApp) Web3 de type pixel-canvas. Les utilisateurs peuvent enchérir on-chain pour posséder et colorier des pixels, demander un remboursement lorsqu'ils sont surenchéris, et minter des instantanés ERC-721 de la grille. Construit avec Solidity et JavaScript.",
+    "description": "Une application décentralisée (dApp) Web3 de type pixel-canvas. Les utilisateurs peuvent enchérir on-chain pour posséder et colorier des pixels, demander un remboursement lorsqu'ils sont surenchéris, et minter des instantanés ERC-721 de la grille. Démontre la capacité à gérer la sécurité des états on-chain et des smart contracts.",
     "tags": ["Web3", "Solidity", "JavaScript", "Blockchain"],
     "links": ["https://github.com/Strange500/pixel-war"],
     "readme": "https://raw.githubusercontent.com/Strange500/pixel-war/refs/heads/main/README.md"
@@ -26,25 +26,9 @@
   {
     "order": 4,
     "title": "Infrastructure HomeLab",
-    "description": "Un serveur domestique qui héberge divers services tels qu'une instance JellyFin, une instance Gitea et Pi-hole. Le serveur fonctionne sous Unraid comme système d'exploitation hôte et utilise Docker pour la conteneurisation.",
+    "description": "Un serveur domestique qui héberge divers services tels qu'une instance JellyFin, une instance Gitea et Pi-hole. Le serveur fonctionne sous Unraid comme système d'exploitation hôte et utilise Docker pour la conteneurisation. Mis en place pour apprendre le provisionnement bare-metal et le routage réseau.",
     "tags": ["Unraid", "Docker", "Linux", "Auto-hébergement"],
     "links": [],
     "readme": ""
-  },
-  {
-    "order": 5,
-    "title": "Bagarre.io",
-    "description": "Bagarre.io est un jeu multijoueur en temps réel de type Agar.io développé en JavaScript, tirant parti des WebSockets pour une communication client-serveur à faible latence.",
-    "tags": ["JavaScript", "Node.js", "Socket.io"],
-    "links": ["https://github.com/Strange500/BAGARRE.IO"],
-    "readme": "https://raw.githubusercontent.com/Strange500/BAGARRE.IO/refs/heads/main/README.md"
-  },
-  {
-    "order": 6,
-    "title": "GameList",
-    "description": "Une application web construite avec Next.js qui fournit une interface interactive pour afficher des informations sur les jeux vidéo en utilisant l'API RAWG, conteneurisée avec Docker.",
-    "tags": ["React", "Next.js", "TailwindCSS", "Docker"],
-    "links": ["https://github.com/Strange500/GameList"],
-    "readme": "https://raw.githubusercontent.com/Strange500/GameList/refs/heads/main/README.md"
   }
 ]
