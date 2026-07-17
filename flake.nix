@@ -27,7 +27,7 @@
         pnpm
       ];
       nativeBuildInputs = buildInputs;
-      npmDepsHash = "sha256-/05oep8hTaYKP12GWcs2sXTJVpaJVNxpf+293wFoKqg=";
+      npmDepsHash = "sha256-UP5+2isDtgLMiz4xvpFdDEEivat3hT+g//7vB1zagxA=";
     in {
       devShells.default = pkgs.mkShell {
         inherit buildInputs;
