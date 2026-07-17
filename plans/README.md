@@ -10,7 +10,7 @@ honor its STOP conditions, and update your row when done.
 |------|-------|----------|--------|------------|--------|
 | 001  | [Upgrade Next.js to address critical vulnerabilities](https://github.com/Strange500/nextPortfolio/issues/17) | P1 | S | — | DONE |
 | 002  | [Refactor i18n to server-side middleware](https://github.com/Strange500/nextPortfolio/issues/18) | P2 | M | — | BLOCKED (Middleware unsupported due to static export) |
-| 003  | [Implement PROJECTS_FILE_PATH overrides](https://github.com/Strange500/nextPortfolio/issues/19) | P3 | S | — | TODO |
+| 003  | [Implement PROJECTS_FILE_PATH overrides](https://github.com/Strange500/nextPortfolio/issues/19) | P3 | S | — | DONE |
 | 004  | [Standardize package manager lockfiles](https://github.com/Strange500/nextPortfolio/issues/20) | P3 | S | — | DONE |
 
 ## Dependency notes
