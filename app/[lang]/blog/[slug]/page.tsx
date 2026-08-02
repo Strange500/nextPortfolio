@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import { getAllPostSlugs, getPostBySlug } from '@/lib/blog'
+import { Mermaid } from '@/components/mdx/Mermaid'
 
 export async function generateStaticParams() {
   const params: { lang: string, slug: string }[] = [];
@@ -30,7 +31,19 @@ const components = {
   a: (props: React.ComponentPropsWithoutRef<'a'>) => <a className="text-primary hover:underline" {...props} />,
   blockquote: (props: React.ComponentPropsWithoutRef<'blockquote'>) => <blockquote className="border-l-4 border-primary pl-4 italic text-muted-foreground my-4" {...props} />,
   code: (props: React.ComponentPropsWithoutRef<'code'>) => <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono text-primary" {...props} />,
-  pre: (props: React.ComponentPropsWithoutRef<'pre'>) => <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm font-mono text-foreground my-6 border border-border/40" {...props} />,
+  pre: (props: any) => {
+    // child might be a mapped component function, so don't check type === 'code'
+    const child = props.children;
+    if (
+      child &&
+      child.props &&
+      typeof child.props.className === 'string' &&
+      child.props.className.includes('language-mermaid')
+    ) {
+      return <Mermaid chart={child.props.children as string} />;
+    }
+    return <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm font-mono text-foreground my-6 border border-border/40" {...props} />;
+  },
   Alert: (props: { variant?: 'info' | 'warning', children: React.ReactNode }) => (
     <div className={`p-4 rounded-lg border my-6 ${props.variant === 'warning' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-500' : 'bg-blue-500/10 border-blue-500/20 text-blue-400'}`}>
       {props.children}

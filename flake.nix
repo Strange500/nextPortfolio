@@ -27,7 +27,7 @@
         pnpm
       ];
       nativeBuildInputs = buildInputs;
-      npmDepsHash = "sha256-UP5+2isDtgLMiz4xvpFdDEEivat3hT+g//7vB1zagxA=";
+      npmDepsHash = "sha256-E1InKwgf4r5Pa5rmkbpUduAO0rlVV446t3KKvHCF0Ww=";
     in {
       devShells.default = pkgs.mkShell {
         inherit buildInputs;
@@ -46,6 +46,15 @@
         postInstall = ''
           ln -sfn ${ascii-cube-rs.packages.${system}.default} $out/lib/node_modules/portofolio/wasm-cube
           cp -rf dist/* $out/ 2>/dev/null || true
+          
+          mkdir -p $out/bin
+          cat > $out/bin/portfolio <<EOF
+          #!/usr/bin/env sh
+          echo "Starting local portfolio server on http://localhost:8080..."
+          cd $out
+          exec ${pkgs.python3}/bin/python3 -m http.server 8080
+          EOF
+          chmod +x $out/bin/portfolio
         '';
       };
     }))
