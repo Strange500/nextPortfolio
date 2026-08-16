@@ -1,0 +1,44 @@
+---
+title: "Why NixOS in 2026? My Journey to the Ultimate Reproducible Setup"
+date: "2026-08-17"
+summary: "In a world of accidental state, I chose NixOS to turn my infrastructure into a declarative, versioned, and reproducible asset. Here is how I manage multiple hosts, from gaming consoles to production servers."
+tags: ["NixOS", "Infrastructure", "Neovim", "Rust"]
+---
+
+# "I use NixOS btw." 
+
+It's a meme, but for me, it's a survival strategy. After years of wrestling with "standard" Linux distributions where a system update or a hardware swap could break days of environment tweaking, I decided that my development setup should be as version-controlled as my code.
+
+## The Problem: Accidental State
+We've all been there: you spend three days perfecting your Neovim config, installing the right LSP servers, and tweaking your window manager. You feel productive. Then, you switch laptops or a dependency breaks, and you're back at square one. This is "accidental state."
+
+## The Solution: Code as Truth
+In my `nixos-config`, my entire infrastructure—from my Steam Deck-like "Cube" to my main production "Server"—is defined in a single Flake.
+
+### 1. Declarative Neovim with NVF
+I don't manually manage `.config/nvim`. I use **NVF (Neovim Flake)**. 
+- My Rust and Angular environments are imported modules.
+- `tabstop`, `shiftwidth`, and even my `tokyonight` theme are declared in Nix.
+- **Benefit:** If I move to a new machine, I don't "install" Neovim; I just build my system, and my IDE is *there*, exactly as I left it.
+
+<Alert variant="info">
+  **Declarative IDEs:** Using a Flake for Neovim means my editor is a deterministic output of my system configuration. No more `:MasonInstall` or manual plugin management.
+</Alert>
+
+### 2. Multi-Host Mastery
+My configuration isn't just for one PC. It manages several distinct roles:
+- **Server:** Running Traefik, Authelia, and a full media stack via Podman/Quadlet.
+- **Clovis & Septimius:** High-performance desktops with shared modules for Rust development.
+- **Cube:** A gaming setup using Jovian-NixOS for a SteamOS-like experience on generic hardware.
+
+### 3. Impermanence: The "Clean Slate" Strategy
+One of the most powerful patterns I use is the `impermanence` module. My root partition is effectively wiped on every boot. Only what I *explicitly* mark for persistence (`/persist`) survives. 
+
+This forces me to be honest: if I configure something and forget to put it in my Nix code, it disappears on the next reboot. This ensures my config is always 100% complete and documented.
+
+## Why this matters
+If you're a developer in 2026, your environment is your craft. Don't let it be a collection of accidents. Make it a declarative, versioned, and reproducible asset.
+
+---
+
+**Explore the code:** Check out my full setup on GitHub: [Strange500/nixos-config](https://github.com/Strange500/nixos-config)

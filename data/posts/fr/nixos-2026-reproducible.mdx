@@ -1,0 +1,44 @@
+---
+title: "Pourquoi NixOS en 2026 ? Mon voyage vers une configuration ultime et reproductible"
+date: "2026-08-17"
+summary: "Dans un monde d'états accidentels, j'ai choisi NixOS pour transformer mon infrastructure en un actif déclaratif, versionné et reproductible. Voici comment je gère plusieurs machines, de la console de jeux aux serveurs de production."
+tags: ["NixOS", "Infrastructure", "Neovim", "Rust"]
+---
+
+# "I use NixOS btw." 
+
+C'est un meme, mais pour moi, c'est une stratégie de survie. Après des années à lutter avec des distributions Linux "standard" où une mise à jour système ou un changement de matériel pouvait briser des jours de peaufinage d'environnement, j'ai décidé que ma configuration de développement devait être aussi contrôlée en version que mon code.
+
+## Le Problème : L'État Accidentel
+Nous sommes tous passés par là : vous passez trois jours à perfectionner votre config Neovim, à installer les bons serveurs LSP et à ajuster votre gestionnaire de fenêtres. Vous vous sentez productif. Puis, vous changez d'ordinateur ou une dépendance casse, et vous voilà de retour à la case départ. C'est ce qu'on appelle "l'état accidentel".
+
+## La Solution : Le Code comme Vérité
+Dans mon repo `nixos-config`, toute mon infrastructure — de mon "Cube" (type Steam Deck) à mon "Serveur" de production principal — est définie dans un seul Flake.
+
+### 1. Neovim Déclaratif avec NVF
+Je ne gère plus manuellement mon dossier `.config/nvim`. J'utilise **NVF (Neovim Flake)**. 
+- Mes environnements Rust et Angular sont des modules importés.
+- `tabstop`, `shiftwidth`, et même mon thème `tokyonight` sont déclarés en Nix.
+- **Bénéfice :** Si je change de machine, je n'installe pas Neovim ; je build simplement mon système, et mon IDE est *là*, exactement comme je l'avais laissé.
+
+<Alert variant="info">
+  **IDE Déclaratif :** Utiliser un Flake pour Neovim signifie que mon éditeur est une sortie déterministe de ma configuration système. Plus de `:MasonInstall` ou de gestion manuelle des plugins.
+</Alert>
+
+### 2. Maîtrise Multi-Hôtes
+Ma configuration n'est pas faite pour un seul PC. Elle gère plusieurs rôles distincts :
+- **Serveur :** Fonctionne avec Traefik, Authelia, et une stack média complète via Podman/Quadlet.
+- **Clovis & Septimius :** Des ordinateurs de bureau haute performance avec des modules partagés pour le développement Rust.
+- **Cube :** Une installation de gaming utilisant Jovian-NixOS pour une expérience type SteamOS sur du matériel générique.
+
+### 3. Impermanence : La Stratégie de la "Table Rase"
+L'un des patterns les plus puissants que j'utilise est le module `impermanence`. Ma partition racine est réinitialisée à chaque démarrage. Seul ce que je marque *explicitement* pour la persistance (`/persist`) survit. 
+
+Cela me force à être honnête : si je configure quelque chose et que j'oublie de le mettre dans mon code Nix, cela disparaît au prochain redémarrage. Cela garantit que ma config est toujours complète à 100 %.
+
+## Pourquoi c'est important
+Si vous êtes un développeur en 2026, votre environnement est votre outil de travail. Ne le laissez pas être une collection d'accidents. Faites-en un actif déclaratif, versionné et reproductible.
+
+---
+
+**Explorez le code :** Retrouvez toute ma configuration sur GitHub : [Strange500/nixos-config](https://github.com/Strange500/nixos-config)
