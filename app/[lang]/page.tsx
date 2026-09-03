@@ -29,7 +29,7 @@ export default async function Page({
   return (
     <section className="min-h-screen w-full selection:bg-primary/20">
       {/* Hero Section */}
-      <div className="container mx-auto flex min-h-[75vh] items-center justify-between px-4 md:px-8 py-20 lg:py-0">
+      <div className="container mx-auto flex min-h-screen items-center justify-between px-4 md:px-12 py-32 lg:py-0">
         <div className="flex flex-col items-start max-w-3xl space-y-6 z-10">
           <Badge variant="outline" className="font-mono text-xs font-normal text-muted-foreground border-border/50">
             {t.hero.badge}
@@ -77,7 +77,7 @@ export default async function Page({
       </div>
 
       {/* About & Timeline Section */}
-      <div className="container mx-auto px-4 md:px-8 py-24">
+      <div className="container mx-auto px-4 md:px-12 py-32">
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
           
           {/* Left Column: Experience & Skills */}
@@ -176,7 +176,7 @@ export default async function Page({
       </div>
 
       {/* Projects Grid */}
-      <div className="container mx-auto px-4 md:px-8 py-24" id="projects">
+      <div className="container mx-auto px-4 md:px-12 py-32" id="projects">
         <div className="mb-12 flex flex-col space-y-4">
           <h2 className="text-3xl font-medium tracking-tight text-foreground">
             {t.projects.title}

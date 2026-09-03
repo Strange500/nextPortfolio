@@ -30,7 +30,7 @@ export const ProjectCard = ({
   links
 }: ProjectCardProps) => {
   return (
-    <Card className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-transparent transition-all duration-300 hover:-translate-y-1 hover:shadow-md hover:border-border/80">
+    <Card className="group relative flex h-full flex-col justify-between overflow-hidden rounded-xl border-transparent bg-card/50 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:bg-card">
       <CardHeader className="p-6 pb-4">
         <div className="flex items-start justify-between gap-4">
           <CardTitle className="font-sans text-xl font-medium tracking-tight text-foreground">

@@ -18,7 +18,7 @@ export default async function BlogPage({
   const posts = getAllPosts(lang);
 
   return (
-    <section className="min-h-screen w-full selection:bg-primary/20 py-20 px-4 md:px-8">
+    <section className="min-h-screen w-full selection:bg-primary/20 py-32 px-4 md:px-12">
       <div className="container mx-auto max-w-4xl flex flex-col space-y-12">
         
         {/* Header */}
@@ -41,7 +41,7 @@ export default async function BlogPage({
         <div className="flex flex-col space-y-8">
           {posts.map(post => (
             <Link href={`/${lang}/blog/${post.slug}`} key={post.slug} className="group">
-              <div className="flex flex-col space-y-4 p-6 border border-border/40 rounded-2xl bg-card/50 transition-all hover:bg-card hover:border-primary/20">
+              <div className="flex flex-col space-y-4 p-6 border-transparent shadow-sm rounded-2xl bg-card/50 transition-all hover:shadow-lg hover:bg-card">
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-xs text-muted-foreground">{post.date}</span>
                   <div className="flex gap-2">

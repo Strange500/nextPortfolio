@@ -42,10 +42,10 @@ const components = {
     ) {
       return <Mermaid chart={child.props.children as string} />;
     }
-    return <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm font-mono text-foreground my-6 border border-border/40" {...props} />;
+    return <pre className="bg-muted p-4 rounded-lg overflow-x-auto text-sm font-mono text-foreground my-6 border-transparent shadow-sm" {...props} />;
   },
   Alert: (props: { variant?: 'info' | 'warning', children: React.ReactNode }) => (
-    <div className={`p-4 rounded-lg border my-6 ${props.variant === 'warning' ? 'bg-yellow-500/10 border-yellow-500/20 text-yellow-500' : 'bg-blue-500/10 border-blue-500/20 text-blue-400'}`}>
+    <div className={`p-4 rounded-lg border-transparent shadow-sm my-6 ${props.variant === 'warning' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-blue-500/10 text-blue-400'}`}>
       {props.children}
     </div>
   ),
@@ -68,7 +68,7 @@ export default async function BlogPostPage({
   }
 
   return (
-    <section className="min-h-screen w-full selection:bg-primary/20 py-20 px-4 md:px-8">
+    <section className="min-h-screen w-full selection:bg-primary/20 py-32 px-4 md:px-12">
       <div className="container mx-auto max-w-3xl flex flex-col">
         
         <div className="mb-12">

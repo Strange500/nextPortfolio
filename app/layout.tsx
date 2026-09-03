@@ -3,17 +3,19 @@ import "./globals.css";
 import BG from '@/components/Background'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ModeToggle } from '@/components/ModeToggle'
-import localFont from 'next/font/local'
+
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
-const geistSans = localFont({
-  src: '../public/fonts/Sans/Geist-Regular.woff2',
-  variable: '--font-geist-sans',
+import { Inter, Fira_Code } from 'next/font/google'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
 })
 
-const geistMono = localFont({
-  src: '../public/fonts/Mono/GeistMono-Regular.woff2',
-  variable: '--font-geist-mono',
+const firaCode = Fira_Code({
+  subsets: ['latin'],
+  variable: '--font-fira-code',
 })
 
 export const metadata: Metadata = {
@@ -38,7 +40,7 @@ export default function RootLayout({
         `}} />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background overflow-x-hidden`}
+        className={`${inter.variable} ${firaCode.variable} font-sans antialiased bg-background text-foreground overflow-x-hidden`}
       >
       <ThemeProvider
         attribute="class"
