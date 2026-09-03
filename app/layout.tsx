@@ -4,17 +4,16 @@ import BG from '@/components/Background'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ModeToggle } from '@/components/ModeToggle'
 
+import localFont from 'next/font/local'
 import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
-import { Inter, Fira_Code } from 'next/font/google'
-
-const inter = Inter({
-  subsets: ['latin'],
+const inter = localFont({
+  src: '../public/fonts/Inter/web/InterVariable.woff2',
   variable: '--font-inter',
 })
 
-const firaCode = Fira_Code({
-  subsets: ['latin'],
+const firaCode = localFont({
+  src: '../public/fonts/FiraCode/woff2/FiraCode-VF.woff2',
   variable: '--font-fira-code',
 })
 

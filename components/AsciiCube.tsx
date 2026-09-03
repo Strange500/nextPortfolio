@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { technologies } from '@/data/technologies';
 
 async function svgToAscii(imageUrl: string, width = 100, height = 100) {
-  return new Promise<string>((resolve, reject) => {
+  return new Promise<{ characters: string, colors: Uint32Array }>((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "Anonymous";
     img.onload = () => {
@@ -22,6 +22,8 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
       const data = imageData.data;
       
       let asciiArt = "";
+      const colors = new Uint32Array(width * height);
+      let colorIdx = 0;
       
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -33,15 +35,16 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
 
           if (alpha < 128) {
             asciiArt += " ";
+            colors[colorIdx++] = 0xffffff;
           } else {
-            // Guarantee no holes for opaque pixels, use dense blocks for better silhouettes
             const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
             asciiArt += brightness < 128 ? "█" : "▒";
+            colors[colorIdx++] = (r << 16) | (g << 8) | b;
           }
         }
         asciiArt += "\n";
       }
-      resolve(asciiArt.trimEnd());
+      resolve({ characters: asciiArt.trimEnd(), colors });
     };
     img.onerror = reject;
     img.src = imageUrl;
@@ -78,7 +81,8 @@ export default function AsciiCube() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let cubeInstance: any = null;
     let cycleInterval: NodeJS.Timeout | undefined;
-    const faceSources: (string | HTMLVideoElement)[] = new Array(6).fill("");
+    type LogoData = { characters: string, colors: Uint32Array };
+    const faceSources: (string | HTMLVideoElement | LogoData)[] = new Array(6).fill("");
     
     // Canvas for video processing
     const videoCanvas = document.createElement('canvas');
@@ -97,13 +101,13 @@ export default function AsciiCube() {
         cubeRef.current = cubeInstance;
         cubeInstance.set_zoom(1500);
 
-        const loadedLogos: (string | HTMLVideoElement)[] = [];
+        const loadedLogos: (string | HTMLVideoElement | LogoData)[] = [];
         
         // Load ALL SVGs/logos from the technologies data
         for (const tech of technologies) {
           try {
-            const ascii = await svgToAscii(tech.svg);
-            loadedLogos.push(ascii);
+            const logoData = await svgToAscii(tech.svg);
+            loadedLogos.push(logoData);
           } catch (e) {
             console.error(`Failed to load SVG for ${tech.name}`, e);
           }
@@ -134,6 +138,8 @@ export default function AsciiCube() {
           faceSources[face] = logo;
           if (typeof logo === "string") {
             cubeInstance.set_face_logo(face, logo);
+          } else if (logo && !(logo instanceof HTMLVideoElement)) {
+            cubeInstance.set_face_colored_logo(face, logo.characters, logo.colors);
           }
         }
 
@@ -159,6 +165,8 @@ export default function AsciiCube() {
               faceSources[face] = newLogo;
               if (typeof newLogo === "string") {
                 cubeInstance.set_face_logo(face, newLogo);
+              } else if (newLogo && !(newLogo instanceof HTMLVideoElement)) {
+                cubeInstance.set_face_colored_logo(face, newLogo.characters, newLogo.colors);
               }
               currentLogoIdx = (currentLogoIdx + 1) % loadedLogos.length;
               currentFaceIdx = (currentFaceIdx + 1) % facesToCycle.length;
@@ -193,6 +201,8 @@ export default function AsciiCube() {
             videoCtx.drawImage(video, 0, 0, 100, 100);
             const imageData = videoCtx.getImageData(0, 0, 100, 100).data;
             let asciiArt = "";
+            const colors = new Uint32Array(10000);
+            let colorIdx = 0;
             for (let y = 0; y < 100; y++) {
               for (let x = 0; x < 100; x++) {
                 const index = (y * 100 + x) * 4;
@@ -203,9 +213,11 @@ export default function AsciiCube() {
 
                 if (alpha < 128) {
                   asciiArt += " ";
+                  colors[colorIdx++] = 0xffffff;
                 } else {
                   const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
                   asciiArt += brightness < 128 ? "█" : "▒";
+                  colors[colorIdx++] = (r << 16) | (g << 8) | b;
                 }
               }
               asciiArt += "\n";
@@ -214,7 +226,7 @@ export default function AsciiCube() {
             
             for (let i = 0; i < 6; i++) {
               if (faceSources[i] === video) {
-                cubeInstance.set_face_logo(i, asciiArt);
+                cubeInstance.set_face_colored_logo(i, asciiArt, colors);
               }
             }
           }
