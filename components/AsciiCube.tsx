@@ -161,7 +161,17 @@ export default function AsciiCube() {
               : false;
               
             if (!isVisible) {
-              const newLogo = loadedLogos[currentLogoIdx];
+              let newLogoIdx = currentLogoIdx;
+              let newLogo = loadedLogos[newLogoIdx];
+              let attempts = 0;
+              // Ensure we don't pick a logo that's already on another face
+              while (faceSources.includes(newLogo) && attempts < loadedLogos.length) {
+                newLogoIdx = (newLogoIdx + 1) % loadedLogos.length;
+                newLogo = loadedLogos[newLogoIdx];
+                attempts++;
+              }
+              currentLogoIdx = newLogoIdx;
+
               faceSources[face] = newLogo;
               if (typeof newLogo === "string") {
                 cubeInstance.set_face_logo(face, newLogo);
@@ -200,9 +210,10 @@ export default function AsciiCube() {
           if (hasVideoFace && videoCtx && video.readyState >= 2) {
             videoCtx.drawImage(video, 0, 0, 100, 100);
             const imageData = videoCtx.getImageData(0, 0, 100, 100).data;
-            let asciiArt = "";
+            const chars = new Array(10100);
             const colors = new Uint32Array(10000);
             let colorIdx = 0;
+            let charIdx = 0;
             for (let y = 0; y < 100; y++) {
               for (let x = 0; x < 100; x++) {
                 const index = (y * 100 + x) * 4;
@@ -212,17 +223,17 @@ export default function AsciiCube() {
                 const alpha = imageData[index + 3];
 
                 if (alpha < 128) {
-                  asciiArt += " ";
+                  chars[charIdx++] = " ";
                   colors[colorIdx++] = 0xffffff;
                 } else {
                   const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-                  asciiArt += brightness < 128 ? "█" : "▒";
+                  chars[charIdx++] = brightness < 128 ? "█" : "▒";
                   colors[colorIdx++] = (r << 16) | (g << 8) | b;
                 }
               }
-              asciiArt += "\n";
+              chars[charIdx++] = "\n";
             }
-            asciiArt = asciiArt.trimEnd();
+            const asciiArt = chars.join("").trimEnd();
             
             for (let i = 0; i < 6; i++) {
               if (faceSources[i] === video) {
