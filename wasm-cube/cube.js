@@ -12,6 +12,20 @@ export class Cube {
         wasm.__wbg_cube_free(ptr, 0);
     }
     /**
+     * @returns {number}
+     */
+    chars_ptr() {
+        const ret = wasm.cube_chars_ptr(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+     * @returns {number}
+     */
+    colors_ptr() {
+        const ret = wasm.cube_colors_ptr(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
      * @param {number} face_index
      * @returns {boolean}
      */
@@ -29,23 +43,10 @@ export class Cube {
         CubeFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
-    /**
-     * @returns {string}
-     */
     next_frame() {
-        let deferred1_0;
-        let deferred1_1;
-        try {
-            const ret = wasm.cube_next_frame(this.__wbg_ptr);
-            deferred1_0 = ret[0];
-            deferred1_1 = ret[1];
-            return getStringFromWasm0(ret[0], ret[1]);
-        } finally {
-            wasm.__wbindgen_free(deferred1_0, deferred1_1, 1);
-        }
+        wasm.cube_next_frame(this.__wbg_ptr);
     }
     /**
-     * Sets the color of a specific face (0 to 5) using a hex color like "#ff0000" or "ff0000"
      * @param {number} face_index
      * @param {string} hex_color
      */
@@ -55,7 +56,6 @@ export class Cube {
         wasm.cube_set_face_color(this.__wbg_ptr, face_index, ptr0, len0);
     }
     /**
-     * Sets a multiline string (ASCII art) with per-character colors to be mapped onto a specific face.
      * @param {number} face_index
      * @param {string} logo_chars
      * @param {Uint32Array} logo_colors
@@ -68,7 +68,6 @@ export class Cube {
         wasm.cube_set_face_colored_logo(this.__wbg_ptr, face_index, ptr0, len0, ptr1, len1);
     }
     /**
-     * Sets a multiline string (ASCII art) to be mapped onto a specific face.
      * @param {number} face_index
      * @param {string} logo
      */
@@ -78,7 +77,6 @@ export class Cube {
         wasm.cube_set_face_logo(this.__wbg_ptr, face_index, ptr0, len0);
     }
     /**
-     * Override the current rotation angles instantly
      * @param {number} a
      * @param {number} b
      * @param {number} c
@@ -87,7 +85,6 @@ export class Cube {
         wasm.cube_set_rotation(this.__wbg_ptr, a, b, c);
     }
     /**
-     * Override the rotation speed (how much it turns per frame)
      * @param {number} da
      * @param {number} db
      * @param {number} dc
@@ -96,11 +93,22 @@ export class Cube {
         wasm.cube_set_rotation_speed(this.__wbg_ptr, da, db, dc);
     }
     /**
-     * Sets the zoom level (projection scale factor, default 1000.0)
      * @param {number} zoom
      */
     set_zoom(zoom) {
         wasm.cube_set_zoom(this.__wbg_ptr, zoom);
+    }
+    /**
+     * @param {number} face_index
+     * @param {Uint8Array} logo_chars
+     * @param {Uint32Array} logo_colors
+     */
+    update_face_fast(face_index, logo_chars, logo_colors) {
+        const ptr0 = passArray8ToWasm0(logo_chars, wasm.__wbindgen_malloc);
+        const len0 = WASM_VECTOR_LEN;
+        const ptr1 = passArray32ToWasm0(logo_colors, wasm.__wbindgen_malloc);
+        const len1 = WASM_VECTOR_LEN;
+        wasm.cube_update_face_fast(this.__wbg_ptr, face_index, ptr0, len0, ptr1, len1);
     }
 }
 if (Symbol.dispose) Cube.prototype[Symbol.dispose] = Cube.prototype.free;
@@ -153,6 +161,13 @@ function getUint8ArrayMemory0() {
 function passArray32ToWasm0(arg, malloc) {
     const ptr = malloc(arg.length * 4, 4) >>> 0;
     getUint32ArrayMemory0().set(arg, ptr / 4);
+    WASM_VECTOR_LEN = arg.length;
+    return ptr;
+}
+
+function passArray8ToWasm0(arg, malloc) {
+    const ptr = malloc(arg.length * 1, 1) >>> 0;
+    getUint8ArrayMemory0().set(arg, ptr / 1);
     WASM_VECTOR_LEN = arg.length;
     return ptr;
 }

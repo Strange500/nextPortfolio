@@ -4,33 +4,18 @@
 export class Cube {
     free(): void;
     [Symbol.dispose](): void;
+    chars_ptr(): number;
+    colors_ptr(): number;
     is_face_visible(face_index: number): boolean;
     constructor(width: number, height: number);
-    next_frame(): string;
-    /**
-     * Sets the color of a specific face (0 to 5) using a hex color like "#ff0000" or "ff0000"
-     */
+    next_frame(): void;
     set_face_color(face_index: number, hex_color: string): void;
-    /**
-     * Sets a multiline string (ASCII art) with per-character colors to be mapped onto a specific face.
-     */
     set_face_colored_logo(face_index: number, logo_chars: string, logo_colors: Uint32Array): void;
-    /**
-     * Sets a multiline string (ASCII art) to be mapped onto a specific face.
-     */
     set_face_logo(face_index: number, logo: string): void;
-    /**
-     * Override the current rotation angles instantly
-     */
     set_rotation(a: number, b: number, c: number): void;
-    /**
-     * Override the rotation speed (how much it turns per frame)
-     */
     set_rotation_speed(da: number, db: number, dc: number): void;
-    /**
-     * Sets the zoom level (projection scale factor, default 1000.0)
-     */
     set_zoom(zoom: number): void;
+    update_face_fast(face_index: number, logo_chars: Uint8Array, logo_colors: Uint32Array): void;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -38,17 +23,19 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
     readonly memory: WebAssembly.Memory;
     readonly __wbg_cube_free: (a: number, b: number) => void;
+    readonly cube_chars_ptr: (a: number) => number;
+    readonly cube_colors_ptr: (a: number) => number;
     readonly cube_is_face_visible: (a: number, b: number) => number;
     readonly cube_new: (a: number, b: number) => number;
-    readonly cube_next_frame: (a: number) => [number, number];
+    readonly cube_next_frame: (a: number) => void;
     readonly cube_set_face_color: (a: number, b: number, c: number, d: number) => void;
     readonly cube_set_face_colored_logo: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
     readonly cube_set_face_logo: (a: number, b: number, c: number, d: number) => void;
     readonly cube_set_rotation: (a: number, b: number, c: number, d: number) => void;
     readonly cube_set_rotation_speed: (a: number, b: number, c: number, d: number) => void;
     readonly cube_set_zoom: (a: number, b: number) => void;
+    readonly cube_update_face_fast: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
     readonly __wbindgen_externrefs: WebAssembly.Table;
-    readonly __wbindgen_free: (a: number, b: number, c: number) => void;
     readonly __wbindgen_malloc: (a: number, b: number) => number;
     readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
     readonly __wbindgen_start: () => void;

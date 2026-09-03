@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { technologies } from '@/data/technologies';
 
-async function svgToAscii(imageUrl: string, width = 100, height = 100) {
-  return new Promise<{ characters: string, colors: Uint32Array }>((resolve, reject) => {
+async function svgToAscii(imageUrl: string, width = 50, height = 50) {
+  return new Promise<{ characters: Uint8Array, colors: Uint32Array }>((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "Anonymous";
     img.onload = () => {
@@ -12,18 +12,14 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
-      if (!ctx) {
-        reject("No 2d context");
-        return;
-      }
+      if (!ctx) { reject("No 2d context"); return; }
       
       ctx.drawImage(img, 0, 0, width, height);
-      const imageData = ctx.getImageData(0, 0, width, height);
-      const data = imageData.data;
+      const data = ctx.getImageData(0, 0, width, height).data;
       
-      let asciiArt = "";
+      const characters = new Uint8Array(width * height);
       const colors = new Uint32Array(width * height);
-      let colorIdx = 0;
+      let idx = 0;
       
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -34,17 +30,17 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
           const alpha = data[index + 3];
 
           if (alpha < 128) {
-            asciiArt += " ";
-            colors[colorIdx++] = 0xffffff;
+            characters[idx] = 32; // ' '
+            colors[idx] = 0xffffff;
           } else {
             const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-            asciiArt += brightness < 128 ? "█" : "▒";
-            colors[colorIdx++] = (r << 16) | (g << 8) | b;
+            characters[idx] = brightness < 128 ? 255 : 254; // █ or ▒
+            colors[idx] = (r << 16) | (g << 8) | b;
           }
+          idx++;
         }
-        asciiArt += "\n";
       }
-      resolve({ characters: asciiArt.trimEnd(), colors });
+      resolve({ characters, colors });
     };
     img.onerror = reject;
     img.src = imageUrl;
@@ -54,7 +50,7 @@ async function svgToAscii(imageUrl: string, width = 100, height = 100) {
 const BASELINE_SPEED = { da: 0.0075, db: 0.005, dc: 0.01 };
 
 export default function AsciiCube() {
-  const [frame, setFrame] = useState<string>("");
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number | null>(null);
   
   // Interaction state
@@ -77,24 +73,25 @@ export default function AsciiCube() {
   }, []);
 
   useEffect(() => {
+    if (!canvasRef.current) return;
+    
     let active = true;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let cubeInstance: any = null;
     let cycleInterval: NodeJS.Timeout | undefined;
-    type LogoData = { characters: string, colors: Uint32Array };
+    type LogoData = { characters: Uint8Array, colors: Uint32Array };
     const faceSources: (string | HTMLVideoElement | LogoData)[] = new Array(6).fill("");
     
-    // Canvas for video processing
     const videoCanvas = document.createElement('canvas');
-    videoCanvas.width = 100;
-    videoCanvas.height = 100;
+    videoCanvas.width = 50;
+    videoCanvas.height = 50;
     const videoCtx = videoCanvas.getContext('2d', { willReadFrequently: true });
-
 
     async function initWasm() {
       try {
         const wasm = await import("ascii-cube");
-        await wasm.default(); // Initialize the Wasm module memory
+        const wasmMem = await wasm.default(); // Initialize the Wasm module memory
+        const wasmMemory = wasmMem.memory;
         if (!active) return;
         
         cubeInstance = new wasm.Cube(120, 60);
@@ -103,20 +100,18 @@ export default function AsciiCube() {
 
         const loadedLogos: (string | HTMLVideoElement | LogoData)[] = [];
         
-        // Load ALL SVGs/logos from the technologies data
         for (const tech of technologies) {
           try {
-            const logoData = await svgToAscii(tech.svg);
+            const logoData = await svgToAscii(tech.svg, 50, 50);
             loadedLogos.push(logoData);
           } catch (e) {
             console.error(`Failed to load SVG for ${tech.name}`, e);
           }
         }
 
-        // Add the new video logo
         const video = document.createElement("video");
-        video.src = "/logo/HVjKOGP.mp4";
-        video.crossOrigin = "Anonymous";
+        video.src = "/cube.mp4";
+        video.crossOrigin = "anonymous";
         video.autoplay = true;
         video.loop = true;
         video.muted = true;
@@ -124,47 +119,35 @@ export default function AsciiCube() {
         video.play().catch(e => console.error("Video play failed", e));
         
         loadedLogos.push(video);
-        
-        // Shuffle the logos so the video appears randomly
         loadedLogos.sort(() => Math.random() - 0.5);
         
         if (!active || loadedLogos.length === 0) return;
 
-        // Initial setup: place some logos on different faces
         const initialFaces = [0, 4, 2];
         for (let i = 0; i < initialFaces.length; i++) {
           const face = initialFaces[i];
           const logo = loadedLogos[i % loadedLogos.length];
           faceSources[face] = logo;
-          if (typeof logo === "string") {
-            cubeInstance.set_face_logo(face, logo);
-          } else if (logo && !(logo instanceof HTMLVideoElement)) {
-            cubeInstance.set_face_colored_logo(face, logo.characters, logo.colors);
+          if (logo && !(logo instanceof HTMLVideoElement) && typeof logo !== "string") {
+            cubeInstance.update_face_fast(face, logo.characters, logo.colors);
           }
         }
 
-        // Cycle logos every 2 seconds, but only on hidden faces!
         let currentLogoIdx = 3 % loadedLogos.length;
         let currentFaceIdx = 0;
-        const facesToCycle = [0, 4, 2, 3, 1, 5]; // Cycle through all faces
+        const facesToCycle = [0, 4, 2, 3, 1, 5];
 
         cycleInterval = setInterval(() => {
           if (!active || !cubeInstance) return;
           
-          // Try to find a face that is currently hidden
           for (let i = 0; i < facesToCycle.length; i++) {
             const face = facesToCycle[currentFaceIdx];
-            
-            // Check if it's hidden (or fallback if the method isn't ready)
-            const isVisible = typeof cubeInstance.is_face_visible === 'function' 
-              ? cubeInstance.is_face_visible(face) 
-              : false;
+            const isVisible = cubeInstance.is_face_visible(face);
               
             if (!isVisible) {
               let newLogoIdx = currentLogoIdx;
               let newLogo = loadedLogos[newLogoIdx];
               let attempts = 0;
-              // Ensure we don't pick a logo that's already on another face
               while (faceSources.includes(newLogo) && attempts < loadedLogos.length) {
                 newLogoIdx = (newLogoIdx + 1) % loadedLogos.length;
                 newLogo = loadedLogos[newLogoIdx];
@@ -173,14 +156,12 @@ export default function AsciiCube() {
               currentLogoIdx = newLogoIdx;
 
               faceSources[face] = newLogo;
-              if (typeof newLogo === "string") {
-                cubeInstance.set_face_logo(face, newLogo);
-              } else if (newLogo && !(newLogo instanceof HTMLVideoElement)) {
-                cubeInstance.set_face_colored_logo(face, newLogo.characters, newLogo.colors);
+              if (newLogo && !(newLogo instanceof HTMLVideoElement) && typeof newLogo !== "string") {
+                cubeInstance.update_face_fast(face, newLogo.characters, newLogo.colors);
               }
               currentLogoIdx = (currentLogoIdx + 1) % loadedLogos.length;
               currentFaceIdx = (currentFaceIdx + 1) % facesToCycle.length;
-              break; // Only swap one logo at a time
+              break;
             }
             
             currentFaceIdx = (currentFaceIdx + 1) % facesToCycle.length;
@@ -188,78 +169,109 @@ export default function AsciiCube() {
         }, 2000);
 
         let lastTime = 0;
+        const ctx = canvasRef.current!.getContext('2d', { alpha: true });
+        if (!ctx) return;
+        
+        canvasRef.current!.width = 120 * 8;
+        canvasRef.current!.height = 60 * 16;
+        ctx.font = "bold 16px monospace";
+        ctx.textBaseline = "top";
+
         const animate = (time: number) => {
           if (!active) return;
-          
-          requestRef.current = requestAnimationFrame(animate);
-          
-          // Cap at ~60 FPS (16ms per frame) to prevent acceleration bursts after tab restore
-          // and to normalize speed on high refresh rate (144Hz+) monitors
-          if (time - lastTime < 16) return;
-          lastTime = time;
+          if (time - lastTime >= 16) {
+            lastTime = time;
 
-          // Process video frames for any face currently showing the video
-          let hasVideoFace = false;
-          for (let i = 0; i < 6; i++) {
-            if (faceSources[i] instanceof HTMLVideoElement) {
-              hasVideoFace = true;
-              break;
+            let hasVideoFace = false;
+            for (let i = 0; i < 6; i++) {
+              if (faceSources[i] instanceof HTMLVideoElement) {
+                hasVideoFace = true; break;
+              }
             }
-          }
 
-          if (hasVideoFace && videoCtx && video.readyState >= 2) {
-            videoCtx.drawImage(video, 0, 0, 100, 100);
-            const imageData = videoCtx.getImageData(0, 0, 100, 100).data;
-            const chars = new Array(10100);
-            const colors = new Uint32Array(10000);
-            let colorIdx = 0;
-            let charIdx = 0;
-            for (let y = 0; y < 100; y++) {
-              for (let x = 0; x < 100; x++) {
-                const index = (y * 100 + x) * 4;
-                const r = imageData[index];
-                const g = imageData[index + 1];
-                const b = imageData[index + 2];
-                const alpha = imageData[index + 3];
+            if (hasVideoFace && videoCtx && video.readyState >= 2) {
+              videoCtx.drawImage(video, 0, 0, 50, 50);
+              const imageData = videoCtx.getImageData(0, 0, 50, 50).data;
+              const chars = new Uint8Array(2500);
+              const colors = new Uint32Array(2500);
+              let idx = 0;
+              for (let y = 0; y < 50; y++) {
+                for (let x = 0; x < 50; x++) {
+                  const i4 = (y * 50 + x) * 4;
+                  const r = imageData[i4];
+                  const g = imageData[i4 + 1];
+                  const b = imageData[i4 + 2];
+                  const alpha = imageData[i4 + 3];
 
-                if (alpha < 128) {
-                  chars[charIdx++] = " ";
-                  colors[colorIdx++] = 0xffffff;
-                } else {
-                  const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
-                  chars[charIdx++] = brightness < 128 ? "█" : "▒";
-                  colors[colorIdx++] = (r << 16) | (g << 8) | b;
+                  if (alpha < 128) {
+                    chars[idx] = 32;
+                    colors[idx] = 0xffffff;
+                  } else {
+                    const brightness = (r * 0.299 + g * 0.587 + b * 0.114);
+                    chars[idx] = brightness < 128 ? 255 : 254;
+                    colors[idx] = (r << 16) | (g << 8) | b;
+                  }
+                  idx++;
                 }
               }
-              chars[charIdx++] = "\n";
+              
+              for (let i = 0; i < 6; i++) {
+                if (faceSources[i] === video) {
+                  cubeInstance.update_face_fast(i, chars, colors);
+                }
+              }
             }
-            const asciiArt = chars.join("").trimEnd();
             
-            for (let i = 0; i < 6; i++) {
-              if (faceSources[i] === video) {
-                cubeInstance.set_face_colored_logo(i, asciiArt, colors);
+            if (cubeInstance) {
+              if (!isDragging.current) {
+                 rotationSpeed.current.da += (BASELINE_SPEED.da - rotationSpeed.current.da) * 0.05;
+                 rotationSpeed.current.db += (BASELINE_SPEED.db - rotationSpeed.current.db) * 0.05;
+                 rotationSpeed.current.dc += (BASELINE_SPEED.dc - rotationSpeed.current.dc) * 0.05;
+              }
+
+              cubeInstance.set_rotation_speed(
+                 rotationSpeed.current.da,
+                 rotationSpeed.current.db,
+                 rotationSpeed.current.dc
+              );
+
+              cubeInstance.next_frame();
+              
+              const charsPtr = cubeInstance.chars_ptr();
+              const colorsPtr = cubeInstance.colors_ptr();
+              
+              const width = 120;
+              const height = 60;
+              
+              const charBuffer = new Uint8Array(wasmMemory.buffer, charsPtr, width * height);
+              const colorBuffer = new Uint32Array(wasmMemory.buffer, colorsPtr, width * height);
+              
+              ctx.clearRect(0, 0, canvasRef.current!.width, canvasRef.current!.height);
+              
+              const isDark = document.documentElement.classList.contains('dark');
+              const defaultFg = isDark ? "#ffffff" : "#0f172a";
+              
+              for (let y = 0; y < height; y++) {
+                for (let x = 0; x < width; x++) {
+                  const idx = y * width + x;
+                  const cCode = charBuffer[idx];
+                  if (cCode === 32) continue; // Space
+                  
+                  const c = cCode === 255 ? '█' : (cCode === 254 ? '▒' : String.fromCharCode(cCode));
+                  const hex = colorBuffer[idx];
+                  let colorStr = defaultFg;
+                  
+                  if (hex !== 0 && hex !== 0xffffff) {
+                      colorStr = "#" + hex.toString(16).padStart(6, '0');
+                  }
+                  
+                  ctx.fillStyle = colorStr;
+                  ctx.fillText(c, x * 8, y * 16);
+                }
               }
             }
           }
-          
-          if (cubeInstance) {
-            // Apply friction towards baseline speed
-            if (!isDragging.current) {
-               rotationSpeed.current.da += (BASELINE_SPEED.da - rotationSpeed.current.da) * 0.05;
-               rotationSpeed.current.db += (BASELINE_SPEED.db - rotationSpeed.current.db) * 0.05;
-               rotationSpeed.current.dc += (BASELINE_SPEED.dc - rotationSpeed.current.dc) * 0.05;
-            }
-
-            cubeInstance.set_rotation_speed(
-               rotationSpeed.current.da,
-               rotationSpeed.current.db,
-               rotationSpeed.current.dc
-            );
-
-            const rawFrame = cubeInstance.next_frame();
-            // The WASM hardcodes default faces to white inline styles. Strip it so Tailwind dark/light mode works!
-            setFrame(rawFrame.replaceAll('style="color:#ffffff"', ''));
-          }
+          requestRef.current = requestAnimationFrame(animate);
         };
 
         requestRef.current = requestAnimationFrame(animate);
@@ -283,7 +295,6 @@ export default function AsciiCube() {
   }, []);
 
   const handlePointerDown = (e: React.PointerEvent) => {
-    console.log("Pointer Down!");
     isDragging.current = true;
     previousMousePosition.current = { x: e.clientX, y: e.clientY };
     if (e.target instanceof Element) {
@@ -296,17 +307,13 @@ export default function AsciiCube() {
     const deltaX = e.clientX - previousMousePosition.current.x;
     const deltaY = e.clientY - previousMousePosition.current.y;
     
-    // Modify rotation speed based on drag distance
     rotationSpeed.current.da += deltaY * 0.001; 
-    rotationSpeed.current.db -= deltaX * 0.001; // Cache bust: using new WASM with Quaternions!
-    
-    console.log("Dragging! New speeds:", rotationSpeed.current.da, rotationSpeed.current.db);
+    rotationSpeed.current.db -= deltaX * 0.001; 
     
     previousMousePosition.current = { x: e.clientX, y: e.clientY };
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
-    console.log("Pointer Up!");
     isDragging.current = false;
     if (e.target instanceof Element) {
       e.target.releasePointerCapture(e.pointerId);
@@ -314,14 +321,14 @@ export default function AsciiCube() {
   };
 
   return (
-    <pre 
-      className="relative z-20 font-mono text-[8px] font-bold leading-none whitespace-pre text-foreground cursor-grab active:cursor-grabbing select-none"
+    <canvas 
+      ref={canvasRef}
+      className="relative z-20 cursor-grab active:cursor-grabbing select-none w-[960px] h-auto max-w-full"
       style={{ touchAction: 'none' }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      dangerouslySetInnerHTML={{ __html: frame }}
     />
   );
 }
