@@ -110,7 +110,7 @@ export default function AsciiCube() {
         }
 
         const video = document.createElement("video");
-        video.src = "/cube.mp4";
+        video.src = "/logo/HVjKOGP.mp4";
         video.crossOrigin = "anonymous";
         video.autoplay = true;
         video.loop = true;
