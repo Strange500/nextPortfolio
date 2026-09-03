@@ -261,7 +261,7 @@ export default function AsciiCube() {
                   const hex = colorBuffer[idx];
                   let colorStr = defaultFg;
                   
-                  if (hex !== 0 && hex !== 0xffffff) {
+                  if (hex !== 0x123456) {
                       colorStr = "#" + hex.toString(16).padStart(6, '0');
                   }
                   
