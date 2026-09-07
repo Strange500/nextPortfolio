@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "highlight.js/styles/github-dark.css";
 import BG from '@/components/Background'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ModeToggle } from '@/components/ModeToggle'
