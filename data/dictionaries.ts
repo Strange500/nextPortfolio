@@ -10,6 +10,7 @@ export const dictionaries = {
       description_1: "Software Engineer focused on ",
       description_highlight: "backend development",
       description_2: " and systems tooling. By combining rigorous automated testing with declarative environments (NixOS, Docker), I build reliable, maintainable applications.",
+      status: "Currently seeking a 3-month engineering internship — starting June 2027.",
       cta: "View Architecture & Projects",
       resume: "Download Resume",
       blog: "Read Blog",
@@ -17,7 +18,7 @@ export const dictionaries = {
     },
     about: {
       background_title: "Experience",
-      background_p1: "I am currently an engineering apprentice at IMT Nord Europe. Rather than just taking notes, I've spent my time building real systems. I began by architecting an enterprise automated testing framework from the ground up, utilizing Java Spring Boot and Selenium.",
+      background_p1: "I am currently a co-op engineering student at IMT Nord Europe. Rather than just taking notes, I've spent my time building real systems. I began by architecting an enterprise automated testing framework from the ground up, utilizing Java Spring Boot and Selenium.",
       background_p2: "Now, I work on the core team to rewrite and modernize internal framework modules. Whether writing systems-level Rust or deploying Spring Boot apps, my focus is always on engineering resilient software.",
       skills_title: "Technical Arsenal",
       systems_iac: "Systems & IaC",
@@ -28,9 +29,10 @@ export const dictionaries = {
       title: "Experience",
       jobs: [
         {
-          role: "Software Developer Apprentice",
+          role: "Software Engineer (Co-op)",
           company: "Numih France (DOGRH)",
           date: "Sept 2025 – Present",
+          deepDive: "/en/blog/automated-testing-framework",
           bullets: [
             "Architected and executed the automated integration test suite for the Hôpital Numérique platform.",
             "Massively refactored the test architecture to unify execution via API or maven, optimizing developer workflow.",
@@ -42,6 +44,7 @@ export const dictionaries = {
           role: "Fullstack Developer Intern",
           company: "Ekeep-IT",
           date: "April 2025 – June 2025",
+          deepDive: "",
           bullets: [
             "Developed a web application within an Agile environment.",
             "Utilized Spring Boot for the backend and Next.js for the frontend."
@@ -66,6 +69,7 @@ export const dictionaries = {
       description_1: "Ingénieur Logiciel axé sur le ",
       description_highlight: "développement backend",
       description_2: " et l'outillage système. En combinant tests automatisés et environnements déclaratifs (NixOS, Docker), je conçois des applications fiables et maintenables.",
+      status: "À la recherche d'un stage d'ingénieur de 3 mois — dès juin 2027.",
       cta: "Voir les Projets",
       resume: "Télécharger mon CV",
       blog: "Lire le Blog",
@@ -84,9 +88,10 @@ export const dictionaries = {
       title: "Expérience",
       jobs: [
         {
-          role: "Développeur Logiciel (Apprenti)",
+          role: "Ingénieur Logiciel (Alternance)",
           company: "Numih France (DOGRH)",
           date: "Sept 2025 – Présent",
+          deepDive: "/fr/blog/automated-testing-framework",
           bullets: [
             "Architecture et exécution de la suite de tests d'intégration automatisés pour la plateforme Hôpital Numérique.",
             "Refactoring massif de l'architecture de test permettant l'exécution unifiée via API ou mvn test.",
@@ -95,9 +100,10 @@ export const dictionaries = {
           ]
         },
         {
-          role: "Développeur Fullstack (Stagiaire)",
+          role: "Ingénieur Fullstack (Stage)",
           company: "Ekeep-IT",
           date: "Avril 2025 – Juin 2025",
+          deepDive: "",
           bullets: [
             "Développement d'une application web en environnement et rituels Agile.",
             "Utilisation de Spring Boot pour le backend et Next.js (React) pour le frontend."

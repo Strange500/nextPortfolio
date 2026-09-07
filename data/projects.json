@@ -2,7 +2,7 @@
   {
     "order": 1,
     "title": "min-btc-node",
-    "description": "A minimalist, lightweight Bitcoin node implementation built from scratch in Rust. Handles low-level networking and protocol rules. Engineered to deeply understand concurrent peer connections and precise binary protocol serialization.",
+    "description": "Built a Bitcoin node from scratch in Rust to understand how full nodes actually propagate blocks over the network — hand-rolling the wire protocol's binary serialization and concurrent peer handling instead of leaning on a library.",
     "tags": ["Rust", "Bitcoin", "Networking"],
     "links": ["https://github.com/Strange500/min-btc-node"],
     "readme": "https://raw.githubusercontent.com/Strange500/min-btc-node/refs/heads/main/README.md"
@@ -10,15 +10,15 @@
   {
     "order": 2,
     "title": "nixos-config",
-    "description": "My declarative NixOS system configurations and dotfiles, allowing fully reproducible developer environments and system states via Infrastructure as Code. Solves the 'it works on my machine' problem at the OS level.",
+    "description": "Declarative NixOS configurations and dotfiles that turn 'it works on my machine' into a versioned, rebuildable artifact — multi-host Infrastructure-as-Code for fully reproducible environments.",
     "tags": ["Nix", "NixOS", "Linux", "IaC"],
-    "links": ["https://github.com/Strange500/nixos-config"],
+    "links": ["https://github.com/Strange500/nixos-config", "/en/blog/nixos-2026-reproducible"],
     "readme": "https://raw.githubusercontent.com/Strange500/nixos-config/refs/heads/main/README.md"
   },
   {
     "order": 3,
     "title": "pixel-war",
-    "description": "A Web3 pixel-canvas decentralized application (dApp). Users can bid on-chain to own and color pixels, claim refunds when outbid, and mint ERC-721 snapshots of the grid. Demonstrated ability to handle complex on-chain state and smart contract security.",
+    "description": "A Web3 pixel-canvas dApp where users bid on-chain to own and color pixels, claim refunds when outbid, and mint ERC-721 snapshots of the grid — demonstrating reasoning about on-chain state and smart-contract security.",
     "tags": ["Web3", "Solidity", "JavaScript", "Blockchain"],
     "links": ["https://github.com/Strange500/pixel-war"],
     "readme": "https://raw.githubusercontent.com/Strange500/pixel-war/refs/heads/main/README.md"
@@ -26,7 +26,7 @@
   {
     "order": 4,
     "title": "HomeLab Infrastructure",
-    "description": "A domestic server that hosts various services such as a JellyFin instance, a Gitea instance, and Pi-hole. The server runs Unraid as the host OS and uses Docker for containerization. Built to learn bare-metal provisioning and network routing.",
+    "description": "A self-hosted server (Unraid + Docker) running Jellyfin, Gitea, and Pi-hole — set up hands-on to learn bare-metal provisioning and network routing.",
     "tags": ["Unraid", "Docker", "Linux", "Self-hosting"],
     "links": [],
     "readme": ""
