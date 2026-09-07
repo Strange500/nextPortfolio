@@ -2,7 +2,7 @@
   {
     "order": 1,
     "title": "min-btc-node",
-    "description": "Une implémentation minimaliste et légère d'un nœud Bitcoin, construite de zéro en Rust. Gère le réseau bas niveau et les règles du protocole. Conçu pour maîtriser les connexions concurrentes et la sérialisation binaire du protocole.",
+    "description": "Nœud Bitcoin construit de zéro en Rust pour comprendre comment les nœuds complets propagent réellement les blocs sur le réseau — sérialisation binaire du protocole et gestion des connexions concurrentes écrites à la main plutôt qu'en s'appuyant sur une bibliothèque.",
     "tags": ["Rust", "Bitcoin", "Réseau"],
     "links": ["https://github.com/Strange500/min-btc-node"],
     "readme": "https://raw.githubusercontent.com/Strange500/min-btc-node/refs/heads/main/README.md"
@@ -10,15 +10,15 @@
   {
     "order": 2,
     "title": "nixos-config",
-    "description": "Mes configurations système déclaratives NixOS et dotfiles, permettant des environnements de développement et des états système entièrement reproductibles via l'Infrastructure as Code (IaC). Résout le problème 'ça marche sur ma machine' au niveau de l'OS.",
+    "description": "Configurations NixOS déclaratives et dotfiles qui transforment « ça marche sur ma machine » en un artefact versionné et reconstruisible — Infrastructure-as-Code multi-hôtes pour des environnements entièrement reproductibles.",
     "tags": ["Nix", "NixOS", "Linux", "IaC"],
-    "links": ["https://github.com/Strange500/nixos-config"],
+    "links": ["https://github.com/Strange500/nixos-config", "/fr/blog/nixos-2026-reproducible"],
     "readme": "https://raw.githubusercontent.com/Strange500/nixos-config/refs/heads/main/README.md"
   },
   {
     "order": 3,
     "title": "pixel-war",
-    "description": "Une application décentralisée (dApp) Web3 de type pixel-canvas. Les utilisateurs peuvent enchérir on-chain pour posséder et colorier des pixels, demander un remboursement lorsqu'ils sont surenchéris, et minter des instantanés ERC-721 de la grille. Démontre la capacité à gérer la sécurité des états on-chain et des smart contracts.",
+    "description": "Une dApp Web3 type pixel-canvas où les utilisateurs enchérissent on-chain pour posséder et colorier des pixels, se font rembourser quand ils sont surenchéris, et mintent des instantanés ERC-721 — démontrant la maîtrise de l'état on-chain et de la sécurité des smart contracts.",
     "tags": ["Web3", "Solidity", "JavaScript", "Blockchain"],
     "links": ["https://github.com/Strange500/pixel-war"],
     "readme": "https://raw.githubusercontent.com/Strange500/pixel-war/refs/heads/main/README.md"
@@ -26,7 +26,7 @@
   {
     "order": 4,
     "title": "Infrastructure HomeLab",
-    "description": "Un serveur domestique qui héberge divers services tels qu'une instance JellyFin, une instance Gitea et Pi-hole. Le serveur fonctionne sous Unraid comme système d'exploitation hôte et utilise Docker pour la conteneurisation. Mis en place pour apprendre le provisionnement bare-metal et le routage réseau.",
+    "description": "Serveur auto-hébergé (Unraid + Docker) faisant tourner Jellyfin, Gitea et Pi-hole — mis en place pour apprendre concrètement le provisionnement bare-metal et le routage réseau.",
     "tags": ["Unraid", "Docker", "Linux", "Auto-hébergement"],
     "links": [],
     "readme": ""

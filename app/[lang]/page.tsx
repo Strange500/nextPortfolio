@@ -42,6 +42,14 @@ export default async function Page({
           <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
             {t.hero.description_1}<span className="font-mono text-foreground/80 text-sm">{t.hero.description_highlight}</span>{t.hero.description_2}
           </p>
+
+          <div className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60"></span>
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+            </span>
+            <span className="font-mono text-sm text-foreground">{t.hero.status}</span>
+          </div>
           
           <div className="flex flex-wrap items-center gap-4 pt-4">
             <Button asChild className="group rounded-full px-6">
@@ -97,6 +105,15 @@ export default async function Page({
                         <li key={i}>{bullet}</li>
                       ))}
                     </ul>
+                    {job.deepDive && (
+                      <Link
+                        href={job.deepDive}
+                        className="group mt-3 inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:text-primary/80 transition-colors"
+                      >
+                        Read the engineering deep-dive
+                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                      </Link>
+                    )}
                   </div>
                 ))}
               </div>

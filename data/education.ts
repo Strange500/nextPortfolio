@@ -9,18 +9,18 @@ export interface Education {
 export const education: Record<'en' | 'fr', Education[]> = {
   en: [
     {
-      title: "Associate's Degree in Computer Science",
+      title: "Bachelor's Degree in Computer Science (BUT)",
       date: 2025,
       period: '2023 - 2025',
       school: 'University Institute of Technology of Lille',
       description: 'Graduated top of the class'
     },
     {
-      title: 'Engineering degree in Software Development',
+      title: 'M.Eng. in Software Engineering (Diplôme d\'Ingénieur)',
       date: 2028,
       period: '2025 - now',
       school: 'IMT Nord Europe, Institut Mines-Télécom',
-      description: 'Currently studying.'
+      description: 'Master\'s-level engineering degree. Currently studying.'
     }
   ],
   fr: [
