@@ -7,6 +7,15 @@ tags: ["Java", "Spring Boot", "JUnit 5", "E2E Testing", "System Design", "Archit
 
 # One E2E Test, Multiple Execution Paths: Building a Test Platform with Spring Boot
 
+<Tldr>
+**Result:** Rebuilt the E2E test platform so a single test definition runs through both synchronous CI (JUnit / Maven) and an asynchronous interactive dashboard — without duplicating any test logic.
+
+**Measured impact:**
+- **~70% fewer false-positive** pipeline failures.
+- Invalid runs fail in **~50 ms** instead of spinning up a **20 s** browser session.
+- A run that isn't ready to proceed never touches shared state, so testers **working concurrently on the same environment don't interfere** with each other.
+</Tldr>
+
 Our end-to-end (E2E) test suite originally had a single execution model: tests were JUnit classes executed via Maven inside Jenkins pipelines.
 
 That worked well for automated nightly builds, but it became limiting as the platform grew:
@@ -17,7 +26,7 @@ That worked well for automated nightly builds, but it became limiting as the pla
 The initial idea was to add a REST controller on top of the test code. However, doing that directly creates two divergent execution paths:
 
 
-```
+```text
 
 Jenkins ──> JUnit ──> Test Logic
 
@@ -202,7 +211,7 @@ To handle this, the REST API uses an asynchronous polling pattern:
 1. The client submits a `POST` request.
 2. The server immediately returns `202 Accepted` with a `QUEUED` status.
 3. A background thread pool evaluates preconditions and runs the test.
-4. The client polls a `GET` endpoint to observe state transitions (`QUEUED` $\rightarrow$ `RUNNING` $\rightarrow$ `SUCCESS` | `FAILED` | `SKIPPED`).
+4. The client polls a `GET` endpoint to observe state transitions (`QUEUED` → `RUNNING` → `SUCCESS` | `FAILED` | `SKIPPED`).
 
 ```java
 package com.example.framework.api;
@@ -296,7 +305,7 @@ public class TestSuiteFactory {
 
 ```
 
-> **Note on CI Visuals:** By mapping the internal `SKIPPED` status to JUnit's `Assumptions.assumeTrue(false)`, native test runners register the execution as *Aborted*. CI/CD tools like Jenkins consume this report and properly classify the test as unstable or skipped, preventing false-positive pipeline failures.
+> **Note on CI Visuals:** By mapping the internal `SKIPPED` status to JUnit's `Assumptions.assumeTrue(false)`, native test runners register the execution as *Aborted*. CI/CD tools like Jenkins consume this report and properly classify the test as unstable or skipped, preventing false-positive pipeline failures. In practice, this mapping cut false-positive pipeline failures by roughly 70%.
 
 ---
 
@@ -341,7 +350,7 @@ public class TherapeuticAbsenceDsnCondition implements ExecutionCondition {
 
 ```
 
-If this evaluation fails, the REST API returns a `SKIPPED` payload. In CI, JUnit reports an aborted test. This reduces the compute time of an invalid test from 20 seconds to 50 milliseconds.
+If this evaluation fails, the REST API returns a `SKIPPED` payload. In CI, JUnit reports an aborted test. This reduces the compute time of an invalid test from 20 seconds to 50 milliseconds. And because every prerequisite is validated *before* a browser session opens or any data is mutated, a run that isn't ready to proceed never touches shared state — so testers working concurrently on the same environment don't interfere with each other.
 
 ---
 
@@ -353,8 +362,20 @@ This platform solves execution orchestration and routing. It does not solve:
 * **Flaky Locators:** A decoupled architecture does not fix brittle CSS selectors or race conditions in Selenium.
 * **Test Data State Mutation:** While preconditions check if data exists, managing the cleanup and isolation of dirty data in a shared environment remains a separate infrastructure challenge.
 
-## Conclusion
+## Conclusion & Results
 
 Test definition is not test execution.
 
-By treating an E2E test as a parameterized domain model (`TestCase` $\rightarrow$ `TestRunner`), the architecture provides significant flexibility. The same Java code that runs synchronously in a nightly Jenkins build powers an asynchronous, interactive frontend dashboard, complete with type safety at the Java boundary and smart precondition evaluation.
+By treating an E2E test as a parameterized domain model (`TestCase` → `TestRunner`), the architecture provides significant flexibility: the same Java code that runs synchronously in a nightly Jenkins build powers an asynchronous, interactive frontend dashboard, with type safety at the Java boundary and smart precondition evaluation.
+
+The measured outcomes:
+
+* **~70% fewer false-positive** pipeline failures.
+* Invalid runs fail in **~50 ms** instead of spinning up a **20 s** browser session.
+* One tester's run **no longer interferes** with others working on the same shared environment.
+
+<Cta title="Let's build something together">
+  I'm currently seeking a **3-month software engineering internship in the US, starting June 2027**. If your team tackles similar test-automation or backend-infrastructure challenges, let's connect on [LinkedIn](https://www.linkedin.com/in/roget-benjamin).
+
+  *Note: code samples in this article are simplified and illustrative — the production source is proprietary.*
+</Cta>

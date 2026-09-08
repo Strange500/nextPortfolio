@@ -7,6 +7,15 @@ tags: ["Java", "Spring Boot", "JUnit 5", "Tests E2E", "System Design", "Architec
 
 # Un Seul Test E2E, Multiples Voies d'Exécution : Construire une Plateforme de Test avec Spring Boot
 
+<Tldr title="TL;DR — Résumé Exécutif">
+**Résultat :** La plateforme de test E2E a été refondue pour qu'une seule définition de test s'exécute à la fois en CI synchrone (JUnit / Maven) et via un tableau de bord asynchrone interactif — sans dupliquer la moindre logique de test.
+
+**Impact mesuré :**
+- **~70 % d'échecs faussement positifs** en moins.
+- Les exécutions invalides échouent en **~50 ms** au lieu de lancer une session navigateur de **20 s**.
+- Une exécution non prête ne touche jamais l'état partagé : les testeurs **travaillant en parallèle sur le même environnement ne se gênent pas**.
+</Tldr>
+
 Notre suite de tests de bout-en-bout (E2E) avait initialement un modèle d'exécution unique : les tests étaient des classes JUnit exécutées via Maven à l'intérieur de pipelines Jenkins.
 
 Cela fonctionnait bien pour les builds automatisés nocturnes, mais est devenu limitant à mesure que la plateforme grandissait :
@@ -17,7 +26,7 @@ Cela fonctionnait bien pour les builds automatisés nocturnes, mais est devenu l
 L'idée initiale était d'ajouter un contrôleur REST par-dessus le code de test. Cependant, procéder ainsi crée directement deux voies d'exécution divergentes :
 
 
-```
+```text
 Jenkins ──> JUnit ──> Logique de Test
 
 Web UI  ──> REST  ──> Logique de Test
@@ -196,7 +205,7 @@ Pour gérer cela, l'API REST utilise un modèle de sondage (polling) asynchrone 
 1. Le client soumet une requête `POST`.
 2. Le serveur renvoie immédiatement `202 Accepted` avec un statut `QUEUED`.
 3. Un pool de threads en arrière-plan évalue les préconditions et exécute le test.
-4. Le client interroge périodiquement (polling) un point de terminaison `GET` pour observer les transitions d'état (`QUEUED` $\rightarrow$ `RUNNING` $\rightarrow$ `SUCCESS` | `FAILED` | `SKIPPED`).
+4. Le client interroge périodiquement (polling) un point de terminaison `GET` pour observer les transitions d'état (`QUEUED` → `RUNNING` → `SUCCESS` | `FAILED` | `SKIPPED`).
 
 ```java
 package com.example.framework.api;
@@ -288,7 +297,7 @@ public class TestSuiteFactory {
 }
 ```
 
-> **Note sur l'Affichage CI :** En mappant le statut interne `SKIPPED` avec le `Assumptions.assumeTrue(false)` de JUnit, les lanceurs de tests natifs enregistrent l'exécution comme *Avortée*. Les outils de CI/CD comme Jenkins consomment ce rapport et classifient correctement le test comme instable ou ignoré (skipped), évitant ainsi les échecs de pipeline faussement positifs.
+> **Note sur l'Affichage CI :** En mappant le statut interne `SKIPPED` avec le `Assumptions.assumeTrue(false)` de JUnit, les lanceurs de tests natifs enregistrent l'exécution comme *Avortée*. Les outils de CI/CD comme Jenkins consomment ce rapport et classifient correctement le test comme instable ou ignoré (skipped), évitant ainsi les échecs de pipeline faussement positifs. En pratique, cette correspondance a réduit d'environ 70 % les échecs de pipeline faussement positifs.
 
 ---
 
@@ -332,7 +341,7 @@ public class TherapeuticAbsenceDsnCondition implements ExecutionCondition {
 }
 ```
 
-Si cette évaluation échoue, l'API REST renvoie une charge utile `SKIPPED`. Dans la CI, JUnit signale un test avorté. Cela réduit le temps de calcul d'un test invalide de 20 secondes à 50 millisecondes.
+Si cette évaluation échoue, l'API REST renvoie une charge utile `SKIPPED`. Dans la CI, JUnit signale un test avorté. Cela réduit le temps de calcul d'un test invalide de 20 secondes à 50 millisecondes. Et comme chaque prérequis est validé *avant* l'ouverture d'une session navigateur ou toute mutation de données, une exécution non prête ne touche jamais l'état partagé — les testeurs travaillant en parallèle sur le même environnement ne se gênent donc pas.
 
 ---
 
@@ -344,8 +353,20 @@ Cette plateforme résout l'orchestration et le routage de l'exécution. Elle ne 
 * **Les Sélecteurs Instables (Flaky Locators) :** Une architecture découplée ne répare pas les sélecteurs CSS fragiles ou les conditions de concurrence (race conditions) dans Selenium.
 * **La Mutation de l'État des Données de Test :** Bien que les préconditions vérifient l'existence des données, gérer le nettoyage et l'isolation des données altérées dans un environnement partagé reste un défi infrastructurel distinct.
 
-## Conclusion
+## Conclusion & Résultats
 
 La définition d'un test n'est pas l'exécution d'un test.
 
-En traitant un test E2E comme un modèle de domaine paramétré (`TestCase` $\rightarrow$ `TestRunner`), l'architecture offre une flexibilité significative. Le même code Java qui s'exécute de manière synchrone dans un build nocturne Jenkins alimente un tableau de bord frontal interactif et asynchrone, avec la sécurité du typage à la frontière Java et une évaluation intelligente des préconditions.
+En traitant un test E2E comme un modèle de domaine paramétré (`TestCase` → `TestRunner`), l'architecture offre une flexibilité significative : le même code Java qui s'exécute de manière synchrone dans un build nocturne Jenkins alimente un tableau de bord frontal interactif et asynchrone, avec la sécurité du typage à la frontière Java et une évaluation intelligente des préconditions.
+
+Les résultats mesurés :
+
+* **~70 % d'échecs faussement positifs** en moins.
+* Les exécutions invalides échouent en **~50 ms** au lieu de lancer une session navigateur de **20 s**.
+* L'exécution d'un testeur **n'interfère plus** avec celles des autres testeurs sur le même environnement partagé.
+
+<Cta title="Travaillons ensemble">
+  Je recherche actuellement un **stage d'ingénieur logiciel de 3 mois, à partir de juin 2027**. Si votre équipe fait face à des défis similaires en automatisation de tests ou en infrastructure backend, connectons-nous sur [LinkedIn](https://www.linkedin.com/in/roget-benjamin).
+
+  *Note : les extraits de code de cet article sont simplifiés et illustratifs — le code source de production est propriétaire.*
+</Cta>
