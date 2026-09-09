@@ -175,9 +175,39 @@ const projectsOut = projects.map((p) => {
   };
 });
 
+// Extra projects that live on GitHub but not in the portfolio data files.
+const extraProjects = [
+  {
+    name: "RayTracer-Rust",
+    description:
+      "CPU ray tracer in Rust with BVH acceleration, Phong shading, reflections, " +
+      "and a custom scene file format — built from scratch.",
+    keywords: ["Rust", "Graphics", "Ray Tracing", "BVH"],
+    url: "https://github.com/Strange500/RayTracer-Rust",
+  },
+  {
+    name: "QGChat",
+    description:
+      "Full-stack chat app in Java EE with Docker Compose deployment, " +
+      "SQL persistence, and a JavaScript frontend.",
+    keywords: ["Java", "Java EE", "Docker", "WebSocket", "SQL"],
+    url: "https://github.com/Strange500/QGChat",
+  },
+  {
+    name: "ascii-cube-rs",
+    description:
+      "Real-time ASCII 3D cube renderer compiled to WebAssembly via a Nix flake — " +
+      "powers the hero widget on this portfolio.",
+    keywords: ["Rust", "WebAssembly", "Nix"],
+    url: "https://github.com/Strange500/ascii-cube-rs",
+  },
+];
+
+const allProjects = [...projectsOut, ...extraProjects];
+
 // Skills grouped from technologies.ts (single source of truth for the stack).
 const skillGroups = {
-  "Languages & Systems": ["Rust", "Java", "C", "Python", "TypeScript", "JavaScript"],
+  "Languages & Systems": ["Rust", "Java", "C", "Python", "TypeScript", "JavaScript", "WebAssembly"],
   "Backend & Web": ["Spring Boot", "Java EE", "React", "Next.js", "Node.js", "Angular"],
   "DevOps & Infrastructure": ["NixOS", "Linux", "Docker", "Podman", "Jenkins", "Traefik", "Git"],
   "Architecture & Quality": ["Selenium", "JUnit 5", "Design Patterns", "Agile"],
@@ -196,7 +226,7 @@ const resume = {
   skills,
   languages,
   interests,
-  projects: projectsOut,
+  projects: allProjects,
   meta: {
     version: "1.0.0",
     canonical: "https://portfolio.qgroget.com",

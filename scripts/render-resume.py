@@ -2,404 +2,1049 @@
 """
 render-resume.py
 --------------------------------------------------------------------------------
-Renders `resume.json` (JSON Resume schema) into an ATS-friendly, print-optimized
-PDF using WeasyPrint. Single column, generous negative space, Inter for body and
-Fira Code for technical accents. No pure black — anthracite #1E293B as the
-primary text color.
+Render resume.json (JSON Resume schema) into an ATS-friendly, print-optimized
+PDF using WeasyPrint.
 
-    python3 scripts/render-resume.py            # writes public/resume.pdf
-    python3 scripts/render-resume.py out.pdf    # custom output path
+Default:
+    python3 scripts/render-resume.py
 
-Dependencies: weasyprint (pip install weasyprint).
+Custom output:
+    python3 scripts/render-resume.py out.pdf
+
+A4:
+    python3 scripts/render-resume.py out.pdf --a4
+
+Dependencies:
+    pip install weasyprint
 --------------------------------------------------------------------------------
 """
+
+import argparse
 import html
 import json
-import sys
 from pathlib import Path
 
 from weasyprint import HTML
 
+
 ROOT = Path(__file__).resolve().parent.parent
 FONTS = ROOT / "public" / "fonts"
 
-# -- fonts (TTF — best supported by WeasyPrint) -------------------------------
 INTER = FONTS / "Inter" / "extras" / "ttf"
 FIRACODE = FONTS / "FiraCode" / "ttf"
 
+
 MONTHS = {
-    1: "Jan", 2: "Feb", 3: "Mar", 4: "Apr", 5: "May", 6: "Jun",
-    7: "Jul", 8: "Aug", 9: "Sep", 10: "Oct", 11: "Nov", 12: "Dec",
+    1: "Jan",
+    2: "Feb",
+    3: "Mar",
+    4: "Apr",
+    5: "May",
+    6: "Jun",
+    7: "Jul",
+    8: "Aug",
+    9: "Sep",
+    10: "Oct",
+    11: "Nov",
+    12: "Dec",
 }
 
 
-def fmt_date(d: str) -> str:
-    y, m, _ = d.split("-")
-    return f"{MONTHS[int(m)]} {y}"
+# -----------------------------------------------------------------------------
+# Helpers
+# -----------------------------------------------------------------------------
+
+def fmt_date(date: str) -> str:
+    if not date:
+        return ""
+
+    parts = date.split("-")
+    year = parts[0]
+
+    if len(parts) < 2:
+        return year
+
+    try:
+        month = int(parts[1])
+    except ValueError:
+        return year
+
+    return f"{MONTHS.get(month, parts[1])} {year}"
 
 
 def fmt_range(start: str, end: str) -> str:
-    s = fmt_date(start)
-    e = "Present" if not end else fmt_date(end)
-    return f"{s} &ndash; {e}"
+    start_text = fmt_date(start)
+    end_text = "Present" if not end else fmt_date(end)
+
+    if not start_text:
+        return end_text
+
+    return f"{start_text} – {end_text}"
 
 
-def short_url(u: str) -> str:
-    return u.replace("https://", "").replace("http://", "").rstrip("/")
+def short_url(url: str) -> str:
+    """
+    Make URLs visually compact while preserving the actual href.
+    """
+    if not url:
+        return ""
+
+    url = url.strip()
+    url = url.replace("https://", "")
+    url = url.replace("http://", "")
+    url = url.replace("www.", "")
+    return url.rstrip("/")
 
 
-def e(s: str) -> str:
-    return html.escape(s or "")
+def escape(value: str) -> str:
+    return html.escape(value or "")
 
 
-def css() -> str:
+def join_non_empty(parts, separator=" · "):
+    return separator.join(part for part in parts if part)
+
+
+# -----------------------------------------------------------------------------
+# CSS
+# -----------------------------------------------------------------------------
+
+def css(page_size: str) -> str:
     return f"""
     @font-face {{
-      font-family: 'Inter';
-      src: url('{INTER / "Inter-Regular.ttf"}');
-      font-weight: 400; font-style: normal;
+        font-family: 'Inter';
+        src: url('{INTER / "Inter-Regular.ttf"}');
+        font-weight: 400;
+        font-style: normal;
     }}
+
     @font-face {{
-      font-family: 'Inter';
-      src: url('{INTER / "Inter-Medium.ttf"}');
-      font-weight: 500; font-style: normal;
+        font-family: 'Inter';
+        src: url('{INTER / "Inter-Medium.ttf"}');
+        font-weight: 500;
+        font-style: normal;
     }}
+
     @font-face {{
-      font-family: 'Inter';
-      src: url('{INTER / "Inter-Bold.ttf"}');
-      font-weight: 700; font-style: normal;
+        font-family: 'Inter';
+        src: url('{INTER / "Inter-Bold.ttf"}');
+        font-weight: 700;
+        font-style: normal;
     }}
+
     @font-face {{
-      font-family: 'Inter';
-      src: url('{INTER / "Inter-ExtraBold.ttf"}');
-      font-weight: 800; font-style: normal;
+        font-family: 'Inter';
+        src: url('{INTER / "Inter-ExtraBold.ttf"}');
+        font-weight: 800;
+        font-style: normal;
     }}
+
     @font-face {{
-      font-family: 'Fira Code';
-      src: url('{FIRACODE / "FiraCode-Regular.ttf"}');
-      font-weight: 400; font-style: normal;
+        font-family: 'Fira Code';
+        src: url('{FIRACODE / "FiraCode-Regular.ttf"}');
+        font-weight: 400;
+        font-style: normal;
     }}
+
     @font-face {{
-      font-family: 'Fira Code';
-      src: url('{FIRACODE / "FiraCode-Medium.ttf"}');
-      font-weight: 500; font-style: normal;
+        font-family: 'Fira Code';
+        src: url('{FIRACODE / "FiraCode-Medium.ttf"}');
+        font-weight: 500;
+        font-style: normal;
     }}
 
     @page {{
-      size: Letter;
-      margin: 0.25in;
-      background-color: #FAFAFA;
+        size: {page_size};
+        margin: 0.28in;
+        background: #FAFAFA;
     }}
 
     :root {{
-      --ink: #1E293B;
-      --ink-strong: #0F172A;
-      --ink-muted: #475569;
-      --accent: #4F46E5;
-      --rule: #E2E8F0;
-      --bg: #FAFAFA;
-      --card-bg: #FFFFFF;
-      --card-shadow: 0 1px 2px -1px rgba(0,0,0,0.05);
+        --ink: #1E293B;
+        --ink-strong: #0F172A;
+        --ink-muted: #475569;
+        --accent: #4F46E5;
+        --rule: #E2E8F0;
+        --bg: #FAFAFA;
+        --card-bg: #FFFFFF;
+        --tag-bg: #F8FAFC;
     }}
 
-    * {{ box-sizing: border-box; }}
+    * {{
+        box-sizing: border-box;
+    }}
+
+    html {{
+        font-family: 'Inter', sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+    }}
+
     body {{
-      font-family: 'Inter', sans-serif;
-      color: var(--ink);
-      background-color: var(--bg);
-      font-size: 7.5pt;
-      line-height: 1.25;
-      margin: 0;
+        margin: 0;
+        font-size: 7.45pt;
+        line-height: 1.28;
+        color: var(--ink);
+        background: var(--bg);
     }}
-    a {{ color: var(--accent); text-decoration: none; }}
-    .mono {{ font-family: 'Fira Code', monospace; }}
 
-    /* ---- header ---- */
-    header {{ margin-bottom: 4pt; text-align: center; }}
+    a {{
+        color: var(--accent);
+        text-decoration: none;
+    }}
+
+    .mono {{
+        font-family: 'Fira Code', monospace;
+    }}
+
+    /* -------------------------------------------------------------------------
+       Header
+       ------------------------------------------------------------------------- */
+
+    header {{
+        text-align: center;
+        margin-bottom: 8pt;
+    }}
+
     .name {{
-      font-size: 14pt;
-      font-weight: 800;
-      color: var(--ink-strong);
-      letter-spacing: -0.02em;
-      margin: 0 0 1pt 0;
+        margin: 0;
+        color: var(--ink-strong);
+        font-size: 16pt;
+        line-height: 1.05;
+        font-weight: 800;
+        letter-spacing: -0.025em;
     }}
+
     .label {{
-      font-size: 8.5pt;
-      font-weight: 500;
-      color: var(--accent);
-      margin: 0 0 1pt 0;
+        margin-top: 2pt;
+        color: var(--accent);
+        font-size: 8.5pt;
+        line-height: 1.15;
+        font-weight: 500;
     }}
+
     .contact {{
-      font-size: 7pt;
-      color: var(--ink-muted);
-      line-height: 1.3;
+        margin-top: 4pt;
+        color: var(--ink-muted);
+        font-size: 6.9pt;
+        line-height: 1.5;
     }}
-    .contact .mono {{ color: var(--accent); font-weight: 500; }}
-    .contact .sep {{ color: #CBD5E1; padding: 0 3pt; }}
 
-    /* ---- sections ---- */
-    section {{ margin-bottom: 4pt; }}
+    .contact .mono {{
+        color: var(--accent);
+        font-weight: 500;
+    }}
+
+    .contact .sep {{
+        color: #CBD5E1;
+        padding: 0 3pt;
+    }}
+
+    .profile-row {{
+        margin-top: 1pt;
+    }}
+
+    /* -------------------------------------------------------------------------
+       Sections
+       ------------------------------------------------------------------------- */
+
+    section {{
+        margin-bottom: 6pt;
+    }}
+
     h2 {{
-      font-size: 8pt;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--ink-strong);
-      margin: 0 0 2pt 0;
-      padding-bottom: 0;
+        margin: 0 0 3pt 0;
+        padding: 0;
+        color: var(--ink-strong);
+        font-size: 8pt;
+        line-height: 1.1;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.105em;
     }}
 
-    /* ---- cards ---- */
+    /* -------------------------------------------------------------------------
+       Common cards
+       ------------------------------------------------------------------------- */
+
     .card {{
-      background: var(--card-bg);
-      border-radius: 4px;
-      padding: 4pt 6pt;
-      margin-bottom: 2pt;
-      box-shadow: var(--card-shadow);
+        background: var(--card-bg);
+        border-radius: 4px;
+        padding: 5pt 7pt;
+        border: 1px solid rgba(226, 232, 240, 0.55);
     }}
-    .card:last-child {{ margin-bottom: 0; }}
 
-    /* ---- summary ---- */
-    .summary p {{ margin: 0; color: var(--ink); padding: 0 2pt; }}
+    /* -------------------------------------------------------------------------
+       Summary
+       ------------------------------------------------------------------------- */
 
-    /* ---- experience ---- */
-    .job.card {{ margin-bottom: 4pt; }}
-    .job .head {{
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 2pt;
+    .summary .card {{
+        padding: 5pt 7pt;
     }}
-    .job .role {{
-      font-weight: 700;
-      color: var(--ink-strong);
-      font-size: 9pt;
+
+    .summary p {{
+        margin: 0;
+        line-height: 1.38;
     }}
-    .job .co {{ color: var(--ink); font-weight: 500; }}
-    .job .date {{
-      flex-shrink: 0;
-      font-family: 'Fira Code', monospace;
-      font-size: 7.5pt;
-      color: var(--ink-muted);
-      margin-left: 8pt;
+
+    /* -------------------------------------------------------------------------
+       Experience
+       ------------------------------------------------------------------------- */
+
+    .job {{
+        margin-bottom: 4pt;
+        break-inside: avoid;
     }}
-    .job ul {{ margin: 2pt 0 0 0; padding: 0 0 0 12pt; }}
+
+    .job:last-child {{
+        margin-bottom: 0;
+    }}
+
+    .job-head {{
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10pt;
+        margin-bottom: 2pt;
+    }}
+
+    .job-main {{
+        min-width: 0;
+        flex: 1;
+    }}
+
+    .job-title {{
+        margin: 0;
+        font-size: 8.8pt;
+        line-height: 1.2;
+        font-weight: 700;
+        color: var(--ink-strong);
+    }}
+
+    .job-company {{
+        font-weight: 500;
+        color: var(--ink);
+    }}
+
+    .job-date {{
+        flex-shrink: 0;
+        white-space: nowrap;
+        font-family: 'Fira Code', monospace;
+        font-size: 6.95pt;
+        color: var(--ink-muted);
+    }}
+
+    .job ul {{
+        margin: 2pt 0 0 0;
+        padding-left: 13pt;
+    }}
+
     .job li {{
-      margin-bottom: 1pt;
-      color: var(--ink);
-      padding-left: 2pt;
+        margin: 0 0 1.2pt 0;
+        padding-left: 1.5pt;
+        line-height: 1.32;
     }}
-    .job li::marker {{ color: #94A3B8; }}
+
+    .job li:last-child {{
+        margin-bottom: 0;
+    }}
+
+    .job li::marker {{
+        color: #94A3B8;
+    }}
+
     .deeplink {{
-      font-family: 'Fira Code', monospace;
-      font-size: 7.5pt;
-      color: var(--accent);
-      margin-top: 2pt;
+        margin-top: 3pt;
+        font-family: 'Fira Code', monospace;
+        font-size: 6.8pt;
     }}
 
-    /* ---- projects ---- */
-    .proj.card {{ margin-bottom: 4pt; }}
-    .proj .head {{ margin-bottom: 1pt; }}
-    .proj .name {{ font-weight: 700; color: var(--ink-strong); font-size: 9pt; }}
-    .proj .links {{
-      font-family: 'Fira Code', monospace;
-      font-size: 7.5pt;
-    }}
-    .proj .links .sep {{ color: #CBD5E1; padding: 0 3pt; }}
-    .proj .desc {{ margin: 1pt 0 2pt 0; line-height: 1.35; }}
-    .proj .tags {{
-      font-family: 'Fira Code', monospace;
-      font-size: 7pt;
-      color: var(--ink-muted);
-      background: var(--bg);
-      padding: 1pt 3pt;
-      border-radius: 3px;
-      display: inline-block;
-      margin-top: 2pt;
+    /* -------------------------------------------------------------------------
+       Projects
+       ------------------------------------------------------------------------- */
+
+    .projects-table {{
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 5pt 0;
+        table-layout: fixed;
     }}
 
-    /* ---- skills ---- */
-    .skill-row {{ margin-bottom: 2pt; }}
-    .skill-row:last-child {{ margin-bottom: 0; }}
-    .skill-row .group {{ font-weight: 700; color: var(--ink-strong); display: inline-block; width: 115pt; }}
-    .skill-row .items {{ color: var(--ink); }}
-    .skill-row .items .mono {{ font-size: 7.5pt; color: var(--accent); font-weight: 500; }}
-
-    /* ---- education ---- */
-    .edu.card {{ margin-bottom: 4pt; }}
-    .edu .head {{
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0.5pt;
+    .proj-col {{
+        width: 50%;
+        vertical-align: top;
+        padding: 0;
     }}
-    .edu .study {{ font-weight: 700; color: var(--ink-strong); font-size: 8.5pt; }}
-    .edu .date {{
-      flex-shrink: 0;
-      font-family: 'Fira Code', monospace;
-      font-size: 7pt;
-      color: var(--ink-muted);
-      margin-left: 4pt;
-    }}
-    .edu .school {{ color: var(--ink-muted); margin-top: 0.5pt; }}
-    .edu .honor {{ font-style: italic; color: var(--accent); font-size: 7.5pt; }}
 
-    /* ---- languages & interests ---- */
-    .lang-int {{ font-size: 7.5pt; color: var(--ink); padding: 2pt; }}
-    .lang-int strong {{ color: var(--ink-strong); font-weight: 700; }}
+    .project {{
+        break-inside: avoid;
+        margin-bottom: 4pt;
+    }}
+
+    .project.featured {{
+        border-color: rgba(79, 70, 229, 0.16);
+    }}
+
+    .project-head {{
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 4pt;
+        margin-bottom: 1pt;
+    }}
+
+    .project-name {{
+        margin: 0;
+        color: var(--ink-strong);
+        font-size: 8pt;
+        font-weight: 700;
+        line-height: 1.2;
+    }}
+
+    .project-links {{
+        flex-shrink: 0;
+        font-family: 'Fira Code', monospace;
+        font-size: 6.5pt;
+        line-height: 1.2;
+        text-align: right;
+    }}
+
+    .project-links .sep {{
+        color: #CBD5E1;
+        padding: 0 2pt;
+    }}
+
+    .project-description {{
+        margin: 0;
+        line-height: 1.3;
+        font-size: 7pt;
+    }}
+
+    .project-tags {{
+        display: inline-block;
+        margin-top: 2pt;
+        padding: 1pt 3pt;
+        border-radius: 3px;
+        background: var(--tag-bg);
+        color: var(--ink-muted);
+        font-family: 'Fira Code', monospace;
+        font-size: 6.5pt;
+        line-height: 1.2;
+    }}
+
+    /* -------------------------------------------------------------------------
+       Skills
+       ------------------------------------------------------------------------- */
+
+    .skills-card {{
+        padding: 5pt 7pt;
+    }}
+
+    .skill-row {{
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 2pt;
+        line-height: 1.3;
+    }}
+
+    .skill-row:last-child {{
+        margin-bottom: 0;
+    }}
+
+    .skill-group {{
+        width: 103pt;
+        flex-shrink: 0;
+        color: var(--ink-strong);
+        font-weight: 700;
+    }}
+
+    .skill-items {{
+        color: var(--ink);
+        min-width: 0;
+    }}
+
+    .skill-item {{
+        font-family: 'Fira Code', monospace;
+        color: var(--accent);
+        font-size: 6.95pt;
+        font-weight: 500;
+    }}
+
+    .skills-table {{
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+    }}
+
+    .skill-col {{
+        width: 50%;
+        vertical-align: top;
+        padding: 0;
+    }}
+
+    /* -------------------------------------------------------------------------
+       Education
+       ------------------------------------------------------------------------- */
+
+    .education {{
+        margin-bottom: 4pt;
+        break-inside: avoid;
+    }}
+
+    .education:last-child {{
+        margin-bottom: 0;
+    }}
+
+    .education-head {{
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8pt;
+    }}
+
+    .education-degree {{
+        color: var(--ink-strong);
+        font-size: 8.4pt;
+        font-weight: 700;
+        line-height: 1.2;
+    }}
+
+    .education-date {{
+        flex-shrink: 0;
+        white-space: nowrap;
+        color: var(--ink-muted);
+        font-family: 'Fira Code', monospace;
+        font-size: 6.75pt;
+    }}
+
+    .education-school {{
+        margin-top: 1.5pt;
+        color: var(--ink-muted);
+        line-height: 1.25;
+    }}
+
+    .education-honor {{
+        color: var(--accent);
+        font-style: italic;
+    }}
+
+    /* -------------------------------------------------------------------------
+       Languages & interests
+       ------------------------------------------------------------------------- */
+
+    .compact-card {{
+        padding: 5pt 7pt;
+    }}
+
+    .compact-line {{
+        margin: 0;
+        line-height: 1.32;
+    }}
+
+    .compact-line strong {{
+        color: var(--ink-strong);
+        font-weight: 700;
+    }}
+
+    .compact-separator {{
+        color: #CBD5E1;
+        padding: 0 7pt;
+    }}
     """
 
 
-def render(data: dict) -> str:
-    b = data["basics"]
+# -----------------------------------------------------------------------------
+# Render sections
+# -----------------------------------------------------------------------------
 
-    # header
+def render_header(data: dict) -> str:
+    basics = data["basics"]
+
     contact_parts = []
-    if b.get("email"):
-        contact_parts.append(f'<a href="mailto:{e(b["email"])}">{e(b["email"])}</a>')
-    if b.get("phone"):
-        contact_parts.append(f'<span class="mono">{e(b["phone"])}</span>')
-    if b.get("location"):
-        loc = b["location"]
-        country = {"FR": "France", "US": "USA", "GB": "UK"}.get(
-            loc.get("countryCode", ""), loc.get("countryCode", "")
+
+    if basics.get("email"):
+        email = escape(basics["email"])
+        contact_parts.append(
+            f'<a href="mailto:{email}">{email}</a>'
         )
-        city = ", ".join(x for x in [loc.get("city"), country] if x)
+
+    if basics.get("phone"):
+        contact_parts.append(
+            f'<span class="mono">{escape(basics["phone"])}</span>'
+        )
+
+    location = basics.get("location")
+    if location:
+        country_map = {
+            "FR": "France",
+            "US": "USA",
+            "GB": "UK",
+        }
+
+        country = country_map.get(
+            location.get("countryCode", ""),
+            location.get("countryCode", "")
+        )
+
+        city = ", ".join(
+            part
+            for part in [
+                location.get("city"),
+                country,
+            ]
+            if part
+        )
+
         if city:
-            contact_parts.append(e(city))
+            contact_parts.append(escape(city))
 
     profile_parts = []
-    for p in b.get("profiles", []):
-        url = p.get("url", "")
+
+    for profile in basics.get("profiles", []):
+        url = profile.get("url", "")
+        if not url:
+            continue
+
+        visible_url = short_url(url)
+
         profile_parts.append(
-            f'<a href="{e(url)}"><span class="mono">{e(short_url(url))}</span></a>'
-        )
-    if b.get("url"):
-        profile_parts.append(
-            f'<a href="{e(b["url"])}"><span class="mono">{e(short_url(b["url"]))}</span></a>'
+            f'<a href="{escape(url)}">'
+            f'<span class="mono">{escape(visible_url)}</span>'
+            f'</a>'
         )
 
-    sep = '<span class="sep">·</span>'
-    header = f"""
+    if basics.get("url"):
+        url = basics["url"]
+
+        profile_parts.append(
+            f'<a href="{escape(url)}">'
+            f'<span class="mono">{escape(short_url(url))}</span>'
+            f'</a>'
+        )
+
+    separator = '<span class="sep">·</span>'
+
+    return f"""
     <header>
-      <div class="name">{e(b['name'])}</div>
-      <div class="label">{e(b.get('label',''))}</div>
-      <div class="contact">
-        {sep.join(contact_parts)}
-        <br/>
-        {sep.join(profile_parts)}
-      </div>
+        <h1 class="name">{escape(basics["name"])}</h1>
+        <div class="label">{escape(basics.get("label", ""))}</div>
+
+        <div class="contact">
+            <div>
+                {separator.join(contact_parts)}
+            </div>
+
+            <div class="profile-row">
+                {separator.join(profile_parts)}
+            </div>
+        </div>
     </header>
     """
 
-    # summary
-    summary = f'<section class="summary"><h2>Summary</h2><div class="card"><p>{e(b.get("summary",""))}</p></div></section>'
 
-    # experience
-    jobs = []
-    for j in data.get("work", []):
-        date = fmt_range(j.get("startDate", ""), j.get("endDate", ""))
-        bullets = "".join(f"<li>{e(h)}</li>" for h in j.get("highlights", []))
-        dl = ""
-        if j.get("url"):
-            dl = f'<div class="deeplink">↳ {e(short_url(j["url"]))}</div>'
-        jobs.append(f"""
-        <div class="job card">
-          <div class="head">
-            <span class="date">{date}</span>
-            <span class="role">{e(j['position'])}</span>
-            <span class="co">— {e(j['name'])}</span>
-          </div>
-          <ul>{bullets}</ul>
-          {dl}
+def render_summary(data: dict) -> str:
+    summary = data["basics"].get("summary", "")
+
+    if not summary:
+        return ""
+
+    return f"""
+    <section class="summary">
+        <h2>Summary</h2>
+
+        <div class="card">
+            <p>{escape(summary)}</p>
         </div>
-        """)
-    experience = f'<section><h2>Experience</h2>{"".join(jobs)}</section>'
-
-    # projects
-    projs = []
-    for p in data.get("projects", []):
-        links = []
-        if p.get("url"):
-            links.append(f'<a href="{e(p["url"])}">{e(short_url(p["url"]))}</a>')
-        if p.get("blog"):
-            links.append(f'<a href="{e(p["blog"])}">{e(short_url(p["blog"]))}</a>')
-        tags = " · ".join(e(t) for t in p.get("keywords", []))
-        projs.append(f"""
-        <div class="proj card">
-          <div class="head">
-            <span class="name">{e(p['name'])}</span>
-            {"<span class='links'>&nbsp;" + sep.join(links) + "</span>" if links else ""}
-          </div>
-          <div class="desc">{e(p.get('description',''))}</div>
-          {"<div class='tags'>" + tags + "</div>" if tags else ""}
-        </div>
-        """)
-    projects = f'<section><h2>Selected Projects</h2>{"".join(projs)}</section>'
-
-    # skills
-    skills = []
-    for s in data.get("skills", []):
-        items = " · ".join(f'<span class="mono">{e(k)}</span>' for k in s.get("keywords", []))
-        skills.append(
-            f'<div class="skill-row"><span class="group">{e(s["name"])}:</span> '
-            f'<span class="items">{items}</span></div>'
-        )
-    skills_html = f'<section><h2>Skills</h2><div class="card">{"".join(skills)}</div></section>'
-
-    # education
-    edus = []
-    for ed in data.get("education", []):
-        date = fmt_range(ed.get("startDate", ""), ed.get("endDate", ""))
-        honor = f' <span class="honor">— {e(ed["score"])}</span>' if ed.get("score") else ""
-        edus.append(f"""
-        <div class="edu card">
-          <div class="head">
-            <span class="date">{date}</span>
-            <span class="study">{e(ed.get('studyType',''))} — {e(ed.get('area',''))}</span>
-          </div>
-          <div class="school">{e(ed.get('institution',''))}{honor}</div>
-        </div>
-        """)
-    education = f'<section><h2>Education</h2>{"".join(edus)}</section>'
-
-    # languages & interests
-    langs = " · ".join(
-        f"{e(l['language'])} ({e(l['fluency'])})" for l in data.get("languages", [])
-    )
-    interests = " · ".join(e(i["name"]) for i in data.get("interests", []))
-    lang_int = f"""
-    <section>
-      <h2>Languages &amp; Interests</h2>
-      <div class="lang-int card">
-        <strong>Languages:</strong> {langs}
-        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-        <strong>Interests:</strong> {interests}
-      </div>
     </section>
     """
 
+
+def render_experience(data: dict) -> str:
+    jobs = []
+
+    for job in data.get("work", []):
+        date = fmt_range(
+            job.get("startDate", ""),
+            job.get("endDate", "")
+        )
+
+        highlights = "".join(
+            f"<li>{escape(highlight)}</li>"
+            for highlight in job.get("highlights", [])
+        )
+
+        deeplink = ""
+
+        if job.get("url"):
+            deeplink = f"""
+            <div class="deeplink">
+                ↳
+                <a href="{escape(job["url"])}">
+                    {escape(short_url(job["url"]))}
+                </a>
+            </div>
+            """
+
+        jobs.append(
+            f"""
+            <article class="job card">
+                <div class="job-head">
+                    <div class="job-main">
+                        <div class="job-title">
+                            {escape(job.get("position", ""))}
+                            <span class="job-company">
+                                — {escape(job.get("name", ""))}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="job-date">{escape(date)}</div>
+                </div>
+
+                <ul>
+                    {highlights}
+                </ul>
+
+                {deeplink}
+            </article>
+            """
+        )
+
+    if not jobs:
+        return ""
+
+    return f"""
+    <section>
+        <h2>Experience</h2>
+        {"".join(jobs)}
+    </section>
+    """
+
+
+def render_projects(data: dict) -> str:
+    projects = []
+
+    for index, project in enumerate(data.get("projects", [])):
+        links = []
+
+        if project.get("url"):
+            links.append(
+                f'<a href="{escape(project["url"])}">'
+                f'{escape(short_url(project["url"]))}'
+                f'</a>'
+            )
+
+        if project.get("blog"):
+            links.append(
+                f'<a href="{escape(project["blog"])}">'
+                f'{escape(short_url(project["blog"]))}'
+                f'</a>'
+            )
+
+        links_html = ""
+
+        if links:
+            links_html = f"""
+            <div class="project-links">
+                {"<span class='sep'>·</span>".join(links)}
+            </div>
+            """
+
+        tags = " · ".join(
+            escape(keyword)
+            for keyword in project.get("keywords", [])
+        )
+
+        tags_html = ""
+
+        if tags:
+            tags_html = f"""
+            <div class="project-tags">
+                {tags}
+            </div>
+            """
+
+        featured = " featured" if index < 2 else ""
+
+        projects.append(
+            f"""
+            <article class="project card{featured}">
+                <div class="project-head">
+                    <div class="project-name">
+                        {escape(project.get("name", ""))}
+                    </div>
+
+                    {links_html}
+                </div>
+
+                <p class="project-description">
+                    {escape(project.get("description", ""))}
+                </p>
+
+                {tags_html}
+            </article>
+            """
+        )
+
+    if not projects:
+        return ""
+
+    # Split into two columns using a table (WeasyPrint doesn't support CSS grid)
+    left = projects[::2]   # indices 0, 2, 4, 6
+    right = projects[1::2] # indices 1, 3, 5
+
+    rows = []
+    for i in range(max(len(left), len(right))):
+        l = left[i] if i < len(left) else ""
+        r = right[i] if i < len(right) else ""
+        rows.append(f"""
+        <tr>
+            <td class="proj-col">{l}</td>
+            <td class="proj-col">{r}</td>
+        </tr>
+        """)
+
+    return f"""
+    <section>
+        <h2>Selected Projects</h2>
+        <table class="projects-table">
+            {"".join(rows)}
+        </table>
+    </section>
+    """
+
+
+def render_skills(data: dict) -> str:
+    skills = data.get("skills", [])
+    if not skills:
+        return ""
+
+    def skill_cell(skill):
+        if not skill:
+            return ""
+        items = " · ".join(
+            f'<span class="skill-item">{escape(kw)}</span>'
+            for kw in skill.get("keywords", [])
+        )
+        return f"""
+        <div class="skill-row">
+            <div class="skill-group">{escape(skill.get("name", ""))}:</div>
+            <div class="skill-items">{items}</div>
+        </div>
+        """
+
+    left = skills[::2]
+    right = skills[1::2]
+    rows = []
+    for i in range(max(len(left), len(right))):
+        l = skill_cell(left[i] if i < len(left) else None)
+        r = skill_cell(right[i] if i < len(right) else None)
+        rows.append(f"""
+        <tr>
+            <td class="skill-col">{l}</td>
+            <td class="skill-col">{r}</td>
+        </tr>
+        """)
+
+    return f"""
+    <section>
+        <h2>Skills</h2>
+        <div class="card skills-card">
+            <table class="skills-table">
+                {"".join(rows)}
+            </table>
+        </div>
+    </section>
+    """
+
+
+def render_education(data: dict) -> str:
+    entries = []
+
+    for education in data.get("education", []):
+        date = fmt_range(
+            education.get("startDate", ""),
+            education.get("endDate", "")
+        )
+
+        degree = join_non_empty(
+            [
+                education.get("studyType", ""),
+                education.get("area", ""),
+            ],
+            " — "
+        )
+
+        honor = ""
+
+        if education.get("score"):
+            honor = (
+                f' <span class="education-honor">'
+                f'— {escape(education["score"])}'
+                f'</span>'
+            )
+
+        entries.append(
+            f"""
+            <article class="education card">
+                <div class="education-head">
+                    <div class="education-degree">
+                        {escape(degree)}
+                    </div>
+
+                    <div class="education-date">
+                        {escape(date)}
+                    </div>
+                </div>
+
+                <div class="education-school">
+                    {escape(education.get("institution", ""))}
+                    {honor}
+                </div>
+            </article>
+            """
+        )
+
+    if not entries:
+        return ""
+
+    # Build languages & interests inline to put next to education
+    languages = join_non_empty(
+        [
+            f'{escape(language["language"])} '
+            f'({escape(language["fluency"])})'
+            for language in data.get("languages", [])
+        ]
+    )
+
+    interests = join_non_empty(
+        [
+            escape(interest["name"])
+            for interest in data.get("interests", [])
+        ]
+    )
+
+    lang_int_html = f"""
+    <div class="card compact-card" style="margin-top:0">
+        <p class="compact-line">
+            <strong>Languages:</strong> {languages}
+        </p>
+        <p class="compact-line" style="margin-top:3pt">
+            <strong>Interests:</strong> {interests}
+        </p>
+    </div>
+    """
+
+    return f"""
+    <section>
+        <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
+            <tr>
+                <td style="width:55%; vertical-align:top; padding-right:6pt;">
+                    <h2>Education</h2>
+                    {"".join(entries)}
+                </td>
+                <td style="width:45%; vertical-align:top; padding-left:2pt;">
+                    <h2>Languages &amp; Interests</h2>
+                    {lang_int_html}
+                </td>
+            </tr>
+        </table>
+    </section>
+    """
+
+
+def render_languages_interests(data: dict) -> str:
+    # Now merged into render_education — this is a no-op
+    return ""
+
+
+# -----------------------------------------------------------------------------
+# Full HTML document
+# -----------------------------------------------------------------------------
+
+def render(data: dict, page_size: str) -> str:
+    basics = data["basics"]
+
     return f"""<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="utf-8"/><title>{e(b['name'])} — Resume</title>
-<style>{css()}</style></head>
+<head>
+    <meta charset="utf-8">
+    <title>{escape(basics["name"])} — Resume</title>
+
+    <style>
+        {css(page_size)}
+    </style>
+</head>
+
 <body>
-{header}
-{summary}
-{experience}
-{projects}
-{skills_html}
-{education}
-{lang_int}
-</body></html>"""
+    {render_header(data)}
+    {render_summary(data)}
+    {render_experience(data)}
+    {render_projects(data)}
+    {render_skills(data)}
+    {render_education(data)}
+    {render_languages_interests(data)}
+</body>
+</html>
+"""
+
+
+# -----------------------------------------------------------------------------
+# Main
+# -----------------------------------------------------------------------------
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Render resume.json into a PDF."
+    )
+
+    parser.add_argument(
+        "output",
+        nargs="?",
+        default=None,
+        help="Output PDF path."
+    )
+
+    parser.add_argument(
+        "--a4",
+        action="store_true",
+        help="Render using A4 instead of US Letter."
+    )
+
+    return parser.parse_args()
 
 
 def main() -> int:
-    data = json.loads((ROOT / "resume.json").read_text())
-    out = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "public" / "resume.pdf"
-    html_doc = render(data)
-    HTML(string=html_doc).write_pdf(str(out))
-    print(f"✓ wrote {out}")
+    args = parse_args()
+
+    resume_path = ROOT / "resume.json"
+
+    if not resume_path.exists():
+        print(f"Error: resume file not found: {resume_path}")
+        return 1
+
+    data = json.loads(resume_path.read_text(encoding="utf-8"))
+
+    if args.output:
+        output = Path(args.output)
+    else:
+        output = ROOT / "public" / "resume.pdf"
+
+    output.parent.mkdir(parents=True, exist_ok=True)
+
+    page_size = "A4" if args.a4 else "Letter"
+
+    html_document = render(
+        data=data,
+        page_size=page_size,
+    )
+
+    HTML(
+        string=html_document,
+        base_url=str(ROOT),
+    ).write_pdf(str(output))
+
+    print(f"✓ wrote {output} ({page_size})")
+
     return 0
 
 

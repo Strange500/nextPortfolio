@@ -88,7 +88,8 @@
         "C",
         "Python",
         "TypeScript",
-        "JavaScript"
+        "JavaScript",
+        "WebAssembly"
       ]
     },
     {
@@ -146,11 +147,15 @@
       ]
     },
     {
-      "name": "Running & swimming",
+      "name": "Running",
       "keywords": []
     },
     {
-      "name": "Mechanics & motorcycles",
+      "name": "Swimming",
+      "keywords": []
+    },
+    {
+      "name": "Cycling",
       "keywords": []
     },
     {
@@ -201,6 +206,39 @@
         "Linux",
         "Self-hosting"
       ]
+    },
+    {
+      "name": "RayTracer-Rust",
+      "description": "CPU ray tracer in Rust with BVH acceleration, Phong shading, reflections, and a custom scene file format — built from scratch.",
+      "keywords": [
+        "Rust",
+        "Graphics",
+        "Ray Tracing",
+        "BVH"
+      ],
+      "url": "https://github.com/Strange500/RayTracer-Rust"
+    },
+    {
+      "name": "QGChat",
+      "description": "Full-stack chat app in Java EE with Docker Compose deployment, SQL persistence, and a JavaScript frontend.",
+      "keywords": [
+        "Java",
+        "Java EE",
+        "Docker",
+        "WebSocket",
+        "SQL"
+      ],
+      "url": "https://github.com/Strange500/QGChat"
+    },
+    {
+      "name": "ascii-cube-rs",
+      "description": "Real-time ASCII 3D cube renderer compiled to WebAssembly via a Nix flake — powers the hero widget on this portfolio.",
+      "keywords": [
+        "Rust",
+        "WebAssembly",
+        "Nix"
+      ],
+      "url": "https://github.com/Strange500/ascii-cube-rs"
     }
   ],
   "meta": {
