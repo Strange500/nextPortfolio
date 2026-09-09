@@ -68,8 +68,9 @@ const languages = [
 
 const interests = [
   { name: "Sport shooting", keywords: ["national level"] },
-  { name: "Running & swimming", keywords: [] },
-  { name: "Mechanics & motorcycles", keywords: [] },
+  { name: "Running", keywords: [] },
+  { name: "Swimming", keywords: [] },
+  { name: "Cycling", keywords: [] },
   { name: "Weightlifting", keywords: [] },
 ];
 
@@ -130,11 +131,11 @@ const work = dictionaries.en.experience.jobs.map((job) => ({
 const educationMap = {
   "Bachelor's Degree in Computer Science (BUT)": {
     area: "Computer Science",
-    studyType: "Bachelor's Degree (BUT)",
+    studyType: "Bachelor of Science",
   },
   "M.Eng. in Software Engineering (Diplôme d'Ingénieur)": {
     area: "Software Engineering",
-    studyType: "Master of Engineering (Diplôme d'Ingénieur)",
+    studyType: "Master of Engineering",
   },
 };
 

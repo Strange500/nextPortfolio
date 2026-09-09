@@ -66,13 +66,13 @@ def css() -> str:
     }}
     @font-face {{
       font-family: 'Inter';
-      src: url('{INTER / "Inter-SemiBold.ttf"}');
-      font-weight: 600; font-style: normal;
+      src: url('{INTER / "Inter-Bold.ttf"}');
+      font-weight: 700; font-style: normal;
     }}
     @font-face {{
       font-family: 'Inter';
-      src: url('{INTER / "Inter-Bold.ttf"}');
-      font-weight: 700; font-style: normal;
+      src: url('{INTER / "Inter-ExtraBold.ttf"}');
+      font-weight: 800; font-style: normal;
     }}
     @font-face {{
       font-family: 'Fira Code';
@@ -87,151 +87,166 @@ def css() -> str:
 
     @page {{
       size: Letter;
-      margin: 0.55in 0.65in 0.6in 0.65in;
+      margin: 0.25in;
+      background-color: #FAFAFA;
     }}
 
     :root {{
-      --ink: #1E293B;          /* body — anthracite, never pure black */
-      --ink-strong: #0F172A;  /* headings */
-      --ink-muted: #475569;   /* secondary labels / dates */
-      --accent: #2563EB;      /* sparingly — links, label */
-      --rule: #E2E8F0;        /* hairline dividers */
+      --ink: #1E293B;
+      --ink-strong: #0F172A;
+      --ink-muted: #475569;
+      --accent: #4F46E5;
+      --rule: #E2E8F0;
+      --bg: #FAFAFA;
+      --card-bg: #FFFFFF;
+      --card-shadow: 0 1px 2px -1px rgba(0,0,0,0.05);
     }}
 
     * {{ box-sizing: border-box; }}
     body {{
       font-family: 'Inter', sans-serif;
       color: var(--ink);
-      font-size: 10pt;
-      line-height: 1.5;
+      background-color: var(--bg);
+      font-size: 7.5pt;
+      line-height: 1.25;
       margin: 0;
     }}
     a {{ color: var(--accent); text-decoration: none; }}
     .mono {{ font-family: 'Fira Code', monospace; }}
 
     /* ---- header ---- */
-    header {{ margin-bottom: 18pt; }}
+    header {{ margin-bottom: 4pt; text-align: center; }}
     .name {{
-      font-size: 24pt;
-      font-weight: 700;
+      font-size: 14pt;
+      font-weight: 800;
       color: var(--ink-strong);
-      letter-spacing: -0.01em;
-      margin: 0 0 2pt 0;
+      letter-spacing: -0.02em;
+      margin: 0 0 1pt 0;
     }}
     .label {{
-      font-size: 11pt;
+      font-size: 8.5pt;
       font-weight: 500;
       color: var(--accent);
-      margin: 0 0 8pt 0;
+      margin: 0 0 1pt 0;
     }}
     .contact {{
-      font-size: 8.6pt;
+      font-size: 7pt;
       color: var(--ink-muted);
-      line-height: 1.65;
+      line-height: 1.3;
     }}
-    .contact .mono {{ color: var(--accent); }}
-    .contact .sep {{ color: #CBD5E1; padding: 0 5pt; }}
+    .contact .mono {{ color: var(--accent); font-weight: 500; }}
+    .contact .sep {{ color: #CBD5E1; padding: 0 3pt; }}
 
     /* ---- sections ---- */
-    section {{ margin-bottom: 14pt; }}
+    section {{ margin-bottom: 4pt; }}
     h2 {{
-      font-size: 9pt;
-      font-weight: 600;
+      font-size: 8pt;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.09em;
+      letter-spacing: 0.1em;
       color: var(--ink-strong);
-      margin: 0 0 7pt 0;
-      padding-bottom: 4pt;
-      border-bottom: 1px solid var(--rule);
+      margin: 0 0 2pt 0;
+      padding-bottom: 0;
     }}
 
+    /* ---- cards ---- */
+    .card {{
+      background: var(--card-bg);
+      border-radius: 4px;
+      padding: 4pt 6pt;
+      margin-bottom: 2pt;
+      box-shadow: var(--card-shadow);
+    }}
+    .card:last-child {{ margin-bottom: 0; }}
+
     /* ---- summary ---- */
-    .summary p {{ margin: 0; color: var(--ink); }}
+    .summary p {{ margin: 0; color: var(--ink); padding: 0 2pt; }}
 
     /* ---- experience ---- */
-    .job {{ margin-bottom: 9pt; }}
-    .job:last-child {{ margin-bottom: 0; }}
+    .job.card {{ margin-bottom: 4pt; }}
     .job .head {{
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 1pt;
+      margin-bottom: 2pt;
     }}
     .job .role {{
-      font-weight: 600;
+      font-weight: 700;
       color: var(--ink-strong);
-      font-size: 10.5pt;
+      font-size: 9pt;
     }}
-    .job .co {{ color: var(--ink); }}
+    .job .co {{ color: var(--ink); font-weight: 500; }}
     .job .date {{
       flex-shrink: 0;
       font-family: 'Fira Code', monospace;
-      font-size: 8.6pt;
+      font-size: 7.5pt;
       color: var(--ink-muted);
       margin-left: 8pt;
     }}
-    .job ul {{ margin: 3pt 0 0 0; padding: 0 0 0 13pt; }}
+    .job ul {{ margin: 2pt 0 0 0; padding: 0 0 0 12pt; }}
     .job li {{
-      margin-bottom: 2pt;
+      margin-bottom: 1pt;
       color: var(--ink);
-      padding-left: 1pt;
+      padding-left: 2pt;
     }}
     .job li::marker {{ color: #94A3B8; }}
     .deeplink {{
       font-family: 'Fira Code', monospace;
-      font-size: 8pt;
+      font-size: 7.5pt;
       color: var(--accent);
       margin-top: 2pt;
     }}
 
     /* ---- projects ---- */
-    .proj {{ margin-bottom: 8pt; }}
-    .proj:last-child {{ margin-bottom: 0; }}
+    .proj.card {{ margin-bottom: 4pt; }}
     .proj .head {{ margin-bottom: 1pt; }}
-    .proj .name {{ font-weight: 600; color: var(--ink-strong); }}
+    .proj .name {{ font-weight: 700; color: var(--ink-strong); font-size: 9pt; }}
     .proj .links {{
       font-family: 'Fira Code', monospace;
-      font-size: 8pt;
+      font-size: 7.5pt;
     }}
-    .proj .links .sep {{ color: #CBD5E1; padding: 0 4pt; }}
-    .proj .desc {{ margin: 2pt 0 1pt 0; }}
+    .proj .links .sep {{ color: #CBD5E1; padding: 0 3pt; }}
+    .proj .desc {{ margin: 1pt 0 2pt 0; line-height: 1.35; }}
     .proj .tags {{
       font-family: 'Fira Code', monospace;
-      font-size: 8pt;
+      font-size: 7pt;
       color: var(--ink-muted);
-      letter-spacing: 0.01em;
+      background: var(--bg);
+      padding: 1pt 3pt;
+      border-radius: 3px;
+      display: inline-block;
+      margin-top: 2pt;
     }}
 
     /* ---- skills ---- */
-    .skill-row {{ margin-bottom: 4pt; }}
+    .skill-row {{ margin-bottom: 2pt; }}
     .skill-row:last-child {{ margin-bottom: 0; }}
-    .skill-row .group {{ font-weight: 600; color: var(--ink-strong); }}
+    .skill-row .group {{ font-weight: 700; color: var(--ink-strong); display: inline-block; width: 115pt; }}
     .skill-row .items {{ color: var(--ink); }}
-    .skill-row .items .mono {{ font-size: 8.6pt; }}
+    .skill-row .items .mono {{ font-size: 7.5pt; color: var(--accent); font-weight: 500; }}
 
     /* ---- education ---- */
-    .edu {{ margin-bottom: 6pt; }}
-    .edu:last-child {{ margin-bottom: 0; }}
+    .edu.card {{ margin-bottom: 4pt; }}
     .edu .head {{
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 0;
+      margin-bottom: 0.5pt;
     }}
-    .edu .study {{ font-weight: 600; color: var(--ink-strong); }}
+    .edu .study {{ font-weight: 700; color: var(--ink-strong); font-size: 8.5pt; }}
     .edu .date {{
       flex-shrink: 0;
       font-family: 'Fira Code', monospace;
-      font-size: 8.6pt;
+      font-size: 7pt;
       color: var(--ink-muted);
-      margin-left: 8pt;
+      margin-left: 4pt;
     }}
-    .edu .school {{ color: var(--ink-muted); }}
-    .edu .honor {{ font-style: italic; color: var(--ink-muted); font-size: 9pt; }}
+    .edu .school {{ color: var(--ink-muted); margin-top: 0.5pt; }}
+    .edu .honor {{ font-style: italic; color: var(--accent); font-size: 7.5pt; }}
 
     /* ---- languages & interests ---- */
-    .lang-int {{ font-size: 9.5pt; color: var(--ink); }}
-    .lang-int .sep {{ color: #CBD5E1; padding: 0 6pt; }}
+    .lang-int {{ font-size: 7.5pt; color: var(--ink); padding: 2pt; }}
+    .lang-int strong {{ color: var(--ink-strong); font-weight: 700; }}
     """
 
 
@@ -278,7 +293,7 @@ def render(data: dict) -> str:
     """
 
     # summary
-    summary = f'<section class="summary"><h2>Summary</h2><p>{e(b.get("summary",""))}</p></section>'
+    summary = f'<section class="summary"><h2>Summary</h2><div class="card"><p>{e(b.get("summary",""))}</p></div></section>'
 
     # experience
     jobs = []
@@ -289,7 +304,7 @@ def render(data: dict) -> str:
         if j.get("url"):
             dl = f'<div class="deeplink">↳ {e(short_url(j["url"]))}</div>'
         jobs.append(f"""
-        <div class="job">
+        <div class="job card">
           <div class="head">
             <span class="date">{date}</span>
             <span class="role">{e(j['position'])}</span>
@@ -311,7 +326,7 @@ def render(data: dict) -> str:
             links.append(f'<a href="{e(p["blog"])}">{e(short_url(p["blog"]))}</a>')
         tags = " · ".join(e(t) for t in p.get("keywords", []))
         projs.append(f"""
-        <div class="proj">
+        <div class="proj card">
           <div class="head">
             <span class="name">{e(p['name'])}</span>
             {"<span class='links'>&nbsp;" + sep.join(links) + "</span>" if links else ""}
@@ -330,7 +345,7 @@ def render(data: dict) -> str:
             f'<div class="skill-row"><span class="group">{e(s["name"])}:</span> '
             f'<span class="items">{items}</span></div>'
         )
-    skills_html = f'<section><h2>Skills</h2>{"".join(skills)}</section>'
+    skills_html = f'<section><h2>Skills</h2><div class="card">{"".join(skills)}</div></section>'
 
     # education
     edus = []
@@ -338,7 +353,7 @@ def render(data: dict) -> str:
         date = fmt_range(ed.get("startDate", ""), ed.get("endDate", ""))
         honor = f' <span class="honor">— {e(ed["score"])}</span>' if ed.get("score") else ""
         edus.append(f"""
-        <div class="edu">
+        <div class="edu card">
           <div class="head">
             <span class="date">{date}</span>
             <span class="study">{e(ed.get('studyType',''))} — {e(ed.get('area',''))}</span>
@@ -356,9 +371,9 @@ def render(data: dict) -> str:
     lang_int = f"""
     <section>
       <h2>Languages &amp; Interests</h2>
-      <div class="lang-int">
+      <div class="lang-int card">
         <strong>Languages:</strong> {langs}
-        <br/>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
         <strong>Interests:</strong> {interests}
       </div>
     </section>
