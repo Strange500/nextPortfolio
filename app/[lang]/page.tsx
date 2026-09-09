@@ -59,7 +59,7 @@ export default async function Page({
               </a>
             </Button>
             <Button asChild variant="outline" className="rounded-full px-6 border-primary/20 hover:bg-primary/5">
-              <a href="/CV_Benjamin_Roget_v2.pdf" target="_blank" rel="noopener noreferrer">
+              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
                 {t.hero.resume}
               </a>
             </Button>

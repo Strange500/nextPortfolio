@@ -2,11 +2,13 @@
   "name": "portofolio",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "resume": "./scripts/generate-resume.sh"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
