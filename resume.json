@@ -1,0 +1,211 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Benjamin Roget",
+    "label": "Software Engineer — Backend & Systems",
+    "email": "benjamin.rogetpro@gmail.com",
+    "phone": "+33 7 83 03 95 25",
+    "url": "https://portfolio.qgroget.com",
+    "summary": "Software engineer (co-op) focused on backend development and systems tooling. I build reliable, maintainable systems by combining rigorous automated testing with declarative infrastructure (NixOS, Docker). Seeking a 3-month software engineering internship in the US, starting June 2027.",
+    "location": {
+      "address": "12 bis rue Jules Ferry",
+      "postalCode": "59491",
+      "city": "Villeneuve d'Ascq",
+      "region": "Hauts-de-France",
+      "countryCode": "FR"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "Strange500",
+        "url": "https://github.com/Strange500"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "roget-benjamin",
+        "url": "https://www.linkedin.com/in/roget-benjamin"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Numih France (DOGRH)",
+      "position": "Software Engineer (Co-op)",
+      "startDate": "2025-09-01",
+      "endDate": "",
+      "url": "https://portfolio.qgroget.com/en/blog/automated-testing-framework",
+      "highlights": [
+        "Architected and executed the automated integration test suite for the Hôpital Numérique platform.",
+        "Massively refactored the test architecture to unify execution via API or maven, optimizing developer workflow.",
+        "Created abstractions and data isolation tools via Jenkins for reproducible test environments.",
+        "Developed and deployed a Spring Boot internal tool to production."
+      ]
+    },
+    {
+      "name": "Ekeep-IT",
+      "position": "Fullstack Developer Intern",
+      "startDate": "2025-04-01",
+      "endDate": "2025-06-30",
+      "highlights": [
+        "Developed a web application within an Agile environment.",
+        "Utilized Spring Boot for the backend and Next.js for the frontend."
+      ]
+    },
+    {
+      "name": "Flint Group",
+      "position": "Logistics Assistant",
+      "startDate": "2023-06-01",
+      "endDate": "2024-08-31",
+      "summary": "Seasonal role — summers 2023 and 2024.",
+      "highlights": [
+        "Managed inventory with SAP, ran weekly stock counts, and tracked finished-goods flows."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "IMT Nord Europe, Institut Mines-Télécom",
+      "area": "Software Engineering",
+      "studyType": "Master of Engineering (Diplôme d'Ingénieur)",
+      "startDate": "2025-09-01",
+      "endDate": ""
+    },
+    {
+      "institution": "University Institute of Technology of Lille",
+      "area": "Computer Science",
+      "studyType": "Bachelor's Degree (BUT)",
+      "startDate": "2023-09-01",
+      "endDate": "2025-06-01",
+      "score": "Graduated top of the class"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Languages & Systems",
+      "keywords": [
+        "Rust",
+        "Java",
+        "C",
+        "Python",
+        "TypeScript",
+        "JavaScript"
+      ]
+    },
+    {
+      "name": "Backend & Web",
+      "keywords": [
+        "Spring Boot",
+        "Java EE",
+        "React",
+        "Next.js",
+        "Node.js",
+        "Angular"
+      ]
+    },
+    {
+      "name": "DevOps & Infrastructure",
+      "keywords": [
+        "NixOS",
+        "Linux",
+        "Docker",
+        "Podman",
+        "Jenkins",
+        "Traefik",
+        "Git"
+      ]
+    },
+    {
+      "name": "Architecture & Quality",
+      "keywords": [
+        "Selenium",
+        "JUnit 5",
+        "Design Patterns",
+        "Agile"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "language": "French",
+      "fluency": "Native"
+    },
+    {
+      "language": "English",
+      "fluency": "Professional — TOEIC 980"
+    },
+    {
+      "language": "Spanish",
+      "fluency": "Intermediate"
+    }
+  ],
+  "interests": [
+    {
+      "name": "Sport shooting",
+      "keywords": [
+        "national level"
+      ]
+    },
+    {
+      "name": "Running & swimming",
+      "keywords": []
+    },
+    {
+      "name": "Mechanics & motorcycles",
+      "keywords": []
+    },
+    {
+      "name": "Weightlifting",
+      "keywords": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "min-btc-node",
+      "description": "Built a minimal Bitcoin full node in Rust from scratch, hand-rolling the wire protocol's binary serialization and concurrent peer handling to understand how blocks propagate across the network.",
+      "keywords": [
+        "Rust",
+        "Bitcoin",
+        "Networking"
+      ],
+      "url": "https://github.com/Strange500/min-btc-node"
+    },
+    {
+      "name": "nixos-config",
+      "description": "Declared multi-host NixOS configurations and dotfiles with Nix flakes and Home Manager to make development environments versioned and fully reproducible across machines.",
+      "keywords": [
+        "Nix",
+        "NixOS",
+        "Linux",
+        "IaC"
+      ],
+      "url": "https://github.com/Strange500/nixos-config",
+      "blog": "https://portfolio.qgroget.com/en/blog/nixos-2026-reproducible"
+    },
+    {
+      "name": "pixel-war",
+      "description": "Designed a Web3 pixel-canvas dApp with Solidity and JavaScript where users bid on-chain to own pixels, claim refunds when outbid, and mint ERC-721 snapshots — reasoning through on-chain state and smart-contract security.",
+      "keywords": [
+        "Web3",
+        "Solidity",
+        "JavaScript",
+        "Blockchain"
+      ],
+      "url": "https://github.com/Strange500/pixel-war"
+    },
+    {
+      "name": "HomeLab Infrastructure",
+      "description": "Provisioned a self-hosted server with Unraid and Docker running Jellyfin, Gitea, and Pi-hole to learn bare-metal provisioning and network routing hands-on.",
+      "keywords": [
+        "Unraid",
+        "Docker",
+        "Linux",
+        "Self-hosting"
+      ]
+    }
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "canonical": "https://portfolio.qgroget.com",
+    "generatedFrom": "data/dictionaries.ts, data/education.ts, data/projects.json, data/technologies.ts"
+  }
+}

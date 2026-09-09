@@ -18,7 +18,7 @@ export const SmallSocialBtn = () => {
       </a>
 
       <a
-        href='/CV_Benjamin_Roget_v2.pdf'
+        href='/resume.pdf'
         className='rounded bg-accent p-2 text-foreground shadow hover:bg-muted hover:text-foreground'
       >
         <FileText size={16} />
