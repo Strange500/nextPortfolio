@@ -1,0 +1,228 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Benjamin Roget",
+    "label": "Software Engineer — Backend & Systems",
+    "email": "benjamin.rogetpro@gmail.com",
+    "phone": "+33 7 83 03 95 25",
+    "url": "https://portfolio.qgroget.com",
+    "summary": "Backend-focused software engineer (co-op) designing reliable, maintainable systems through rigorous automated testing and declarative infrastructure (NixOS, Docker). Experienced in Java Spring Boot, Rust, and full-stack delivery. Seeking a 3-month software engineering internship in the US, starting June 2027. Eligible for J-1 internship visa sponsorship.",
+    "location": {
+      "city": "Villeneuve d'Ascq",
+      "region": "Hauts-de-France",
+      "countryCode": "FR"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "Strange500",
+        "url": "https://github.com/Strange500"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "roget-benjamin",
+        "url": "https://www.linkedin.com/in/roget-benjamin"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Numih France (DOGRH)",
+      "position": "Software Engineer (Co-op)",
+      "startDate": "2025-09-01",
+      "endDate": "",
+      "url": "https://portfolio.qgroget.com/en/blog/automated-testing-framework",
+      "highlights": [
+        "Architected and maintain a unified E2E test engine (Java Spring Boot, Selenium) running 50–70 automated integration tests, executable identically via Maven in CI or an async REST API.",
+        "Refactored the test architecture to cut the false-positive rate by ~70% and reduce environment/version migrations from ~4 hours to under 10 minutes.",
+        "Built developer tooling and data-isolation abstractions (Jenkins) to interact easily with in-house applications and eliminate concurrent test collisions.",
+        "Developed and deployed a Spring Boot internal tool that auto-distributes daily product-support duties across ~40 developers."
+      ]
+    },
+    {
+      "name": "Ekeep-IT",
+      "position": "Fullstack Developer Intern",
+      "startDate": "2025-04-01",
+      "endDate": "2025-06-30",
+      "highlights": [
+        "Engineered RESTful backend services (Java Spring Boot, relational database) powering My-UUU, an equestrian-facility directory and review platform.",
+        "Developed responsive interfaces in Next.js (React) and shipped sprint user stories in an Agile/Scrum team for a production-facing product."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "IMT Nord Europe, Institut Mines-Télécom",
+      "area": "Software Engineering",
+      "studyType": "Master of Engineering",
+      "startDate": "2025-09-01",
+      "endDate": ""
+    },
+    {
+      "institution": "University Institute of Technology of Lille",
+      "area": "Computer Science",
+      "studyType": "Bachelor of Science",
+      "startDate": "2023-09-01",
+      "endDate": "2025-06-01",
+      "score": "Graduated top of the class"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Languages & Systems",
+      "keywords": [
+        "Rust",
+        "Java",
+        "C",
+        "Python",
+        "TypeScript",
+        "JavaScript",
+        "WebAssembly"
+      ]
+    },
+    {
+      "name": "Backend & Web",
+      "keywords": [
+        "Spring Boot",
+        "Java EE",
+        "React",
+        "Next.js",
+        "Node.js",
+        "Angular"
+      ]
+    },
+    {
+      "name": "DevOps & Infrastructure",
+      "keywords": [
+        "NixOS",
+        "Linux",
+        "Docker",
+        "Podman",
+        "Jenkins",
+        "Traefik",
+        "Git"
+      ]
+    },
+    {
+      "name": "Architecture & Quality",
+      "keywords": [
+        "Selenium",
+        "JUnit 5",
+        "Design Patterns",
+        "Agile"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "language": "French",
+      "fluency": "Native"
+    },
+    {
+      "language": "English",
+      "fluency": "Professional — TOEIC 980/990"
+    },
+    {
+      "language": "Spanish",
+      "fluency": "Intermediate"
+    }
+  ],
+  "interests": [
+    {
+      "name": "Sport shooting",
+      "keywords": [
+        "national level"
+      ]
+    },
+    {
+      "name": "Running",
+      "keywords": []
+    },
+    {
+      "name": "Swimming",
+      "keywords": []
+    },
+    {
+      "name": "Cycling",
+      "keywords": []
+    },
+    {
+      "name": "Weightlifting",
+      "keywords": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "min-btc-node",
+      "description": "Wrote a Rust tool that tracks a Bitcoin address's balance and transaction history by hand-implementing the P2P wire protocol, fetching block headers from multiple peers in parallel without full-chain validation.",
+      "keywords": [
+        "Rust",
+        "Bitcoin",
+        "Networking"
+      ],
+      "url": "https://github.com/Strange500/min-btc-node"
+    },
+    {
+      "name": "nixos-config",
+      "description": "Declared 6-host NixOS configurations and dotfiles (Nix flakes + Home Manager) — a self-hosted server exposing personal services, a backup Raspberry Pi, desktops, a laptop and a Steam-OS-style console — all versioned and reproducible as IaC.",
+      "keywords": [
+        "Nix",
+        "NixOS",
+        "Linux",
+        "IaC"
+      ],
+      "url": "https://github.com/Strange500/nixos-config",
+      "blog": "https://portfolio.qgroget.com/en/blog/nixos-2026-reproducible"
+    },
+    {
+      "name": "pixel-war",
+      "description": "Course project — designed a Web3 pixel-canvas dApp in Solidity, exploring on-chain state, pull-over-push refunds to prevent reentrancy, and ERC-721 snapshot minting.",
+      "keywords": [
+        "Web3",
+        "Solidity",
+        "JavaScript",
+        "Blockchain"
+      ],
+      "url": "https://github.com/Strange500/pixel-war"
+    },
+    {
+      "name": "RayTracer-Rust",
+      "description": "CPU ray tracer in Rust with Bounding Volume Hierarchy (BVH) spatial partitioning for O(log N) ray-primitive intersections, Phong shading, and reflections.",
+      "keywords": [
+        "Rust",
+        "Graphics",
+        "Ray Tracing",
+        "BVH"
+      ],
+      "url": "https://github.com/Strange500/RayTracer-Rust"
+    },
+    {
+      "name": "QGChat",
+      "description": "Full-stack chat app in Java EE with Docker Compose deployment, SQL persistence, and a JavaScript frontend.",
+      "keywords": [
+        "Java",
+        "Java EE",
+        "Docker",
+        "WebSocket",
+        "SQL"
+      ],
+      "url": "https://github.com/Strange500/QGChat"
+    },
+    {
+      "name": "ascii-cube-rs",
+      "description": "Real-time ASCII 3D cube renderer compiled to WebAssembly via a Nix flake — powers the hero widget on this portfolio.",
+      "keywords": [
+        "Rust",
+        "WebAssembly",
+        "Nix"
+      ],
+      "url": "https://github.com/Strange500/ascii-cube-rs"
+    }
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "lang": "en",
+    "canonical": "https://portfolio.qgroget.com",
+    "generatedFrom": "data/dictionaries.ts, data/education.ts, data/projects.json, data/projects_fr.json, data/technologies.ts"
+  }
+}

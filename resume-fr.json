@@ -1,0 +1,241 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
+  "basics": {
+    "name": "Benjamin Roget",
+    "label": "Ingénieur Logiciel — Backend & Systèmes",
+    "email": "benjamin.rogetpro@gmail.com",
+    "phone": "+33 7 83 03 95 25",
+    "url": "https://portfolio.qgroget.com/fr",
+    "image": "file:///opt/data/nextPortfolio/public/img/cv-profile.jpg",
+    "summary": "Apprenti ingénieur logiciel à l'IMT Nord Europe (alternance), spécialisé en développement backend et outillage système. Je conçois des systèmes fiables et maintenables en combinant tests automatisés rigoureux (Spring Boot, Selenium, JUnit 5) et environnements déclaratifs (NixOS, Docker). À la recherche d'un stage de fin d'études de 3 mois, à partir de juin 2027.",
+    "location": {
+      "address": "12 bis rue Jules Ferry",
+      "postalCode": "59491",
+      "city": "Villeneuve d'Ascq",
+      "region": "Hauts-de-France",
+      "countryCode": "FR"
+    },
+    "profiles": [
+      {
+        "network": "GitHub",
+        "username": "Strange500",
+        "url": "https://github.com/Strange500"
+      },
+      {
+        "network": "LinkedIn",
+        "username": "roget-benjamin",
+        "url": "https://www.linkedin.com/in/roget-benjamin"
+      }
+    ]
+  },
+  "work": [
+    {
+      "name": "Numih France (DOGRH)",
+      "position": "Ingénieur Logiciel (Alternance)",
+      "startDate": "2025-09-01",
+      "endDate": "",
+      "url": "https://portfolio.qgroget.com/fr/blog/automated-testing-framework",
+      "highlights": [
+        "Architecture et maintien d'un moteur de tests E2E unifié (Spring Boot, Selenium) pilotant 50 à 70 tests d'intégration, exécutable à l'identique via Maven en CI ou via API REST asynchrone.",
+        "Refactoring de l'architecture de test ayant réduit le taux de faux positifs de ~70 % et ramené les migrations (version/environnement) de ~4 h à moins de 10 min.",
+        "Conception d'outils développeur et d'abstractions d'isolation de données (Jenkins) pour interagir facilement avec les applications internes et éliminer les collisions concurrentes.",
+        "Développement et déploiement en production d'un outil Spring Boot répartissant chaque jour le support produit auprès d'environ 40 développeurs."
+      ]
+    },
+    {
+      "name": "Ekeep-IT",
+      "position": "Ingénieur Fullstack (Stage)",
+      "startDate": "2025-04-01",
+      "endDate": "2025-06-30",
+      "highlights": [
+        "Développement des services backend (Java Spring Boot, base relationnelle) de My-UUU, plateforme de référencement et d'avis sur les structures équestres.",
+        "Réalisation d'interfaces responsive Next.js (React) et livraison de user stories en équipe Agile/Scrum pour un produit en production."
+      ]
+    },
+    {
+      "name": "Flint Group",
+      "position": "Assistant Logistique",
+      "startDate": "2023-06-01",
+      "endDate": "2024-08-31",
+      "summary": "Emploi saisonnier — étés 2023 et 2024.",
+      "highlights": [
+        "Gestion des stocks avec SAP, inventaires hebdomadaires et suivi des flux de produits finis."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "institution": "IMT Nord Europe, Institut Mines-Télécom",
+      "area": "Ingénierie Logicielle",
+      "studyType": "Diplôme d'Ingénieur (Grade de Master)",
+      "startDate": "2025-09-01",
+      "endDate": ""
+    },
+    {
+      "institution": "IUT de Lille",
+      "area": "Informatique",
+      "studyType": "BUT Informatique",
+      "startDate": "2023-09-01",
+      "endDate": "2025-06-01",
+      "score": "Major de promotion"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Langages & Systèmes",
+      "keywords": [
+        "Rust",
+        "Java",
+        "C",
+        "Python",
+        "TypeScript",
+        "JavaScript",
+        "WebAssembly"
+      ]
+    },
+    {
+      "name": "Backend & Web",
+      "keywords": [
+        "Spring Boot",
+        "Java EE",
+        "React",
+        "Next.js",
+        "Node.js",
+        "Angular"
+      ]
+    },
+    {
+      "name": "DevOps & Infrastructure",
+      "keywords": [
+        "NixOS",
+        "Linux",
+        "Docker",
+        "Podman",
+        "Jenkins",
+        "Traefik",
+        "Git"
+      ]
+    },
+    {
+      "name": "Architecture & Qualité",
+      "keywords": [
+        "Selenium",
+        "JUnit 5",
+        "Design Patterns",
+        "Agile"
+      ]
+    }
+  ],
+  "languages": [
+    {
+      "language": "Français",
+      "fluency": "Langue maternelle"
+    },
+    {
+      "language": "Anglais",
+      "fluency": "Courant — TOEIC 980/990"
+    },
+    {
+      "language": "Espagnol",
+      "fluency": "Intermédiaire"
+    }
+  ],
+  "interests": [
+    {
+      "name": "Tir sportif",
+      "keywords": [
+        "niveau national"
+      ]
+    },
+    {
+      "name": "Course à pied",
+      "keywords": []
+    },
+    {
+      "name": "Natation",
+      "keywords": []
+    },
+    {
+      "name": "Cyclisme",
+      "keywords": []
+    },
+    {
+      "name": "Musculation",
+      "keywords": []
+    }
+  ],
+  "projects": [
+    {
+      "name": "min-btc-node",
+      "description": "Outil Rust suivant le solde et l'historique de transactions d'une adresse Bitcoin : implémentation manuelle du protocole P2P, récupération des en-têtes de blocs auprès de plusieurs pairs en parallèle, sans validation complète de la chaîne.",
+      "keywords": [
+        "Rust",
+        "Bitcoin",
+        "Réseau"
+      ],
+      "url": "https://github.com/Strange500/min-btc-node"
+    },
+    {
+      "name": "nixos-config",
+      "description": "Configurations NixOS déclaratives (6 machines) et dotfiles via Nix flakes + Home Manager — serveur auto-hébergé exposant mes services, Raspberry Pi de sauvegarde, PC fixes, portable et console « Steam-OS like » — le tout versionné et 100 % reproductible (IaC).",
+      "keywords": [
+        "Nix",
+        "NixOS",
+        "Linux",
+        "IaC"
+      ],
+      "url": "https://github.com/Strange500/nixos-config",
+      "blog": "https://portfolio.qgroget.com/fr/blog/nixos-2026-reproducible"
+    },
+    {
+      "name": "pixel-war",
+      "description": "Projet de cours — conception d'une dApp Web3 pixel-canvas en Solidity : gestion d'état on-chain, remboursements pull-over-push contre la réentrance et frappe d'instantanés ERC-721.",
+      "keywords": [
+        "Web3",
+        "Solidity",
+        "JavaScript",
+        "Blockchain"
+      ],
+      "url": "https://github.com/Strange500/pixel-war"
+    },
+    {
+      "name": "RayTracer-Rust",
+      "description": "Moteur de ray tracing CPU en Rust avec partitionnement spatial BVH pour des intersections en O(log N), ombrage de Phong et réflexions récursives.",
+      "keywords": [
+        "Rust",
+        "Graphisme",
+        "Ray Tracing",
+        "BVH"
+      ],
+      "url": "https://github.com/Strange500/RayTracer-Rust"
+    },
+    {
+      "name": "QGChat",
+      "description": "Application de messagerie instantanée en Java EE avec déploiement Docker Compose, persistance SQL et interface JavaScript.",
+      "keywords": [
+        "Java",
+        "Java EE",
+        "Docker",
+        "WebSocket",
+        "SQL"
+      ],
+      "url": "https://github.com/Strange500/QGChat"
+    },
+    {
+      "name": "ascii-cube-rs",
+      "description": "Moteur de rendu 3D d'un cube ASCII en temps réel compilé en WebAssembly via un flake Nix — anime le widget hero de ce portfolio.",
+      "keywords": [
+        "Rust",
+        "WebAssembly",
+        "Nix"
+      ],
+      "url": "https://github.com/Strange500/ascii-cube-rs"
+    }
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "lang": "fr",
+    "canonical": "https://portfolio.qgroget.com/fr",
+    "generatedFrom": "data/dictionaries.ts, data/education.ts, data/projects.json, data/projects_fr.json, data/technologies.ts"
+  }
+}

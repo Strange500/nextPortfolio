@@ -86,6 +86,49 @@ The projects JSON file should follow this structure:
 
 **Error Handling**: If the specified file doesn't exist, contains invalid JSON, or is empty, the application will gracefully fall back to the default projects (same as `data/projects.json`) and log appropriate error messages. This ensures the portfolio always displays content even when custom project files have issues.
 
+## Resume Generation & Theming
+
+This portfolio acts as a single source of truth to automatically generate PDF resumes in both English and French. The resume pipeline supports a robust theme system capable of rendering standard ATS layouts as well as any community `jsonresume-theme-*` from npm.
+
+### Quick Commands
+
+```bash
+# Generate both EN and FR JSON Resumes and PDFs using default themes
+npm run resume
+
+# List all configured and available themes
+npm run resume:themes
+
+# Generate only the English resume
+npm run resume:en
+
+# Generate only the French resume
+npm run resume:fr
+```
+
+### Changing Themes
+
+By default, the English version uses an ATS-friendly single-column layout, and the French version can be customized independently. 
+
+To permanently change the default themes, edit `scripts/themes.config.json`:
+```json
+{
+  "en": "even",
+  "fr": "weasyprint"
+}
+```
+
+You can also test themes on the fly without changing defaults:
+```bash
+# Render EN resume with the 'even' theme and FR with 'flat'
+./scripts/generate-resume.sh --theme-en even --theme-fr flat
+
+# Use a new jsonresume theme from npm and auto-install it
+./scripts/generate-resume.sh --theme-en stackoverflow --install
+```
+
+For full details on how the universal rendering pipeline works (Puppeteer + Chromium + WeasyPrint), see [scripts/README.md](scripts/README.md).
+
 ## Deployment with Docker
 
 To deploy this portfolio with Docker, follow these steps:
