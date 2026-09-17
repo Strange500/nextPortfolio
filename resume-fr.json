@@ -7,7 +7,7 @@
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com/fr",
     "image": "file:///home/strange/Documents/nextportfolio/public/img/cv-profile.jpg",
-    "summary": "Ingénieur logiciel (en alternance) axé sur le développement backend et l'outillage système. Je conçois des systèmes fiables et maintenables en combinant tests automatisés rigoureux et environnements déclaratifs (NixOS, Docker). À la recherche d'un stage d'ingénieur de 3 mois, dès juin 2027.",
+    "summary": "Apprenti ingénieur logiciel à l'IMT Nord Europe (alternance), spécialisé en développement backend et outillage système. Je conçois des systèmes fiables et maintenables en combinant tests automatisés rigoureux (Spring Boot, Selenium, JUnit 5) et environnements déclaratifs (NixOS, Docker). À la recherche d'un stage de fin d'études de 3 mois, à partir de juin 2027.",
     "location": {
       "address": "12 bis rue Jules Ferry",
       "postalCode": "59491",
@@ -48,8 +48,8 @@
       "startDate": "2025-04-01",
       "endDate": "2025-06-30",
       "highlights": [
-        "Développement de fonctionnalités full-stack et d'endpoints REST en Java Spring Boot pour l'intégration des services et de la base de données.",
-        "Conception d'interfaces réactives avec Next.js (React) et livraison des user stories au sein d'une équipe en rituels Agile/Scrum."
+        "Conception d'endpoints REST et de services backend en Java Spring Boot, avec intégration aux bases de données relationnelles.",
+        "Développement d'interfaces réactives avec Next.js (React) et livraison de user stories au sein d'une équipe Agile/Scrum."
       ]
     },
     {
@@ -133,7 +133,7 @@
     },
     {
       "language": "Anglais",
-      "fluency": "Courant / Professionnel — TOEIC 980"
+      "fluency": "Courant — TOEIC 980/990"
     },
     {
       "language": "Espagnol",

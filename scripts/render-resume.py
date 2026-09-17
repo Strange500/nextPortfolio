@@ -1039,6 +1039,27 @@ def render_education(data: dict, lang: str = "en") -> str:
 def render(data: dict, page_size: str, lang: str = "en") -> str:
     basics = data["basics"]
 
+    if lang == "fr":
+        # Standard French CV order: Profile -> Education -> Experience -> Skills -> Projects
+        body_content = f"""
+        {render_header(data, lang=lang)}
+        {render_summary(data, lang=lang)}
+        {render_education(data, lang=lang)}
+        {render_experience(data, lang=lang)}
+        {render_skills(data, lang=lang)}
+        {render_projects(data, lang=lang)}
+        """
+    else:
+        # Standard US ATS order: Summary -> Experience -> Projects -> Skills -> Education
+        body_content = f"""
+        {render_header(data, lang=lang)}
+        {render_summary(data, lang=lang)}
+        {render_experience(data, lang=lang)}
+        {render_projects(data, lang=lang)}
+        {render_skills(data, lang=lang)}
+        {render_education(data, lang=lang)}
+        """
+
     return f"""<!DOCTYPE html>
 <html lang="{lang}">
 <head>
@@ -1051,12 +1072,7 @@ def render(data: dict, page_size: str, lang: str = "en") -> str:
 </head>
 
 <body>
-    {render_header(data, lang=lang)}
-    {render_summary(data, lang=lang)}
-    {render_experience(data, lang=lang)}
-    {render_projects(data, lang=lang)}
-    {render_skills(data, lang=lang)}
-    {render_education(data, lang=lang)}
+    {body_content}
 </body>
 </html>
 """

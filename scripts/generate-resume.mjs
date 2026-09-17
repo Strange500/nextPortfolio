@@ -41,19 +41,17 @@ const basicsData = {
     phone: "+33 7 83 03 95 25",
     url: "https://portfolio.qgroget.com",
     summary:
-      "Software engineer (co-op) focused on backend development and systems tooling. " +
-      "I build reliable, maintainable systems by combining rigorous automated testing " +
-      "with declarative infrastructure (NixOS, Docker). Seeking a 3-month software " +
-      "engineering internship in the US, starting June 2027.",
+      "Backend-focused software engineer (co-op) designing reliable, maintainable systems through " +
+      "rigorous automated testing and declarative infrastructure (NixOS, Docker). " +
+      "Experienced in Java Spring Boot, Rust, and full-stack delivery. " +
+      "Seeking a 3-month software engineering internship in the US, starting June 2027.",
     location: {
-      address: "12 bis rue Jules Ferry",
-      postalCode: "59491",
       city: "Villeneuve d'Ascq",
       region: "Hauts-de-France",
       countryCode: "FR",
     },
     profiles: [
-      { network: "GitHub", username: "Strange500", url: "https://github.com/Strange500" },
+      { network: "GitHub",   username: "Strange500",    url: "https://github.com/Strange500" },
       { network: "LinkedIn", username: "roget-benjamin", url: "https://www.linkedin.com/in/roget-benjamin" },
     ],
   },
@@ -65,10 +63,10 @@ const basicsData = {
     url: "https://portfolio.qgroget.com/fr",
     image: `file://${join(ROOT, "public/img/cv-profile.jpg")}`,
     summary:
-      "Ingénieur logiciel (en alternance) axé sur le développement backend et l'outillage système. " +
-      "Je conçois des systèmes fiables et maintenables en combinant tests automatisés rigoureux " +
-      "et environnements déclaratifs (NixOS, Docker). À la recherche d'un stage d'ingénieur de 3 mois, " +
-      "dès juin 2027.",
+      "Apprenti ingénieur logiciel à l'IMT Nord Europe (alternance), spécialisé en développement " +
+      "backend et outillage système. Je conçois des systèmes fiables et maintenables en combinant " +
+      "tests automatisés rigoureux (Spring Boot, Selenium, JUnit 5) et environnements déclaratifs " +
+      "(NixOS, Docker). À la recherche d'un stage de fin d'études de 3 mois, à partir de juin 2027.",
     location: {
       address: "12 bis rue Jules Ferry",
       postalCode: "59491",
@@ -77,7 +75,7 @@ const basicsData = {
       countryCode: "FR",
     },
     profiles: [
-      { network: "GitHub", username: "Strange500", url: "https://github.com/Strange500" },
+      { network: "GitHub",   username: "Strange500",    url: "https://github.com/Strange500" },
       { network: "LinkedIn", username: "roget-benjamin", url: "https://www.linkedin.com/in/roget-benjamin" },
     ],
   },
@@ -85,13 +83,13 @@ const basicsData = {
 
 const languagesData = {
   en: [
-    { language: "French", fluency: "Native" },
-    { language: "English", fluency: "Professional — TOEIC 980" },
+    { language: "French",  fluency: "Native" },
+    { language: "English", fluency: "Professional — TOEIC 980/990" },
     { language: "Spanish", fluency: "Intermediate" },
   ],
   fr: [
     { language: "Français", fluency: "Langue maternelle" },
-    { language: "Anglais", fluency: "Courant / Professionnel — TOEIC 980" },
+    { language: "Anglais",  fluency: "Courant — TOEIC 980/990" },
     { language: "Espagnol", fluency: "Intermédiaire" },
   ],
 };
@@ -99,33 +97,24 @@ const languagesData = {
 const interestsData = {
   en: [
     { name: "Sport shooting", keywords: ["national level"] },
-    { name: "Running", keywords: [] },
-    { name: "Swimming", keywords: [] },
-    { name: "Cycling", keywords: [] },
-    { name: "Weightlifting", keywords: [] },
+    { name: "Running",        keywords: [] },
+    { name: "Swimming",       keywords: [] },
+    { name: "Cycling",        keywords: [] },
+    { name: "Weightlifting",  keywords: [] },
   ],
   fr: [
-    { name: "Tir sportif", keywords: ["niveau national"] },
+    { name: "Tir sportif",   keywords: ["niveau national"] },
     { name: "Course à pied", keywords: [] },
-    { name: "Natation", keywords: [] },
-    { name: "Cyclisme", keywords: [] },
-    { name: "Musculation", keywords: [] },
+    { name: "Natation",      keywords: [] },
+    { name: "Cyclisme",      keywords: [] },
+    { name: "Musculation",   keywords: [] },
   ],
 };
 
+// Flint Group is included on the FR CV (expected in France) but excluded from the US CV
+// to keep the US resume tightly focused on software engineering experience.
 const extraWorkData = {
-  en: [
-    {
-      name: "Flint Group",
-      position: "Logistics Assistant",
-      startDate: "2023-06-01",
-      endDate: "2024-08-31",
-      summary: "Seasonal role — summers 2023 and 2024.",
-      highlights: [
-        "Managed inventory with SAP, ran weekly stock counts, and tracked finished-goods flows.",
-      ],
-    },
-  ],
+  en: [],
   fr: [
     {
       name: "Flint Group",

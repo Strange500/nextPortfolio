@@ -38,7 +38,7 @@ export const dictionaries = {
           date: "Sept 2025 – Present",
           deepDive: "/en/blog/automated-testing-framework",
           bullets: [
-            "Architected a unified E2E test engine (Spring Boot, Selenium) running identically via Maven in CI and an async REST API.",
+            "Architected a unified E2E test engine in Java Spring Boot and Selenium, enabling identical execution via Maven in CI and an async REST API.",
             "Implemented cold precondition checks failing invalid runs in ~50ms (vs 20s browser startup), cutting false-positive CI failures by ~70%.",
             "Designed automated data-isolation routines in Jenkins pipelines to eliminate concurrent test collisions on shared environments.",
             "Developed and deployed a core Spring Boot internal automation tool to production."
@@ -50,8 +50,8 @@ export const dictionaries = {
           date: "April 2025 – June 2025",
           deepDive: "",
           bullets: [
-            "Engineered full-stack features and RESTful endpoints using Java Spring Boot to interface backend services with database layers.",
-            "Developed responsive user interfaces in Next.js (React) and delivered sprint user stories through Agile/Scrum team rituals."
+            "Engineered RESTful endpoints and backend services in Java Spring Boot, seamlessly integrating with relational databases.",
+            "Developed responsive user interfaces in Next.js (React) and delivered sprint user stories in an Agile/Scrum environment."
           ]
         }
       ]
@@ -113,8 +113,8 @@ export const dictionaries = {
           date: "Avril 2025 – Juin 2025",
           deepDive: "",
           bullets: [
-            "Développement de fonctionnalités full-stack et d'endpoints REST en Java Spring Boot pour l'intégration des services et de la base de données.",
-            "Conception d'interfaces réactives avec Next.js (React) et livraison des user stories au sein d'une équipe en rituels Agile/Scrum."
+            "Conception d'endpoints REST et de services backend en Java Spring Boot, avec intégration aux bases de données relationnelles.",
+            "Développement d'interfaces réactives avec Next.js (React) et livraison de user stories au sein d'une équipe Agile/Scrum."
           ]
         }
       ]

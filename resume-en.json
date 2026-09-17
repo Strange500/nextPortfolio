@@ -6,10 +6,8 @@
     "email": "benjamin.rogetpro@gmail.com",
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com",
-    "summary": "Software engineer (co-op) focused on backend development and systems tooling. I build reliable, maintainable systems by combining rigorous automated testing with declarative infrastructure (NixOS, Docker). Seeking a 3-month software engineering internship in the US, starting June 2027.",
+    "summary": "Backend-focused software engineer (co-op) designing reliable, maintainable systems through rigorous automated testing and declarative infrastructure (NixOS, Docker). Experienced in Java Spring Boot, Rust, and full-stack delivery. Seeking a 3-month software engineering internship in the US, starting June 2027.",
     "location": {
-      "address": "12 bis rue Jules Ferry",
-      "postalCode": "59491",
       "city": "Villeneuve d'Ascq",
       "region": "Hauts-de-France",
       "countryCode": "FR"
@@ -35,7 +33,7 @@
       "endDate": "",
       "url": "https://portfolio.qgroget.com/en/blog/automated-testing-framework",
       "highlights": [
-        "Architected a unified E2E test engine (Spring Boot, Selenium) running identically via Maven in CI and an async REST API.",
+        "Architected a unified E2E test engine in Java Spring Boot and Selenium, enabling identical execution via Maven in CI and an async REST API.",
         "Implemented cold precondition checks failing invalid runs in ~50ms (vs 20s browser startup), cutting false-positive CI failures by ~70%.",
         "Designed automated data-isolation routines in Jenkins pipelines to eliminate concurrent test collisions on shared environments.",
         "Developed and deployed a core Spring Boot internal automation tool to production."
@@ -47,18 +45,8 @@
       "startDate": "2025-04-01",
       "endDate": "2025-06-30",
       "highlights": [
-        "Engineered full-stack features and RESTful endpoints using Java Spring Boot to interface backend services with database layers.",
-        "Developed responsive user interfaces in Next.js (React) and delivered sprint user stories through Agile/Scrum team rituals."
-      ]
-    },
-    {
-      "name": "Flint Group",
-      "position": "Logistics Assistant",
-      "startDate": "2023-06-01",
-      "endDate": "2024-08-31",
-      "summary": "Seasonal role — summers 2023 and 2024.",
-      "highlights": [
-        "Managed inventory with SAP, ran weekly stock counts, and tracked finished-goods flows."
+        "Engineered RESTful endpoints and backend services in Java Spring Boot, seamlessly integrating with relational databases.",
+        "Developed responsive user interfaces in Next.js (React) and delivered sprint user stories in an Agile/Scrum environment."
       ]
     }
   ],
@@ -132,7 +120,7 @@
     },
     {
       "language": "English",
-      "fluency": "Professional — TOEIC 980"
+      "fluency": "Professional — TOEIC 980/990"
     },
     {
       "language": "Spanish",
