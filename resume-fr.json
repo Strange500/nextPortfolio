@@ -6,6 +6,7 @@
     "email": "benjamin.rogetpro@gmail.com",
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com/fr",
+    "image": "file:///home/strange/Documents/nextportfolio/public/img/cv-profile.jpg",
     "summary": "Ingénieur logiciel (en alternance) axé sur le développement backend et l'outillage système. Je conçois des systèmes fiables et maintenables en combinant tests automatisés rigoureux et environnements déclaratifs (NixOS, Docker). À la recherche d'un stage d'ingénieur de 3 mois, dès juin 2027.",
     "location": {
       "address": "12 bis rue Jules Ferry",

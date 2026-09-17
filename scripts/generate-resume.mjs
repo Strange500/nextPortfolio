@@ -63,6 +63,7 @@ const basicsData = {
     email: "benjamin.rogetpro@gmail.com",
     phone: "+33 7 83 03 95 25",
     url: "https://portfolio.qgroget.com/fr",
+    image: `file://${join(ROOT, "public/img/cv-profile.jpg")}`,
     summary:
       "Ingénieur logiciel (en alternance) axé sur le développement backend et l'outillage système. " +
       "Je conçois des systèmes fiables et maintenables en combinant tests automatisés rigoureux " +

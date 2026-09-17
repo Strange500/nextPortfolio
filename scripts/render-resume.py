@@ -680,22 +680,44 @@ def render_header(data: dict, lang: str = "en") -> str:
 
     separator = '<span class="sep">·</span>'
 
-    return f"""
-    <header>
-        <h1 class="name">{escape(basics["name"])}</h1>
-        <div class="label">{escape(basics.get("label", ""))}</div>
+    if basics.get("image"):
+        image_url = escape(basics["image"])
+        return f"""
+        <header style="margin-bottom: 7pt; text-align: left;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                    <td style="vertical-align: top;">
+                        <h1 class="name">{escape(basics["name"])}</h1>
+                        <div class="label">{escape(basics.get("label", ""))}</div>
+                        <div class="contact">
+                            <div>{separator.join(contact_parts)}</div>
+                            <div class="profile-row">{separator.join(profile_parts)}</div>
+                        </div>
+                    </td>
+                    <td style="width: 80px; text-align: right; vertical-align: top;">
+                        <img src="{image_url}" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 1px solid var(--rule);" />
+                    </td>
+                </tr>
+            </table>
+        </header>
+        """
+    else:
+        return f"""
+        <header>
+            <h1 class="name">{escape(basics["name"])}</h1>
+            <div class="label">{escape(basics.get("label", ""))}</div>
 
-        <div class="contact">
-            <div>
-                {separator.join(contact_parts)}
-            </div>
+            <div class="contact">
+                <div>
+                    {separator.join(contact_parts)}
+                </div>
 
-            <div class="profile-row">
-                {separator.join(profile_parts)}
+                <div class="profile-row">
+                    {separator.join(profile_parts)}
+                </div>
             </div>
-        </div>
-    </header>
-    """
+        </header>
+        """
 
 
 def render_summary(data: dict, lang: str = "en") -> str:
