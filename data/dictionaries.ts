@@ -38,10 +38,10 @@ export const dictionaries = {
           date: "Sept 2025 – Present",
           deepDive: "/en/blog/automated-testing-framework",
           bullets: [
-            "Architected a unified E2E test engine in Java Spring Boot and Selenium, enabling identical execution via Maven in CI and an async REST API.",
-            "Implemented cold precondition checks failing invalid runs in ~50ms (vs 20s browser startup), cutting false-positive CI failures by ~70%.",
-            "Designed automated data-isolation routines in Jenkins pipelines to eliminate concurrent test collisions on shared environments.",
-            "Developed and deployed a core Spring Boot internal automation tool to production."
+            "Architected and maintain a unified E2E test engine (Java Spring Boot, Selenium) running 50–70 automated integration tests, executable identically via Maven in CI or an async REST API.",
+            "Refactored the test architecture to cut the false-positive rate by ~70% and reduce environment/version migrations from ~4 hours to under 10 minutes.",
+            "Built developer tooling and data-isolation abstractions (Jenkins) to interact easily with in-house applications and eliminate concurrent test collisions.",
+            "Developed and deployed a Spring Boot internal tool that auto-distributes daily product-support duties across ~40 developers."
           ]
         },
         {
@@ -50,8 +50,8 @@ export const dictionaries = {
           date: "April 2025 – June 2025",
           deepDive: "",
           bullets: [
-            "Engineered RESTful endpoints and backend services in Java Spring Boot, seamlessly integrating with relational databases.",
-            "Developed responsive user interfaces in Next.js (React) and delivered sprint user stories in an Agile/Scrum environment."
+            "Engineered RESTful backend services (Java Spring Boot, relational database) powering My-UUU, an equestrian-facility directory and review platform.",
+            "Developed responsive interfaces in Next.js (React) and shipped sprint user stories in an Agile/Scrum team for a production-facing product."
           ]
         }
       ]
@@ -101,10 +101,10 @@ export const dictionaries = {
           date: "Sept 2025 – Présent",
           deepDive: "/fr/blog/automated-testing-framework",
           bullets: [
-            "Architecture d'un moteur de tests E2E unifié (Spring Boot, Selenium) exécutable à l'identique via Maven en CI et via API REST.",
-            "Mise en place de prérequis froids arrêtant les runs invalides en ~50 ms (au lieu de 20 s), réduisant les faux positifs CI de ~70%.",
-            "Conception d'outils d'isolation de données sous Jenkins pour éliminer les collisions lors de tests concurrents.",
-            "Développement et déploiement en production d'un outil interne Spring Boot."
+            "Architecture et maintien d'un moteur de tests E2E unifié (Spring Boot, Selenium) pilotant 50 à 70 tests d'intégration, exécutable à l'identique via Maven en CI ou via API REST asynchrone.",
+            "Refactoring de l'architecture de test ayant réduit le taux de faux positifs de ~70 % et ramené les migrations (version/environnement) de ~4 h à moins de 10 min.",
+            "Conception d'outils développeur et d'abstractions d'isolation de données (Jenkins) pour interagir facilement avec les applications internes et éliminer les collisions concurrentes.",
+            "Développement et déploiement en production d'un outil Spring Boot répartissant chaque jour le support produit auprès d'environ 40 développeurs."
           ]
         },
         {
@@ -113,8 +113,8 @@ export const dictionaries = {
           date: "Avril 2025 – Juin 2025",
           deepDive: "",
           bullets: [
-            "Conception d'endpoints REST et de services backend en Java Spring Boot, avec intégration aux bases de données relationnelles.",
-            "Développement d'interfaces réactives avec Next.js (React) et livraison de user stories au sein d'une équipe Agile/Scrum."
+            "Développement des services backend (Java Spring Boot, base relationnelle) de My-UUU, plateforme de référencement et d'avis sur les structures équestres.",
+            "Réalisation d'interfaces responsive Next.js (React) et livraison de user stories en équipe Agile/Scrum pour un produit en production."
           ]
         }
       ]

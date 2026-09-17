@@ -6,7 +6,7 @@
     "email": "benjamin.rogetpro@gmail.com",
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com/fr",
-    "image": "file:///home/strange/Documents/nextportfolio/public/img/cv-profile.jpg",
+    "image": "file:///opt/data/nextPortfolio/public/img/cv-profile.jpg",
     "summary": "Apprenti ingénieur logiciel à l'IMT Nord Europe (alternance), spécialisé en développement backend et outillage système. Je conçois des systèmes fiables et maintenables en combinant tests automatisés rigoureux (Spring Boot, Selenium, JUnit 5) et environnements déclaratifs (NixOS, Docker). À la recherche d'un stage de fin d'études de 3 mois, à partir de juin 2027.",
     "location": {
       "address": "12 bis rue Jules Ferry",
@@ -36,10 +36,10 @@
       "endDate": "",
       "url": "https://portfolio.qgroget.com/fr/blog/automated-testing-framework",
       "highlights": [
-        "Architecture d'un moteur de tests E2E unifié (Spring Boot, Selenium) exécutable à l'identique via Maven en CI et via API REST.",
-        "Mise en place de prérequis froids arrêtant les runs invalides en ~50 ms (au lieu de 20 s), réduisant les faux positifs CI de ~70%.",
-        "Conception d'outils d'isolation de données sous Jenkins pour éliminer les collisions lors de tests concurrents.",
-        "Développement et déploiement en production d'un outil interne Spring Boot."
+        "Architecture et maintien d'un moteur de tests E2E unifié (Spring Boot, Selenium) pilotant 50 à 70 tests d'intégration, exécutable à l'identique via Maven en CI ou via API REST asynchrone.",
+        "Refactoring de l'architecture de test ayant réduit le taux de faux positifs de ~70 % et ramené les migrations (version/environnement) de ~4 h à moins de 10 min.",
+        "Conception d'outils développeur et d'abstractions d'isolation de données (Jenkins) pour interagir facilement avec les applications internes et éliminer les collisions concurrentes.",
+        "Développement et déploiement en production d'un outil Spring Boot répartissant chaque jour le support produit auprès d'environ 40 développeurs."
       ]
     },
     {
@@ -48,8 +48,8 @@
       "startDate": "2025-04-01",
       "endDate": "2025-06-30",
       "highlights": [
-        "Conception d'endpoints REST et de services backend en Java Spring Boot, avec intégration aux bases de données relationnelles.",
-        "Développement d'interfaces réactives avec Next.js (React) et livraison de user stories au sein d'une équipe Agile/Scrum."
+        "Développement des services backend (Java Spring Boot, base relationnelle) de My-UUU, plateforme de référencement et d'avis sur les structures équestres.",
+        "Réalisation d'interfaces responsive Next.js (React) et livraison de user stories en équipe Agile/Scrum pour un produit en production."
       ]
     },
     {
@@ -167,7 +167,7 @@
   "projects": [
     {
       "name": "min-btc-node",
-      "description": "Nœud Bitcoin développé from scratch en Rust : implémentation du protocole P2P (handshake, inventory, blocs) sans dépendance tierce et gestion concurrente des pairs.",
+      "description": "Outil Rust suivant le solde et l'historique de transactions d'une adresse Bitcoin : implémentation manuelle du protocole P2P, récupération des en-têtes de blocs auprès de plusieurs pairs en parallèle, sans validation complète de la chaîne.",
       "keywords": [
         "Rust",
         "Bitcoin",
@@ -177,7 +177,7 @@
     },
     {
       "name": "nixos-config",
-      "description": "Configuration multi-machines déclarative et dotfiles avec Nix flakes et Home Manager pour des environnements de développement versionnés et 100% reproductibles.",
+      "description": "Configurations NixOS déclaratives (6 machines) et dotfiles via Nix flakes + Home Manager — serveur auto-hébergé exposant mes services, Raspberry Pi de sauvegarde, PC fixes, portable et console « Steam-OS like » — le tout versionné et 100 % reproductible (IaC).",
       "keywords": [
         "Nix",
         "NixOS",
@@ -189,7 +189,7 @@
     },
     {
       "name": "pixel-war",
-      "description": "dApp Web3 pixel-canvas en Solidity : pattern pull-over-push pour sécuriser les remboursements contre la réentrance, et frappe d'instantanés en NFT ERC-721.",
+      "description": "Projet de cours — conception d'une dApp Web3 pixel-canvas en Solidity : gestion d'état on-chain, remboursements pull-over-push contre la réentrance et frappe d'instantanés ERC-721.",
       "keywords": [
         "Web3",
         "Solidity",
@@ -197,16 +197,6 @@
         "Blockchain"
       ],
       "url": "https://github.com/Strange500/pixel-war"
-    },
-    {
-      "name": "Infrastructure HomeLab",
-      "description": "Déploiement d'un serveur auto-hébergé avec Unraid et Docker (Jellyfin, Gitea, Pi-hole) pour la maîtrise concrète du provisionnement bare-metal et du routage réseau.",
-      "keywords": [
-        "Unraid",
-        "Docker",
-        "Linux",
-        "Auto-hébergement"
-      ]
     },
     {
       "name": "RayTracer-Rust",

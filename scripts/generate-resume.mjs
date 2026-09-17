@@ -44,7 +44,8 @@ const basicsData = {
       "Backend-focused software engineer (co-op) designing reliable, maintainable systems through " +
       "rigorous automated testing and declarative infrastructure (NixOS, Docker). " +
       "Experienced in Java Spring Boot, Rust, and full-stack delivery. " +
-      "Seeking a 3-month software engineering internship in the US, starting June 2027.",
+      "Seeking a 3-month software engineering internship in the US, starting June 2027. " +
+      "Eligible for J-1 internship visa sponsorship.",
     location: {
       city: "Villeneuve d'Ascq",
       region: "Hauts-de-France",
@@ -132,35 +133,29 @@ const extraWorkData = {
 const projectDescriptions = {
   en: {
     "min-btc-node":
-      "Built a Bitcoin node from scratch in Rust, implementing the P2P wire protocol " +
-      "(handshake, inventory, block headers) with zero protocol dependencies and concurrent peer parsing.",
+      "Wrote a Rust tool that tracks a Bitcoin address's balance and transaction history by " +
+      "hand-implementing the P2P wire protocol, fetching block headers from multiple peers " +
+      "in parallel without full-chain validation.",
     "nixos-config":
-      "Declared multi-host NixOS configurations and dotfiles with Nix flakes and Home " +
-      "Manager to make development environments versioned and fully reproducible across " +
-      "machines.",
+      "Declared 6-host NixOS configurations and dotfiles (Nix flakes + Home Manager) — a " +
+      "self-hosted server exposing personal services, a backup Raspberry Pi, desktops, a " +
+      "laptop and a Steam-OS-style console — all versioned and reproducible as IaC.",
     "pixel-war":
-      "Architected a Web3 pixel-canvas dApp in Solidity with pull-over-push refund patterns " +
-      "to prevent reentrancy attacks, and on-chain ERC-721 snapshot minting.",
-    "HomeLab Infrastructure":
-      "Provisioned a self-hosted server with Unraid and Docker running Jellyfin, Gitea, " +
-      "and Pi-hole to learn bare-metal provisioning and network routing hands-on.",
+      "Course project — designed a Web3 pixel-canvas dApp in Solidity, exploring on-chain " +
+      "state, pull-over-push refunds to prevent reentrancy, and ERC-721 snapshot minting.",
   },
   fr: {
     "min-btc-node":
-      "Nœud Bitcoin développé from scratch en Rust : implémentation du protocole P2P " +
-      "(handshake, inventory, blocs) sans dépendance tierce et gestion concurrente des pairs.",
+      "Outil Rust suivant le solde et l'historique de transactions d'une adresse Bitcoin : " +
+      "implémentation manuelle du protocole P2P, récupération des en-têtes de blocs auprès de " +
+      "plusieurs pairs en parallèle, sans validation complète de la chaîne.",
     "nixos-config":
-      "Configuration multi-machines déclarative et dotfiles avec Nix flakes et Home Manager " +
-      "pour des environnements de développement versionnés et 100% reproductibles.",
+      "Configurations NixOS déclaratives (6 machines) et dotfiles via Nix flakes + Home Manager — " +
+      "serveur auto-hébergé exposant mes services, Raspberry Pi de sauvegarde, PC fixes, portable " +
+      "et console « Steam-OS like » — le tout versionné et 100 % reproductible (IaC).",
     "pixel-war":
-      "dApp Web3 pixel-canvas en Solidity : pattern pull-over-push pour sécuriser les remboursements " +
-      "contre la réentrance, et frappe d'instantanés en NFT ERC-721.",
-    "Infrastructure HomeLab":
-      "Déploiement d'un serveur auto-hébergé avec Unraid et Docker (Jellyfin, Gitea, Pi-hole) " +
-      "pour la maîtrise concrète du provisionnement bare-metal et du routage réseau.",
-    "HomeLab Infrastructure":
-      "Déploiement d'un serveur auto-hébergé avec Unraid et Docker (Jellyfin, Gitea, Pi-hole) " +
-      "pour la maîtrise concrète du provisionnement bare-metal et du routage réseau.",
+      "Projet de cours — conception d'une dApp Web3 pixel-canvas en Solidity : gestion d'état " +
+      "on-chain, remboursements pull-over-push contre la réentrance et frappe d'instantanés ERC-721.",
   },
 };
 
@@ -312,7 +307,10 @@ function buildResume(lang) {
     };
   });
 
-  const allProjects = [...projectsOut, ...extraProjectsData[lang]];
+  const allProjects = [
+    ...projectsOut.filter((p) => !/homelab/i.test(p.name)),
+    ...extraProjectsData[lang],
+  ];
 
   const skills = Object.entries(skillGroupsData[lang]).map(([name, keywords]) => ({
     name,

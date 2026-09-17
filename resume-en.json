@@ -6,7 +6,7 @@
     "email": "benjamin.rogetpro@gmail.com",
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com",
-    "summary": "Backend-focused software engineer (co-op) designing reliable, maintainable systems through rigorous automated testing and declarative infrastructure (NixOS, Docker). Experienced in Java Spring Boot, Rust, and full-stack delivery. Seeking a 3-month software engineering internship in the US, starting June 2027.",
+    "summary": "Backend-focused software engineer (co-op) designing reliable, maintainable systems through rigorous automated testing and declarative infrastructure (NixOS, Docker). Experienced in Java Spring Boot, Rust, and full-stack delivery. Seeking a 3-month software engineering internship in the US, starting June 2027. Eligible for J-1 internship visa sponsorship.",
     "location": {
       "city": "Villeneuve d'Ascq",
       "region": "Hauts-de-France",
@@ -33,10 +33,10 @@
       "endDate": "",
       "url": "https://portfolio.qgroget.com/en/blog/automated-testing-framework",
       "highlights": [
-        "Architected a unified E2E test engine in Java Spring Boot and Selenium, enabling identical execution via Maven in CI and an async REST API.",
-        "Implemented cold precondition checks failing invalid runs in ~50ms (vs 20s browser startup), cutting false-positive CI failures by ~70%.",
-        "Designed automated data-isolation routines in Jenkins pipelines to eliminate concurrent test collisions on shared environments.",
-        "Developed and deployed a core Spring Boot internal automation tool to production."
+        "Architected and maintain a unified E2E test engine (Java Spring Boot, Selenium) running 50–70 automated integration tests, executable identically via Maven in CI or an async REST API.",
+        "Refactored the test architecture to cut the false-positive rate by ~70% and reduce environment/version migrations from ~4 hours to under 10 minutes.",
+        "Built developer tooling and data-isolation abstractions (Jenkins) to interact easily with in-house applications and eliminate concurrent test collisions.",
+        "Developed and deployed a Spring Boot internal tool that auto-distributes daily product-support duties across ~40 developers."
       ]
     },
     {
@@ -45,8 +45,8 @@
       "startDate": "2025-04-01",
       "endDate": "2025-06-30",
       "highlights": [
-        "Engineered RESTful endpoints and backend services in Java Spring Boot, seamlessly integrating with relational databases.",
-        "Developed responsive user interfaces in Next.js (React) and delivered sprint user stories in an Agile/Scrum environment."
+        "Engineered RESTful backend services (Java Spring Boot, relational database) powering My-UUU, an equestrian-facility directory and review platform.",
+        "Developed responsive interfaces in Next.js (React) and shipped sprint user stories in an Agile/Scrum team for a production-facing product."
       ]
     }
   ],
@@ -154,7 +154,7 @@
   "projects": [
     {
       "name": "min-btc-node",
-      "description": "Built a Bitcoin node from scratch in Rust, implementing the P2P wire protocol (handshake, inventory, block headers) with zero protocol dependencies and concurrent peer parsing.",
+      "description": "Wrote a Rust tool that tracks a Bitcoin address's balance and transaction history by hand-implementing the P2P wire protocol, fetching block headers from multiple peers in parallel without full-chain validation.",
       "keywords": [
         "Rust",
         "Bitcoin",
@@ -164,7 +164,7 @@
     },
     {
       "name": "nixos-config",
-      "description": "Declared multi-host NixOS configurations and dotfiles with Nix flakes and Home Manager to make development environments versioned and fully reproducible across machines.",
+      "description": "Declared 6-host NixOS configurations and dotfiles (Nix flakes + Home Manager) — a self-hosted server exposing personal services, a backup Raspberry Pi, desktops, a laptop and a Steam-OS-style console — all versioned and reproducible as IaC.",
       "keywords": [
         "Nix",
         "NixOS",
@@ -176,7 +176,7 @@
     },
     {
       "name": "pixel-war",
-      "description": "Architected a Web3 pixel-canvas dApp in Solidity with pull-over-push refund patterns to prevent reentrancy attacks, and on-chain ERC-721 snapshot minting.",
+      "description": "Course project — designed a Web3 pixel-canvas dApp in Solidity, exploring on-chain state, pull-over-push refunds to prevent reentrancy, and ERC-721 snapshot minting.",
       "keywords": [
         "Web3",
         "Solidity",
@@ -184,16 +184,6 @@
         "Blockchain"
       ],
       "url": "https://github.com/Strange500/pixel-war"
-    },
-    {
-      "name": "HomeLab Infrastructure",
-      "description": "Provisioned a self-hosted server with Unraid and Docker running Jellyfin, Gitea, and Pi-hole to learn bare-metal provisioning and network routing hands-on.",
-      "keywords": [
-        "Unraid",
-        "Docker",
-        "Linux",
-        "Self-hosting"
-      ]
     },
     {
       "name": "RayTracer-Rust",
