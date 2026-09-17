@@ -1,0 +1,44 @@
+{
+  "_comment": "Theme registry for the resume pipeline. Edit this file to change themes.",
+  "_doc": "Each entry: { 'package': npm-package-name, 'description': '...' }. Use 'weasyprint' for the custom Python renderer.",
+
+  "en": "weasyprint",
+  "fr": "weasyprint",
+
+  "available": {
+    "weasyprint": {
+      "description": "Custom single-column ATS layout (Inter + Fira Code). Python/WeasyPrint renderer. Recommended for EN ATS submissions.",
+      "renderer": "weasyprint"
+    },
+    "even": {
+      "package": "jsonresume-theme-even",
+      "description": "Clean flat theme by @rbardini. Web fonts. Good for online sharing.",
+      "renderer": "node"
+    },
+    "flat": {
+      "package": "jsonresume-theme-flat",
+      "description": "Minimal flat theme. Good contrast.",
+      "renderer": "node"
+    },
+    "stackoverflow": {
+      "package": "jsonresume-theme-stackoverflow",
+      "description": "StackOverflow-inspired theme.",
+      "renderer": "node"
+    },
+    "elegant": {
+      "package": "jsonresume-theme-elegant",
+      "description": "Elegant two-column layout.",
+      "renderer": "node"
+    },
+    "spartan": {
+      "package": "jsonresume-theme-spartan",
+      "description": "Minimalist theme, great for ATS.",
+      "renderer": "node"
+    },
+    "kendall": {
+      "package": "jsonresume-theme-kendall",
+      "description": "Simple, clean design.",
+      "renderer": "node"
+    }
+  }
+}

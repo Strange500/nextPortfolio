@@ -1,51 +1,102 @@
-# Resume & CV Pipeline (English ATS + French A4)
+# Resume & CV Pipeline — Système de Thèmes
 
-Generates standardized `resume.json` / `resume-fr.json` (JSON Resume schema) and print-ready PDFs from the portfolio's single source of truth — no duplicated content, no manual sync.
+Génère les fichiers JSON Resume et les PDFs à partir de la source unique de vérité du portfolio. Le système supporte **n'importe quel thème `jsonresume-theme-*` de npm**, en plus du renderer custom WeasyPrint.
 
-## One command
+## Commandes rapides
 
 ```bash
-./scripts/generate-resume.sh
-# or: npm run resume
+# Pipeline complet (thèmes par défaut)
+npm run resume
+
+# Lister les thèmes disponibles
+npm run resume:themes
+
+# Regénérer uniquement le CV anglais avec un thème spécifique
+./scripts/generate-resume.sh --theme-en even
+
+# Regénérer les deux CVs avec des thèmes distincts
+./scripts/generate-resume.sh --theme-en even --theme-fr flat
+
+# Installer automatiquement un thème manquant
+./scripts/generate-resume.sh --theme-en stackoverflow --install
+
+# HTML seulement (pas de PDF, pour prévisualiser)
+./scripts/generate-resume.sh --theme-en even --html
 ```
 
-This produces:
+## Changer le thème par défaut
 
-| Output                 | Format / Size | Description                                           |
-| ---------------------- | ------------- | ----------------------------------------------------- |
-| `resume.json`          | JSON Resume   | Canonical English JSON Resume schema, US-localized    |
-| `resume-en.json`       | JSON Resume   | English JSON Resume schema                            |
-| `resume-fr.json`       | JSON Resume   | French JSON Resume schema                             |
-| `public/resume.pdf`    | US Letter     | English ATS-friendly PDF (Inter + Fira Code, 1 page)  |
-| `public/resume-en.pdf` | US Letter     | English ATS-friendly PDF (alias)                      |
-| `public/resume-fr.pdf` | A4            | French standard PDF (Inter + Fira Code, 1 page)       |
-| `public/cv-fr.pdf`     | A4            | French standard PDF (alias)                           |
+Éditez [`scripts/themes.config.json`](./themes.config.json) :
 
-All files are committed and are the artifacts the portfolio's "Resume / CV" CTA points to.
+```json
+{
+  "en": "even",
+  "fr": "weasyprint"
+}
+```
 
-## How it works
+Le pipeline `npm run resume` utilisera automatiquement ces thèmes.
 
-1. `generate-resume.mjs` imports the live data files
-   (`data/dictionaries.ts`, `data/education.ts`, `data/projects.json`, `data/projects_fr.json`,
-   `data/technologies.ts`) using Node's native TypeScript type-stripping
-   (`node` ≥ 23), maps them onto the JSON Resume schema, and writes
-   `resume.json`, `resume-en.json`, and `resume-fr.json`.
-2. `render-resume.py` renders the JSON Resumes into PDFs with WeasyPrint:
-   - English: US Letter, ATS-oriented, English dates & headings
-   - French: A4, French standard, localized dates & headings
+## Thèmes disponibles
 
-## Dependencies
+| Nom           | Type        | Description                                                  |
+| ------------- | ----------- | ------------------------------------------------------------ |
+| `weasyprint`  | custom      | Mise en page ATS monocolonne (Inter + Fira Code). **Défaut EN & FR.** |
+| `even`        | npm         | Thème flat propre par @rbardini. Web fonts. Idéal pour partage en ligne. |
+| `flat`        | npm         | Thème flat minimaliste. Bon contraste.                       |
+| `stackoverflow` | npm       | Design inspiré de StackOverflow.                             |
+| `elegant`     | npm         | Disposition deux colonnes élégante.                          |
+| `spartan`     | npm         | Ultra-minimaliste, adapté ATS.                               |
+| `kendall`     | npm         | Design simple et propre.                                     |
+| _any_         | npm         | Tout `jsonresume-theme-<name>` sur npm fonctionne.           |
 
-- **Node ≥ 23** (native `.ts` type-stripping).
-- **WeasyPrint** (Python) — automatically discovered via active venv, `.venv`, system python, Nix (`nix-shell`), or auto-provisioned via `uv`.
+Pour ajouter un thème non listé, ajoutez-le dans `scripts/themes.config.json` :
 
-## Design & content rules
+```json
+"available": {
+  "mon-theme": {
+    "package": "jsonresume-theme-mon-theme",
+    "description": "Ma description",
+    "renderer": "node"
+  }
+}
+```
 
-- **Single column**, standard section headings → parses cleanly in ATS and reads clearly on paper.
-- **No pure black** — body text is `#1E293B` (anthracite).
-- **Inter** for body, **Fira Code** for technical accents (dates, links, tech).
-- **"Show, don't tell"**: every project/job uses *Action + Tool + Result*.
-- **No fabricated metrics** — no invented percentages or counts.
-- **Faithful localization**:
-  - English: `M.Eng. (Diplôme d'Ingénieur)`, `Software Engineer (Co-op)`, US Letter
-  - French: `Diplôme d'Ingénieur (Grade de Master)`, `Ingénieur Logiciel (Alternance)`, A4
+Puis installez-le : `npm install --save-dev jsonresume-theme-mon-theme`
+
+## Architecture
+
+```
+scripts/
+├── generate-resume.mjs   # Données → JSON Resume (EN + FR)
+├── render-resume.mjs     # Renderer universel (thèmes npm + weasyprint)
+├── render-resume.py      # Renderer custom WeasyPrint (thème "weasyprint")
+├── themes.config.json    # Registre des thèmes (éditable)
+├── generate-resume.sh    # Orchestrateur CLI
+└── README.md
+```
+
+### Fonctionnement de `render-resume.mjs`
+
+1. Lit `themes.config.json` pour résoudre le thème.
+2. **Si `renderer: "weasyprint"`** → délègue à `render-resume.py` (Python/WeasyPrint, déjà fonctionnel sur NixOS via `nix-shell`).
+3. **Si `renderer: "node"`** :
+   - Importe dynamiquement le package npm `jsonresume-theme-<name>`.
+   - Appelle `theme.render(data)` → HTML.
+   - Convertit HTML → PDF via Puppeteer + Chromium (auto-détecté : `PUPPETEER_EXECUTABLE_PATH` > PATH > `nix-shell -p chromium`).
+
+## Artefacts générés
+
+| Fichier                  | Format    | Thème   | Description                        |
+| ------------------------ | --------- | ------- | ---------------------------------- |
+| `public/resume.pdf`      | US Letter | EN      | CV anglais ATS                     |
+| `public/resume-en.pdf`   | US Letter | EN      | Alias du CV anglais                |
+| `public/resume-fr.pdf`   | A4        | FR      | CV français                        |
+| `public/cv-fr.pdf`       | A4        | FR      | Alias du CV français               |
+
+## Dépendances
+
+- **Node ≥ 22** (pipeline JSON) / **≥ 24** pour `resumed` si utilisé directement.
+- **WeasyPrint** (Python) — auto-provisionné via `nix-shell -p python3Packages.weasyprint` sur NixOS.
+- **Chromium** — auto-provisionné via `nix-shell -p chromium` pour les thèmes npm.
+- **puppeteer-core** — installé comme devDependency (`npm install`).

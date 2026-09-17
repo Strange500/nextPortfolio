@@ -1,10 +1,23 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
-# Regenerate the ATS-ready resumes (EN & FR) from the portfolio's source of truth.
+# generate-resume.sh
+# Regenerate all resume artifacts from the portfolio's source of truth.
 #
-#   1. generate-resume.mjs  data/*.ts + data/*.json  ->  resume.json / resume-fr.json
-#   2. render-resume.py     resume.json               ->  public/resume.pdf (EN)
-#                           resume-fr.json            ->  public/resume-fr.pdf (FR)
+# Usage:
+#   ./scripts/generate-resume.sh [options]
+#
+# Options:
+#   --theme-en <name>   Theme for the EN resume  (default: from themes.config.json)
+#   --theme-fr <name>   Theme for the FR resume  (default: from themes.config.json)
+#   --install           Auto-install missing npm theme packages
+#   --html              Output HTML in addition to PDF
+#   --list-themes       Print available themes and exit
+#   --skip-pdf          Only generate JSON, skip PDF rendering
+#
+# Theme names:
+#   weasyprint          Custom single-column ATS layout (default)
+#   even, flat, stackoverflow, elegant, spartan, kendall …
+#   Any jsonresume-theme-<name> package on npm
 #
 # Run from the repo root (or anywhere; paths resolve from this script).
 # -----------------------------------------------------------------------------
@@ -13,53 +26,92 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$DIR/.." && pwd)"
 
-# Run Python with WeasyPrint available. Order:
-# active venv -> repo .venv -> system python -> nix-shell -> auto-provision (uv).
-run_python() {
-  if [ -n "${VIRTUAL_ENV:-}" ] && "$VIRTUAL_ENV/bin/python" -c "import weasyprint" 2>/dev/null; then
-    "$VIRTUAL_ENV/bin/python" "$@"
-    return $?
-  fi
-  if [ -x "$ROOT/.venv/bin/python" ] && "$ROOT/.venv/bin/python" -c "import weasyprint" 2>/dev/null; then
-    "$ROOT/.venv/bin/python" "$@"
-    return $?
-  fi
-  local syspy
-  syspy="$(command -v python3 || command -v python || true)"
-  if [ -n "$syspy" ] && "$syspy" -c "import weasyprint" 2>/dev/null; then
-    "$syspy" "$@"
-    return $?
-  fi
-  if command -v nix-shell >/dev/null 2>&1; then
-    nix-shell -p python3Packages.weasyprint --run "python3 $(printf '%q ' "$@")"
-    return $?
-  fi
-  if command -v uv >/dev/null 2>&1; then
-    echo "  (provisioning $ROOT/.venv with weasyprint…)" >&2
-    uv venv "$ROOT/.venv" --python 3.13 >&2
-    uv pip install --python "$ROOT/.venv/bin/python" weasyprint >&2
-    "$ROOT/.venv/bin/python" "$@"
-    return $?
-  fi
-  echo "✗ weasyprint not found and neither nix-shell nor uv is available." >&2
-  echo "  Install it with:  pip install weasyprint   (needs system pango/cairo)" >&2
-  return 1
-}
+# ---------------------------------------------------------------------------
+# Defaults & arg parsing
+# ---------------------------------------------------------------------------
+THEME_EN=""
+THEME_FR=""
+INSTALL_FLAG=""
+HTML_FLAG=""
+SKIP_PDF=false
 
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --theme-en)   THEME_EN="$2";    shift 2 ;;
+    --theme-fr)   THEME_FR="$2";    shift 2 ;;
+    --install)    INSTALL_FLAG="--install"; shift ;;
+    --html)       HTML_FLAG="--html"; shift ;;
+    --skip-pdf)   SKIP_PDF=true;    shift ;;
+    --list-themes)
+      node "$DIR/render-resume.mjs" --list
+      exit 0
+      ;;
+    *) echo "Unknown option: $1" >&2; exit 1 ;;
+  esac
+done
+
+# Build theme flags (pass them to render-resume.mjs only if explicitly set)
+EN_THEME_FLAG=""
+FR_THEME_FLAG=""
+[[ -n "$THEME_EN" ]] && EN_THEME_FLAG="--theme $THEME_EN"
+[[ -n "$THEME_FR" ]] && FR_THEME_FLAG="--theme $THEME_FR"
+
+# ---------------------------------------------------------------------------
+# Step 1 — Generate JSON Resume files
+# ---------------------------------------------------------------------------
 echo "▶ 1/2  Generating JSON Resumes (EN & FR)…"
 node "$DIR/generate-resume.mjs"
 
-echo "▶ 2/2  Rendering PDFs with WeasyPrint…"
-# English version (US Letter, ATS-friendly)
-run_python "$DIR/render-resume.py" "$ROOT/resume.json" "$ROOT/public/resume.pdf" --letter --lang en
+if [ "$SKIP_PDF" = true ]; then
+  echo "▶ Skipped PDF rendering (--skip-pdf)."
+  exit 0
+fi
+
+# ---------------------------------------------------------------------------
+# Step 2 — Render PDFs
+# ---------------------------------------------------------------------------
+echo "▶ 2/2  Rendering PDFs…"
+
+render() {
+  local json="$1"
+  local pdf="$2"
+  local lang="$3"
+  local theme_flag="$4"
+
+  node "$DIR/render-resume.mjs" \
+    --resume "$json" \
+    --output "$pdf" \
+    --lang   "$lang" \
+    ${theme_flag} \
+    ${INSTALL_FLAG} \
+    ${HTML_FLAG}
+}
+
+# English (US Letter)
+render \
+  "$ROOT/resume.json" \
+  "$ROOT/public/resume.pdf" \
+  "en" \
+  "$EN_THEME_FLAG"
+
 cp "$ROOT/public/resume.pdf" "$ROOT/public/resume-en.pdf"
 
-# French version (A4, format français standard)
-run_python "$DIR/render-resume.py" "$ROOT/resume-fr.json" "$ROOT/public/resume-fr.pdf" --a4 --lang fr
+# French (A4)
+render \
+  "$ROOT/resume-fr.json" \
+  "$ROOT/public/resume-fr.pdf" \
+  "fr" \
+  "$FR_THEME_FLAG"
+
 cp "$ROOT/public/resume-fr.pdf" "$ROOT/public/cv-fr.pdf"
 
-echo "▶ Done. All resume artifacts are ready to deploy:"
-echo "  - public/resume.pdf (English ATS, Letter)"
-echo "  - public/resume-en.pdf (English ATS, Letter)"
-echo "  - public/resume-fr.pdf (French A4)"
-echo "  - public/cv-fr.pdf (French A4)"
+# ---------------------------------------------------------------------------
+echo ""
+echo "▶ Done. Resume artifacts ready to deploy:"
+echo "  public/resume.pdf     — English (${THEME_EN:-default theme})"
+echo "  public/resume-en.pdf  — English (alias)"
+echo "  public/resume-fr.pdf  — French  (${THEME_FR:-default theme})"
+echo "  public/cv-fr.pdf      — French  (alias)"
+echo ""
+echo "  To switch theme: ./scripts/generate-resume.sh --theme-en even --theme-fr flat"
+echo "  To list themes:  ./scripts/generate-resume.sh --list-themes"
