@@ -9,6 +9,7 @@ import { ArrowRight } from 'lucide-react'
 import AsciiCube from '@/components/AsciiCube'
 import { dictionaries } from '@/data/dictionaries'
 import Link from 'next/link'
+import { ResumeDropdown } from '@/components/ResumeDropdown'
 
 export async function generateStaticParams() {
   return [{ lang: 'en' }, { lang: 'fr' }];
@@ -58,17 +59,20 @@ export default async function Page({
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </a>
             </Button>
-            <Button asChild variant="outline" className="rounded-full px-6 border-primary/20 hover:bg-primary/5">
-              <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">
-                {t.hero.resume}
-              </a>
-            </Button>
+            <ResumeDropdown
+              lang={lang as 'en' | 'fr'}
+              label={t.hero.resume}
+              resumeEnLabel={t.hero.resume_en}
+              resumeEnDesc={t.hero.resume_en_desc}
+              resumeFrLabel={t.hero.resume_fr}
+              resumeFrDesc={t.hero.resume_fr_desc}
+            />
             <Button asChild variant="outline" className="rounded-full px-6 border-primary/20 hover:bg-primary/5">
               <Link href={`/${lang}/blog`}>
                 {t.hero.blog}
               </Link>
             </Button>
-            <SmallSocialBtn />
+            <SmallSocialBtn lang={lang} />
           </div>
         </div>
         <div className="hidden lg:flex flex-col justify-center items-center opacity-80 pl-8">

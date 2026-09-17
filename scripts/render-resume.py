@@ -2,17 +2,18 @@
 """
 render-resume.py
 --------------------------------------------------------------------------------
-Render resume.json (JSON Resume schema) into an ATS-friendly, print-optimized
-PDF using WeasyPrint.
+Render resume.json or resume-fr.json (JSON Resume schema) into an ATS-friendly,
+print-optimized PDF using WeasyPrint.
 
 Default:
     python3 scripts/render-resume.py
+    (renders resume.json -> public/resume.pdf)
 
-Custom output:
-    python3 scripts/render-resume.py out.pdf
+Render French resume:
+    python3 scripts/render-resume.py resume-fr.json public/resume-fr.pdf
 
-A4:
-    python3 scripts/render-resume.py out.pdf --a4
+Custom output / format:
+    python3 scripts/render-resume.py resume.json out.pdf --a4
 
 Dependencies:
     pip install weasyprint
@@ -35,18 +36,74 @@ FIRACODE = FONTS / "FiraCode" / "ttf"
 
 
 MONTHS = {
-    1: "Jan",
-    2: "Feb",
-    3: "Mar",
-    4: "Apr",
-    5: "May",
-    6: "Jun",
-    7: "Jul",
-    8: "Aug",
-    9: "Sep",
-    10: "Oct",
-    11: "Nov",
-    12: "Dec",
+    "en": {
+        1: "Jan",
+        2: "Feb",
+        3: "Mar",
+        4: "Apr",
+        5: "May",
+        6: "Jun",
+        7: "Jul",
+        8: "Aug",
+        9: "Sep",
+        10: "Oct",
+        11: "Nov",
+        12: "Dec",
+    },
+    "fr": {
+        1: "janv.",
+        2: "févr.",
+        3: "mars",
+        4: "avr.",
+        5: "mai",
+        6: "juin",
+        7: "juil.",
+        8: "août",
+        9: "sept.",
+        10: "oct.",
+        11: "nov.",
+        12: "déc.",
+    },
+}
+
+LABELS = {
+    "en": {
+        "title_suffix": "Resume",
+        "summary": "Summary",
+        "experience": "Experience",
+        "projects": "Selected Projects",
+        "skills": "Skills",
+        "education": "Education",
+        "languages_interests": "Languages & Interests",
+        "languages": "Languages:",
+        "interests": "Interests:",
+        "present": "Present",
+    },
+    "fr": {
+        "title_suffix": "CV",
+        "summary": "Profil",
+        "experience": "Expérience Professionnelle",
+        "projects": "Projets Sélectionnés",
+        "skills": "Compétences Techniques",
+        "education": "Formation",
+        "languages_interests": "Langues & Centres d'intérêt",
+        "languages": "Langues :",
+        "interests": "Centres d'intérêt :",
+        "present": "Présent",
+    },
+}
+
+COUNTRIES = {
+    "en": {
+        "FR": "France",
+        "US": "USA",
+        "GB": "UK",
+    },
+    "fr": {
+        "FR": "France",
+        "US": "États-Unis",
+        "GB": "Royaume-Uni",
+    },
 }
 
 
@@ -54,7 +111,7 @@ MONTHS = {
 # Helpers
 # -----------------------------------------------------------------------------
 
-def fmt_date(date: str) -> str:
+def fmt_date(date: str, lang: str = "en") -> str:
     if not date:
         return ""
 
@@ -69,12 +126,13 @@ def fmt_date(date: str) -> str:
     except ValueError:
         return year
 
-    return f"{MONTHS.get(month, parts[1])} {year}"
+    month_map = MONTHS.get(lang, MONTHS["en"])
+    return f"{month_map.get(month, parts[1])} {year}"
 
 
-def fmt_range(start: str, end: str) -> str:
-    start_text = fmt_date(start)
-    end_text = "Present" if not end else fmt_date(end)
+def fmt_range(start: str, end: str, lang: str = "en") -> str:
+    start_text = fmt_date(start, lang)
+    end_text = LABELS[lang]["present"] if not end else fmt_date(end, lang)
 
     if not start_text:
         return end_text
@@ -108,7 +166,11 @@ def join_non_empty(parts, separator=" · "):
 # CSS
 # -----------------------------------------------------------------------------
 
-def css(page_size: str) -> str:
+def css(page_size: str, lang: str = "en") -> str:
+    # A4 is taller and slightly narrower than Letter; slight adjustment for line height / font
+    body_font_size = "7.35pt" if lang == "fr" else "7.45pt"
+    body_line_height = "1.26" if lang == "fr" else "1.28"
+
     return f"""
     @font-face {{
         font-family: 'Inter';
@@ -181,8 +243,8 @@ def css(page_size: str) -> str:
 
     body {{
         margin: 0;
-        font-size: 7.45pt;
-        line-height: 1.28;
+        font-size: {body_font_size};
+        line-height: {body_line_height};
         color: var(--ink);
         background: var(--bg);
     }}
@@ -202,7 +264,7 @@ def css(page_size: str) -> str:
 
     header {{
         text-align: center;
-        margin-bottom: 8pt;
+        margin-bottom: 7pt;
     }}
 
     .name {{
@@ -248,14 +310,14 @@ def css(page_size: str) -> str:
        ------------------------------------------------------------------------- */
 
     section {{
-        margin-bottom: 6pt;
+        margin-bottom: 5.5pt;
     }}
 
     h2 {{
-        margin: 0 0 3pt 0;
+        margin: 0 0 2.5pt 0;
         padding: 0;
         color: var(--ink-strong);
-        font-size: 8pt;
+        font-size: 7.9pt;
         line-height: 1.1;
         font-weight: 800;
         text-transform: uppercase;
@@ -269,7 +331,7 @@ def css(page_size: str) -> str:
     .card {{
         background: var(--card-bg);
         border-radius: 4px;
-        padding: 5pt 7pt;
+        padding: 4.5pt 6.5pt;
         border: 1px solid rgba(226, 232, 240, 0.55);
     }}
 
@@ -278,12 +340,12 @@ def css(page_size: str) -> str:
        ------------------------------------------------------------------------- */
 
     .summary .card {{
-        padding: 5pt 7pt;
+        padding: 4.5pt 6.5pt;
     }}
 
     .summary p {{
         margin: 0;
-        line-height: 1.38;
+        line-height: 1.36;
     }}
 
     /* -------------------------------------------------------------------------
@@ -291,7 +353,7 @@ def css(page_size: str) -> str:
        ------------------------------------------------------------------------- */
 
     .job {{
-        margin-bottom: 4pt;
+        margin-bottom: 3.5pt;
         break-inside: avoid;
     }}
 
@@ -304,7 +366,7 @@ def css(page_size: str) -> str:
         align-items: baseline;
         justify-content: space-between;
         gap: 10pt;
-        margin-bottom: 2pt;
+        margin-bottom: 1.5pt;
     }}
 
     .job-main {{
@@ -314,7 +376,7 @@ def css(page_size: str) -> str:
 
     .job-title {{
         margin: 0;
-        font-size: 8.8pt;
+        font-size: 8.7pt;
         line-height: 1.2;
         font-weight: 700;
         color: var(--ink-strong);
@@ -329,19 +391,19 @@ def css(page_size: str) -> str:
         flex-shrink: 0;
         white-space: nowrap;
         font-family: 'Fira Code', monospace;
-        font-size: 6.95pt;
+        font-size: 6.9pt;
         color: var(--ink-muted);
     }}
 
     .job ul {{
-        margin: 2pt 0 0 0;
-        padding-left: 13pt;
+        margin: 1.5pt 0 0 0;
+        padding-left: 12pt;
     }}
 
     .job li {{
-        margin: 0 0 1.2pt 0;
+        margin: 0 0 1pt 0;
         padding-left: 1.5pt;
-        line-height: 1.32;
+        line-height: 1.3;
     }}
 
     .job li:last-child {{
@@ -353,9 +415,9 @@ def css(page_size: str) -> str:
     }}
 
     .deeplink {{
-        margin-top: 3pt;
+        margin-top: 2.5pt;
         font-family: 'Fira Code', monospace;
-        font-size: 6.8pt;
+        font-size: 6.7pt;
     }}
 
     /* -------------------------------------------------------------------------
@@ -377,7 +439,7 @@ def css(page_size: str) -> str:
 
     .project {{
         break-inside: avoid;
-        margin-bottom: 4pt;
+        margin-bottom: 3.5pt;
     }}
 
     .project.featured {{
@@ -395,7 +457,7 @@ def css(page_size: str) -> str:
     .project-name {{
         margin: 0;
         color: var(--ink-strong);
-        font-size: 8pt;
+        font-size: 7.9pt;
         font-weight: 700;
         line-height: 1.2;
     }}
@@ -415,19 +477,19 @@ def css(page_size: str) -> str:
 
     .project-description {{
         margin: 0;
-        line-height: 1.3;
-        font-size: 7pt;
+        line-height: 1.28;
+        font-size: 6.95pt;
     }}
 
     .project-tags {{
         display: inline-block;
-        margin-top: 2pt;
+        margin-top: 1.5pt;
         padding: 1pt 3pt;
         border-radius: 3px;
         background: var(--tag-bg);
         color: var(--ink-muted);
         font-family: 'Fira Code', monospace;
-        font-size: 6.5pt;
+        font-size: 6.4pt;
         line-height: 1.2;
     }}
 
@@ -436,14 +498,14 @@ def css(page_size: str) -> str:
        ------------------------------------------------------------------------- */
 
     .skills-card {{
-        padding: 5pt 7pt;
+        padding: 4.5pt 6.5pt;
     }}
 
     .skill-row {{
         display: flex;
         align-items: baseline;
-        margin-bottom: 2pt;
-        line-height: 1.3;
+        margin-bottom: 1.5pt;
+        line-height: 1.28;
     }}
 
     .skill-row:last-child {{
@@ -451,7 +513,7 @@ def css(page_size: str) -> str:
     }}
 
     .skill-group {{
-        width: 103pt;
+        width: 104pt;
         flex-shrink: 0;
         color: var(--ink-strong);
         font-weight: 700;
@@ -465,7 +527,7 @@ def css(page_size: str) -> str:
     .skill-item {{
         font-family: 'Fira Code', monospace;
         color: var(--accent);
-        font-size: 6.95pt;
+        font-size: 6.9pt;
         font-weight: 500;
     }}
 
@@ -486,7 +548,7 @@ def css(page_size: str) -> str:
        ------------------------------------------------------------------------- */
 
     .education {{
-        margin-bottom: 4pt;
+        margin-bottom: 3.5pt;
         break-inside: avoid;
     }}
 
@@ -503,7 +565,7 @@ def css(page_size: str) -> str:
 
     .education-degree {{
         color: var(--ink-strong);
-        font-size: 8.4pt;
+        font-size: 8.3pt;
         font-weight: 700;
         line-height: 1.2;
     }}
@@ -513,13 +575,13 @@ def css(page_size: str) -> str:
         white-space: nowrap;
         color: var(--ink-muted);
         font-family: 'Fira Code', monospace;
-        font-size: 6.75pt;
+        font-size: 6.7pt;
     }}
 
     .education-school {{
-        margin-top: 1.5pt;
+        margin-top: 1pt;
         color: var(--ink-muted);
-        line-height: 1.25;
+        line-height: 1.22;
     }}
 
     .education-honor {{
@@ -532,12 +594,12 @@ def css(page_size: str) -> str:
        ------------------------------------------------------------------------- */
 
     .compact-card {{
-        padding: 5pt 7pt;
+        padding: 4.5pt 6.5pt;
     }}
 
     .compact-line {{
         margin: 0;
-        line-height: 1.32;
+        line-height: 1.3;
     }}
 
     .compact-line strong {{
@@ -556,7 +618,7 @@ def css(page_size: str) -> str:
 # Render sections
 # -----------------------------------------------------------------------------
 
-def render_header(data: dict) -> str:
+def render_header(data: dict, lang: str = "en") -> str:
     basics = data["basics"]
 
     contact_parts = []
@@ -574,12 +636,7 @@ def render_header(data: dict) -> str:
 
     location = basics.get("location")
     if location:
-        country_map = {
-            "FR": "France",
-            "US": "USA",
-            "GB": "UK",
-        }
-
+        country_map = COUNTRIES.get(lang, COUNTRIES["en"])
         country = country_map.get(
             location.get("countryCode", ""),
             location.get("countryCode", "")
@@ -641,7 +698,7 @@ def render_header(data: dict) -> str:
     """
 
 
-def render_summary(data: dict) -> str:
+def render_summary(data: dict, lang: str = "en") -> str:
     summary = data["basics"].get("summary", "")
 
     if not summary:
@@ -649,7 +706,7 @@ def render_summary(data: dict) -> str:
 
     return f"""
     <section class="summary">
-        <h2>Summary</h2>
+        <h2>{LABELS[lang]["summary"]}</h2>
 
         <div class="card">
             <p>{escape(summary)}</p>
@@ -658,13 +715,14 @@ def render_summary(data: dict) -> str:
     """
 
 
-def render_experience(data: dict) -> str:
+def render_experience(data: dict, lang: str = "en") -> str:
     jobs = []
 
     for job in data.get("work", []):
         date = fmt_range(
             job.get("startDate", ""),
-            job.get("endDate", "")
+            job.get("endDate", ""),
+            lang=lang,
         )
 
         highlights = "".join(
@@ -714,13 +772,13 @@ def render_experience(data: dict) -> str:
 
     return f"""
     <section>
-        <h2>Experience</h2>
+        <h2>{LABELS[lang]["experience"]}</h2>
         {"".join(jobs)}
     </section>
     """
 
 
-def render_projects(data: dict) -> str:
+def render_projects(data: dict, lang: str = "en") -> str:
     projects = []
 
     for index, project in enumerate(data.get("projects", [])):
@@ -788,9 +846,9 @@ def render_projects(data: dict) -> str:
     if not projects:
         return ""
 
-    # Split into two columns using a table (WeasyPrint doesn't support CSS grid)
-    left = projects[::2]   # indices 0, 2, 4, 6
-    right = projects[1::2] # indices 1, 3, 5
+    # Split into two columns using a table
+    left = projects[::2]
+    right = projects[1::2]
 
     rows = []
     for i in range(max(len(left), len(right))):
@@ -805,7 +863,7 @@ def render_projects(data: dict) -> str:
 
     return f"""
     <section>
-        <h2>Selected Projects</h2>
+        <h2>{LABELS[lang]["projects"]}</h2>
         <table class="projects-table">
             {"".join(rows)}
         </table>
@@ -813,7 +871,7 @@ def render_projects(data: dict) -> str:
     """
 
 
-def render_skills(data: dict) -> str:
+def render_skills(data: dict, lang: str = "en") -> str:
     skills = data.get("skills", [])
     if not skills:
         return ""
@@ -847,7 +905,7 @@ def render_skills(data: dict) -> str:
 
     return f"""
     <section>
-        <h2>Skills</h2>
+        <h2>{LABELS[lang]["skills"]}</h2>
         <div class="card skills-card">
             <table class="skills-table">
                 {"".join(rows)}
@@ -857,13 +915,14 @@ def render_skills(data: dict) -> str:
     """
 
 
-def render_education(data: dict) -> str:
+def render_education(data: dict, lang: str = "en") -> str:
     entries = []
 
     for education in data.get("education", []):
         date = fmt_range(
             education.get("startDate", ""),
-            education.get("endDate", "")
+            education.get("endDate", ""),
+            lang=lang,
         )
 
         degree = join_non_empty(
@@ -907,7 +966,6 @@ def render_education(data: dict) -> str:
     if not entries:
         return ""
 
-    # Build languages & interests inline to put next to education
     languages = join_non_empty(
         [
             f'{escape(language["language"])} '
@@ -926,10 +984,10 @@ def render_education(data: dict) -> str:
     lang_int_html = f"""
     <div class="card compact-card" style="margin-top:0">
         <p class="compact-line">
-            <strong>Languages:</strong> {languages}
+            <strong>{LABELS[lang]["languages"]}</strong> {languages}
         </p>
         <p class="compact-line" style="margin-top:3pt">
-            <strong>Interests:</strong> {interests}
+            <strong>{LABELS[lang]["interests"]}</strong> {interests}
         </p>
     </div>
     """
@@ -939,11 +997,11 @@ def render_education(data: dict) -> str:
         <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
             <tr>
                 <td style="width:55%; vertical-align:top; padding-right:6pt;">
-                    <h2>Education</h2>
+                    <h2>{LABELS[lang]["education"]}</h2>
                     {"".join(entries)}
                 </td>
                 <td style="width:45%; vertical-align:top; padding-left:2pt;">
-                    <h2>Languages &amp; Interests</h2>
+                    <h2>{LABELS[lang]["languages_interests"]}</h2>
                     {lang_int_html}
                 </td>
             </tr>
@@ -952,37 +1010,31 @@ def render_education(data: dict) -> str:
     """
 
 
-def render_languages_interests(data: dict) -> str:
-    # Now merged into render_education — this is a no-op
-    return ""
-
-
 # -----------------------------------------------------------------------------
 # Full HTML document
 # -----------------------------------------------------------------------------
 
-def render(data: dict, page_size: str) -> str:
+def render(data: dict, page_size: str, lang: str = "en") -> str:
     basics = data["basics"]
 
     return f"""<!DOCTYPE html>
-<html lang="en">
+<html lang="{lang}">
 <head>
     <meta charset="utf-8">
-    <title>{escape(basics["name"])} — Resume</title>
+    <title>{escape(basics["name"])} — {LABELS[lang]["title_suffix"]}</title>
 
     <style>
-        {css(page_size)}
+        {css(page_size, lang=lang)}
     </style>
 </head>
 
 <body>
-    {render_header(data)}
-    {render_summary(data)}
-    {render_experience(data)}
-    {render_projects(data)}
-    {render_skills(data)}
-    {render_education(data)}
-    {render_languages_interests(data)}
+    {render_header(data, lang=lang)}
+    {render_summary(data, lang=lang)}
+    {render_experience(data, lang=lang)}
+    {render_projects(data, lang=lang)}
+    {render_skills(data, lang=lang)}
+    {render_education(data, lang=lang)}
 </body>
 </html>
 """
@@ -994,14 +1046,28 @@ def render(data: dict, page_size: str) -> str:
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Render resume.json into a PDF."
+        description="Render resume.json or resume-fr.json into a PDF."
     )
 
     parser.add_argument(
-        "output",
+        "arg1",
+        nargs="?",
+        default=None,
+        help="Input JSON path or Output PDF path (if .pdf)."
+    )
+
+    parser.add_argument(
+        "arg2",
         nargs="?",
         default=None,
         help="Output PDF path."
+    )
+
+    parser.add_argument(
+        "--lang",
+        choices=["en", "fr"],
+        default=None,
+        help="Language (en or fr). Defaults to auto-detect from JSON or 'en'."
     )
 
     parser.add_argument(
@@ -1010,13 +1076,37 @@ def parse_args():
         help="Render using A4 instead of US Letter."
     )
 
+    parser.add_argument(
+        "--letter",
+        action="store_true",
+        help="Render using US Letter instead of A4."
+    )
+
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
 
+    # Determine input and output paths with backward compatibility
     resume_path = ROOT / "resume.json"
+    output_path = None
+
+    if args.arg1:
+        if args.arg1.endswith(".pdf"):
+            output_path = Path(args.arg1)
+        elif args.arg1.endswith(".json") or Path(args.arg1).exists():
+            resume_path = Path(args.arg1)
+            if args.arg2:
+                output_path = Path(args.arg2)
+        else:
+            resume_path = Path(args.arg1)
+
+    if args.arg2 and not output_path:
+        output_path = Path(args.arg2)
+
+    if not resume_path.is_absolute():
+        resume_path = ROOT / resume_path
 
     if not resume_path.exists():
         print(f"Error: resume file not found: {resume_path}")
@@ -1024,26 +1114,49 @@ def main() -> int:
 
     data = json.loads(resume_path.read_text(encoding="utf-8"))
 
-    if args.output:
-        output = Path(args.output)
+    # Auto-detect language
+    if args.lang:
+        lang = args.lang
+    elif data.get("meta", {}).get("lang"):
+        lang = data["meta"]["lang"]
+    elif "fr" in str(resume_path).lower():
+        lang = "fr"
     else:
-        output = ROOT / "public" / "resume.pdf"
+        lang = "en"
 
-    output.parent.mkdir(parents=True, exist_ok=True)
+    # Default output path if not specified
+    if not output_path:
+        if lang == "fr":
+            output_path = ROOT / "public" / "resume-fr.pdf"
+        else:
+            output_path = ROOT / "public" / "resume.pdf"
+    elif not output_path.is_absolute():
+        output_path = ROOT / output_path
 
-    page_size = "A4" if args.a4 else "Letter"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Page size resolution: A4 standard for FR, Letter standard for EN
+    if args.a4:
+        page_size = "A4"
+    elif args.letter:
+        page_size = "Letter"
+    elif lang == "fr":
+        page_size = "A4"
+    else:
+        page_size = "Letter"
 
     html_document = render(
         data=data,
         page_size=page_size,
+        lang=lang,
     )
 
     HTML(
         string=html_document,
         base_url=str(ROOT),
-    ).write_pdf(str(output))
+    ).write_pdf(str(output_path))
 
-    print(f"✓ wrote {output} ({page_size})")
+    print(f"✓ wrote {output_path} ({page_size}, lang: {lang})")
 
     return 0
 

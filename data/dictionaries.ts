@@ -13,6 +13,10 @@ export const dictionaries = {
       status: "Currently seeking a 3-month engineering internship — starting June 2027.",
       cta: "View Architecture & Projects",
       resume: "Download Resume",
+      resume_en: "English Version (US / ATS)",
+      resume_en_desc: "Letter · Single-column, ATS-friendly",
+      resume_fr: "French Version (A4)",
+      resume_fr_desc: "A4 · Format standard français",
       blog: "Read Blog",
       powered_by: "Powered by WebAssembly & Rust (ascii-cube-rs)"
     },
@@ -72,6 +76,10 @@ export const dictionaries = {
       status: "À la recherche d'un stage d'ingénieur de 3 mois — dès juin 2027.",
       cta: "Voir les Projets",
       resume: "Télécharger mon CV",
+      resume_en: "Version anglaise (US / ATS)",
+      resume_en_desc: "Format US · Optimisé ATS",
+      resume_fr: "Version française (A4)",
+      resume_fr_desc: "Format standard A4",
       blog: "Lire le Blog",
       powered_by: "Propulsé par WebAssembly & Rust (ascii-cube-rs)"
     },
