@@ -35,10 +35,10 @@
       "endDate": "",
       "url": "https://portfolio.qgroget.com/en/blog/automated-testing-framework",
       "highlights": [
-        "Architected and executed the automated integration test suite for the Hôpital Numérique platform.",
-        "Massively refactored the test architecture to unify execution via API or maven, optimizing developer workflow.",
-        "Created abstractions and data isolation tools via Jenkins for reproducible test environments.",
-        "Developed and deployed a Spring Boot internal tool to production."
+        "Architected a unified E2E test engine (Spring Boot, Selenium) running identically via Maven in CI and an async REST API.",
+        "Implemented cold precondition checks failing invalid runs in ~50ms (vs 20s browser startup), cutting false-positive CI failures by ~70%.",
+        "Designed automated data-isolation routines in Jenkins pipelines to eliminate concurrent test collisions on shared environments.",
+        "Developed and deployed a core Spring Boot internal automation tool to production."
       ]
     },
     {
@@ -47,8 +47,8 @@
       "startDate": "2025-04-01",
       "endDate": "2025-06-30",
       "highlights": [
-        "Developed a web application within an Agile environment.",
-        "Utilized Spring Boot for the backend and Next.js for the frontend."
+        "Engineered full-stack features and RESTful endpoints using Java Spring Boot to interface backend services with database layers.",
+        "Developed responsive user interfaces in Next.js (React) and delivered sprint user stories through Agile/Scrum team rituals."
       ]
     },
     {
@@ -166,7 +166,7 @@
   "projects": [
     {
       "name": "min-btc-node",
-      "description": "Built a minimal Bitcoin full node in Rust from scratch, hand-rolling the wire protocol's binary serialization and concurrent peer handling to understand how blocks propagate across the network.",
+      "description": "Built a Bitcoin node from scratch in Rust, implementing the P2P wire protocol (handshake, inventory, block headers) with zero protocol dependencies and concurrent peer parsing.",
       "keywords": [
         "Rust",
         "Bitcoin",
@@ -188,7 +188,7 @@
     },
     {
       "name": "pixel-war",
-      "description": "Designed a Web3 pixel-canvas dApp with Solidity and JavaScript where users bid on-chain to own pixels, claim refunds when outbid, and mint ERC-721 snapshots — reasoning through on-chain state and smart-contract security.",
+      "description": "Architected a Web3 pixel-canvas dApp in Solidity with pull-over-push refund patterns to prevent reentrancy attacks, and on-chain ERC-721 snapshot minting.",
       "keywords": [
         "Web3",
         "Solidity",
@@ -209,7 +209,7 @@
     },
     {
       "name": "RayTracer-Rust",
-      "description": "CPU ray tracer in Rust with BVH acceleration, Phong shading, reflections, and a custom scene file format — built from scratch.",
+      "description": "CPU ray tracer in Rust with Bounding Volume Hierarchy (BVH) spatial partitioning for O(log N) ray-primitive intersections, Phong shading, and reflections.",
       "keywords": [
         "Rust",
         "Graphics",

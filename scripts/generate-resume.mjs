@@ -142,31 +142,29 @@ const extraWorkData = {
 const projectDescriptions = {
   en: {
     "min-btc-node":
-      "Built a minimal Bitcoin full node in Rust from scratch, hand-rolling the wire " +
-      "protocol's binary serialization and concurrent peer handling to understand how " +
-      "blocks propagate across the network.",
+      "Built a Bitcoin node from scratch in Rust, implementing the P2P wire protocol " +
+      "(handshake, inventory, block headers) with zero protocol dependencies and concurrent peer parsing.",
     "nixos-config":
       "Declared multi-host NixOS configurations and dotfiles with Nix flakes and Home " +
       "Manager to make development environments versioned and fully reproducible across " +
       "machines.",
     "pixel-war":
-      "Designed a Web3 pixel-canvas dApp with Solidity and JavaScript where users bid " +
-      "on-chain to own pixels, claim refunds when outbid, and mint ERC-721 snapshots — " +
-      "reasoning through on-chain state and smart-contract security.",
+      "Architected a Web3 pixel-canvas dApp in Solidity with pull-over-push refund patterns " +
+      "to prevent reentrancy attacks, and on-chain ERC-721 snapshot minting.",
     "HomeLab Infrastructure":
       "Provisioned a self-hosted server with Unraid and Docker running Jellyfin, Gitea, " +
       "and Pi-hole to learn bare-metal provisioning and network routing hands-on.",
   },
   fr: {
     "min-btc-node":
-      "Développement from scratch d'un nœud complet Bitcoin en Rust : sérialisation binaire " +
-      "du protocole et gestion concurrente des pairs pour analyser la propagation réseau des blocs.",
+      "Nœud Bitcoin développé from scratch en Rust : implémentation du protocole P2P " +
+      "(handshake, inventory, blocs) sans dépendance tierce et gestion concurrente des pairs.",
     "nixos-config":
       "Configuration multi-machines déclarative et dotfiles avec Nix flakes et Home Manager " +
       "pour des environnements de développement versionnés et 100% reproductibles.",
     "pixel-war":
-      "Conception d'une dApp Web3 pixel-canvas (Solidity, JavaScript) avec enchères on-chain, " +
-      "remboursements automatiques et frappe de NFT ERC-721 axée sur la sécurité des smart contracts.",
+      "dApp Web3 pixel-canvas en Solidity : pattern pull-over-push pour sécuriser les remboursements " +
+      "contre la réentrance, et frappe d'instantanés en NFT ERC-721.",
     "Infrastructure HomeLab":
       "Déploiement d'un serveur auto-hébergé avec Unraid et Docker (Jellyfin, Gitea, Pi-hole) " +
       "pour la maîtrise concrète du provisionnement bare-metal et du routage réseau.",
@@ -181,8 +179,8 @@ const extraProjectsData = {
     {
       name: "RayTracer-Rust",
       description:
-        "CPU ray tracer in Rust with BVH acceleration, Phong shading, reflections, " +
-        "and a custom scene file format — built from scratch.",
+        "CPU ray tracer in Rust with Bounding Volume Hierarchy (BVH) spatial partitioning " +
+        "for O(log N) ray-primitive intersections, Phong shading, and reflections.",
       keywords: ["Rust", "Graphics", "Ray Tracing", "BVH"],
       url: "https://github.com/Strange500/RayTracer-Rust",
     },
@@ -207,8 +205,8 @@ const extraProjectsData = {
     {
       name: "RayTracer-Rust",
       description:
-        "Moteur de ray tracing CPU en Rust avec accélération BVH, ombrage de Phong, réflexions " +
-        "et format de scène sur-mesure — conçu de zéro.",
+        "Moteur de ray tracing CPU en Rust avec partitionnement spatial BVH pour des " +
+        "intersections en O(log N), ombrage de Phong et réflexions récursives.",
       keywords: ["Rust", "Graphisme", "Ray Tracing", "BVH"],
       url: "https://github.com/Strange500/RayTracer-Rust",
     },

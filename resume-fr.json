@@ -35,9 +35,9 @@
       "endDate": "",
       "url": "https://portfolio.qgroget.com/fr/blog/automated-testing-framework",
       "highlights": [
-        "Architecture et exécution de la suite de tests d'intégration automatisés pour la plateforme Hôpital Numérique.",
-        "Refactoring massif de l'architecture de test permettant l'exécution unifiée via API ou mvn test.",
-        "Création d'abstractions et d'outils d'isolation de données via Jenkins pour des tests reproductibles.",
+        "Architecture d'un moteur de tests E2E unifié (Spring Boot, Selenium) exécutable à l'identique via Maven en CI et via API REST.",
+        "Mise en place de prérequis froids arrêtant les runs invalides en ~50 ms (au lieu de 20 s), réduisant les faux positifs CI de ~70%.",
+        "Conception d'outils d'isolation de données sous Jenkins pour éliminer les collisions lors de tests concurrents.",
         "Développement et déploiement en production d'un outil interne Spring Boot."
       ]
     },
@@ -47,8 +47,8 @@
       "startDate": "2025-04-01",
       "endDate": "2025-06-30",
       "highlights": [
-        "Développement d'une application web en environnement et rituels Agile.",
-        "Utilisation de Spring Boot pour le backend et Next.js (React) pour le frontend."
+        "Développement de fonctionnalités full-stack et d'endpoints REST en Java Spring Boot pour l'intégration des services et de la base de données.",
+        "Conception d'interfaces réactives avec Next.js (React) et livraison des user stories au sein d'une équipe en rituels Agile/Scrum."
       ]
     },
     {
@@ -166,7 +166,7 @@
   "projects": [
     {
       "name": "min-btc-node",
-      "description": "Développement from scratch d'un nœud complet Bitcoin en Rust : sérialisation binaire du protocole et gestion concurrente des pairs pour analyser la propagation réseau des blocs.",
+      "description": "Nœud Bitcoin développé from scratch en Rust : implémentation du protocole P2P (handshake, inventory, blocs) sans dépendance tierce et gestion concurrente des pairs.",
       "keywords": [
         "Rust",
         "Bitcoin",
@@ -188,7 +188,7 @@
     },
     {
       "name": "pixel-war",
-      "description": "Conception d'une dApp Web3 pixel-canvas (Solidity, JavaScript) avec enchères on-chain, remboursements automatiques et frappe de NFT ERC-721 axée sur la sécurité des smart contracts.",
+      "description": "dApp Web3 pixel-canvas en Solidity : pattern pull-over-push pour sécuriser les remboursements contre la réentrance, et frappe d'instantanés en NFT ERC-721.",
       "keywords": [
         "Web3",
         "Solidity",
@@ -209,7 +209,7 @@
     },
     {
       "name": "RayTracer-Rust",
-      "description": "Moteur de ray tracing CPU en Rust avec accélération BVH, ombrage de Phong, réflexions et format de scène sur-mesure — conçu de zéro.",
+      "description": "Moteur de ray tracing CPU en Rust avec partitionnement spatial BVH pour des intersections en O(log N), ombrage de Phong et réflexions récursives.",
       "keywords": [
         "Rust",
         "Graphisme",

@@ -38,10 +38,10 @@ export const dictionaries = {
           date: "Sept 2025 – Present",
           deepDive: "/en/blog/automated-testing-framework",
           bullets: [
-            "Architected and executed the automated integration test suite for the Hôpital Numérique platform.",
-            "Massively refactored the test architecture to unify execution via API or maven, optimizing developer workflow.",
-            "Created abstractions and data isolation tools via Jenkins for reproducible test environments.",
-            "Developed and deployed a Spring Boot internal tool to production."
+            "Architected a unified E2E test engine (Spring Boot, Selenium) running identically via Maven in CI and an async REST API.",
+            "Implemented cold precondition checks failing invalid runs in ~50ms (vs 20s browser startup), cutting false-positive CI failures by ~70%.",
+            "Designed automated data-isolation routines in Jenkins pipelines to eliminate concurrent test collisions on shared environments.",
+            "Developed and deployed a core Spring Boot internal automation tool to production."
           ]
         },
         {
@@ -50,8 +50,8 @@ export const dictionaries = {
           date: "April 2025 – June 2025",
           deepDive: "",
           bullets: [
-            "Developed a web application within an Agile environment.",
-            "Utilized Spring Boot for the backend and Next.js for the frontend."
+            "Engineered full-stack features and RESTful endpoints using Java Spring Boot to interface backend services with database layers.",
+            "Developed responsive user interfaces in Next.js (React) and delivered sprint user stories through Agile/Scrum team rituals."
           ]
         }
       ]
@@ -101,9 +101,9 @@ export const dictionaries = {
           date: "Sept 2025 – Présent",
           deepDive: "/fr/blog/automated-testing-framework",
           bullets: [
-            "Architecture et exécution de la suite de tests d'intégration automatisés pour la plateforme Hôpital Numérique.",
-            "Refactoring massif de l'architecture de test permettant l'exécution unifiée via API ou mvn test.",
-            "Création d'abstractions et d'outils d'isolation de données via Jenkins pour des tests reproductibles.",
+            "Architecture d'un moteur de tests E2E unifié (Spring Boot, Selenium) exécutable à l'identique via Maven en CI et via API REST.",
+            "Mise en place de prérequis froids arrêtant les runs invalides en ~50 ms (au lieu de 20 s), réduisant les faux positifs CI de ~70%.",
+            "Conception d'outils d'isolation de données sous Jenkins pour éliminer les collisions lors de tests concurrents.",
             "Développement et déploiement en production d'un outil interne Spring Boot."
           ]
         },
@@ -113,8 +113,8 @@ export const dictionaries = {
           date: "Avril 2025 – Juin 2025",
           deepDive: "",
           bullets: [
-            "Développement d'une application web en environnement et rituels Agile.",
-            "Utilisation de Spring Boot pour le backend et Next.js (React) pour le frontend."
+            "Développement de fonctionnalités full-stack et d'endpoints REST en Java Spring Boot pour l'intégration des services et de la base de données.",
+            "Conception d'interfaces réactives avec Next.js (React) et livraison des user stories au sein d'une équipe en rituels Agile/Scrum."
           ]
         }
       ]
