@@ -13,6 +13,10 @@ export const dictionaries = {
       status: "Currently seeking a 3-month engineering internship — starting June 2027.",
       cta: "View Architecture & Projects",
       resume: "Download Resume",
+      resume_en: "English Version (US / ATS)",
+      resume_en_desc: "Letter · Single-column, ATS-friendly",
+      resume_fr: "French Version (A4)",
+      resume_fr_desc: "A4 · Format standard français",
       blog: "Read Blog",
       powered_by: "Powered by WebAssembly & Rust (ascii-cube-rs)"
     },
@@ -34,10 +38,10 @@ export const dictionaries = {
           date: "Sept 2025 – Present",
           deepDive: "/en/blog/automated-testing-framework",
           bullets: [
-            "Architected and executed the automated integration test suite for the Hôpital Numérique platform.",
-            "Massively refactored the test architecture to unify execution via API or maven, optimizing developer workflow.",
-            "Created abstractions and data isolation tools via Jenkins for reproducible test environments.",
-            "Developed and deployed a Spring Boot internal tool to production."
+            "Architected and maintain a unified E2E test engine (Java Spring Boot, Selenium) running 50–70 automated integration tests, executable identically via Maven in CI or an async REST API.",
+            "Refactored the test architecture to cut the false-positive rate by ~70% and reduce environment/version migrations from ~4 hours to under 10 minutes.",
+            "Built developer tooling and data-isolation abstractions (Jenkins) to interact easily with in-house applications and eliminate concurrent test collisions.",
+            "Developed and deployed a Spring Boot internal tool that auto-distributes daily product-support duties across ~40 developers."
           ]
         },
         {
@@ -46,8 +50,8 @@ export const dictionaries = {
           date: "April 2025 – June 2025",
           deepDive: "",
           bullets: [
-            "Developed a web application within an Agile environment.",
-            "Utilized Spring Boot for the backend and Next.js for the frontend."
+            "Engineered RESTful backend services (Java Spring Boot, relational database) powering My-UUU, an equestrian-facility directory and review platform.",
+            "Developed responsive interfaces in Next.js (React) and shipped sprint user stories in an Agile/Scrum team for a production-facing product."
           ]
         }
       ]
@@ -72,6 +76,10 @@ export const dictionaries = {
       status: "À la recherche d'un stage d'ingénieur de 3 mois — dès juin 2027.",
       cta: "Voir les Projets",
       resume: "Télécharger mon CV",
+      resume_en: "Version anglaise (US / ATS)",
+      resume_en_desc: "Format US · Optimisé ATS",
+      resume_fr: "Version française (A4)",
+      resume_fr_desc: "Format standard A4",
       blog: "Lire le Blog",
       powered_by: "Propulsé par WebAssembly & Rust (ascii-cube-rs)"
     },
@@ -93,10 +101,10 @@ export const dictionaries = {
           date: "Sept 2025 – Présent",
           deepDive: "/fr/blog/automated-testing-framework",
           bullets: [
-            "Architecture et exécution de la suite de tests d'intégration automatisés pour la plateforme Hôpital Numérique.",
-            "Refactoring massif de l'architecture de test permettant l'exécution unifiée via API ou mvn test.",
-            "Création d'abstractions et d'outils d'isolation de données via Jenkins pour des tests reproductibles.",
-            "Développement et déploiement en production d'un outil interne Spring Boot."
+            "Architecture et maintien d'un moteur de tests E2E unifié (Spring Boot, Selenium) pilotant 50 à 70 tests d'intégration, exécutable à l'identique via Maven en CI ou via API REST asynchrone.",
+            "Refactoring de l'architecture de test ayant réduit le taux de faux positifs de ~70 % et ramené les migrations (version/environnement) de ~4 h à moins de 10 min.",
+            "Conception d'outils développeur et d'abstractions d'isolation de données (Jenkins) pour interagir facilement avec les applications internes et éliminer les collisions concurrentes.",
+            "Développement et déploiement en production d'un outil Spring Boot répartissant chaque jour le support produit auprès d'environ 40 développeurs."
           ]
         },
         {
@@ -105,8 +113,8 @@ export const dictionaries = {
           date: "Avril 2025 – Juin 2025",
           deepDive: "",
           bullets: [
-            "Développement d'une application web en environnement et rituels Agile.",
-            "Utilisation de Spring Boot pour le backend et Next.js (React) pour le frontend."
+            "Développement des services backend (Java Spring Boot, base relationnelle) de My-UUU, plateforme de référencement et d'avis sur les structures équestres.",
+            "Réalisation d'interfaces responsive Next.js (React) et livraison de user stories en équipe Agile/Scrum pour un produit en production."
           ]
         }
       ]

@@ -2,11 +2,16 @@
   "name": "portofolio",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "resume": "./scripts/generate-resume.sh",
+    "resume:themes": "./scripts/generate-resume.sh --list-themes",
+    "resume:en": "./scripts/generate-resume.sh --skip-pdf && node scripts/render-resume.mjs --resume resume.json --output public/resume.pdf --lang en",
+    "resume:fr": "./scripts/generate-resume.sh --skip-pdf && node scripts/render-resume.mjs --resume resume-fr.json --output public/resume-fr.pdf --lang fr"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",
@@ -39,9 +44,11 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.2",
+    "jsonresume-theme-even": "^0.26.1",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",
+    "puppeteer-core": "^25.11.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
   }
