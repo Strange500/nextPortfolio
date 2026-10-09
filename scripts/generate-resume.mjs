@@ -41,11 +41,10 @@ const basicsData = {
     phone: "+33 7 83 03 95 25",
     url: "https://portfolio.qgroget.com",
     summary:
-      "Backend-focused software engineer (co-op) designing reliable, maintainable systems through " +
-      "rigorous automated testing and declarative infrastructure (NixOS, Docker). " +
+      "Backend-focused software engineer designing reliable, maintainable systems through " +
+      "rigorous automated testing and declarative infrastructure. " +
       "Experienced in Java Spring Boot, Rust, and full-stack delivery. " +
-      "Seeking a 3-month software engineering internship in the US, starting June 2027. " +
-      "Eligible for J-1 internship visa sponsorship.",
+      "Seeking a 3-month software engineering internship in the US, starting June 2027.",
     location: {
       city: "Villeneuve d'Ascq",
       region: "Hauts-de-France",
@@ -97,18 +96,14 @@ const languagesData = {
 
 const interestsData = {
   en: [
-    { name: "Sport shooting", keywords: ["national level"] },
-    { name: "Running",        keywords: [] },
-    { name: "Swimming",       keywords: [] },
-    { name: "Cycling",        keywords: [] },
-    { name: "Weightlifting",  keywords: [] },
+    { name: "Sport shooting",     keywords: ["national level"] },
+    { name: "Triathlon training", keywords: [] },
+    { name: "Weightlifting",      keywords: [] },
   ],
   fr: [
-    { name: "Tir sportif",   keywords: ["niveau national"] },
-    { name: "Course à pied", keywords: [] },
-    { name: "Natation",      keywords: [] },
-    { name: "Cyclisme",      keywords: [] },
-    { name: "Musculation",   keywords: [] },
+    { name: "Tir sportif",            keywords: ["niveau national"] },
+    { name: "Entraînement triathlon", keywords: [] },
+    { name: "Musculation",            keywords: [] },
   ],
 };
 
