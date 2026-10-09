@@ -450,7 +450,8 @@ def css(page_size: str, lang: str = "en") -> str:
         display: flex;
         align-items: baseline;
         justify-content: space-between;
-        gap: 4pt;
+        flex-wrap: wrap;
+        gap: 3pt 6pt;
         margin-bottom: 1pt;
     }}
 
@@ -460,14 +461,19 @@ def css(page_size: str, lang: str = "en") -> str:
         font-size: 7.9pt;
         font-weight: 700;
         line-height: 1.2;
+        min-width: 0;
+        overflow-wrap: anywhere;
     }}
 
     .project-links {{
-        flex-shrink: 0;
+        flex-shrink: 1;
+        min-width: 0;
         font-family: 'Fira Code', monospace;
         font-size: 6.5pt;
-        line-height: 1.2;
+        line-height: 1.35;
         text-align: right;
+        overflow-wrap: anywhere;
+        word-break: break-all;
     }}
 
     .project-links .sep {{
