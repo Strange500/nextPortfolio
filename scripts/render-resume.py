@@ -25,9 +25,6 @@ import html
 import json
 from pathlib import Path
 
-from weasyprint import HTML
-
-
 ROOT = Path(__file__).resolve().parent.parent
 FONTS = ROOT / "public" / "fonts"
 
@@ -167,9 +164,9 @@ def join_non_empty(parts, separator=" · "):
 # -----------------------------------------------------------------------------
 
 def css(page_size: str, lang: str = "en") -> str:
-    # A4 is taller and slightly narrower than Letter; slight adjustment for line height / font
-    body_font_size = "7.35pt" if lang == "fr" else "7.45pt"
-    body_line_height = "1.26" if lang == "fr" else "1.28"
+    # Use the spare A4 height for readable text, not a denser redesign.
+    body_font_size = "8.1pt" if lang == "fr" else "8.25pt"
+    body_line_height = "1.3"
 
     return f"""
     @font-face {{
@@ -216,7 +213,7 @@ def css(page_size: str, lang: str = "en") -> str:
 
     @page {{
         size: {page_size};
-        margin: 0.28in;
+        margin: 0.34in;
         background: #FAFAFA;
     }}
 
@@ -287,7 +284,7 @@ def css(page_size: str, lang: str = "en") -> str:
     .contact {{
         margin-top: 4pt;
         color: var(--ink-muted);
-        font-size: 6.9pt;
+        font-size: 7.2pt;
         line-height: 1.5;
     }}
 
@@ -310,18 +307,19 @@ def css(page_size: str, lang: str = "en") -> str:
        ------------------------------------------------------------------------- */
 
     section {{
-        margin-bottom: 5.5pt;
+        margin-bottom: 7pt;
     }}
 
     h2 {{
         margin: 0 0 2.5pt 0;
         padding: 0;
         color: var(--ink-strong);
-        font-size: 7.9pt;
+        font-size: 8.5pt;
         line-height: 1.1;
         font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.105em;
+        letter-spacing: 0.08em;
+        break-after: avoid;
     }}
 
     /* -------------------------------------------------------------------------
@@ -391,7 +389,7 @@ def css(page_size: str, lang: str = "en") -> str:
         flex-shrink: 0;
         white-space: nowrap;
         font-family: 'Fira Code', monospace;
-        font-size: 6.9pt;
+        font-size: 7.2pt;
         color: var(--ink-muted);
     }}
 
@@ -417,7 +415,7 @@ def css(page_size: str, lang: str = "en") -> str:
     .deeplink {{
         margin-top: 2.5pt;
         font-family: 'Fira Code', monospace;
-        font-size: 6.7pt;
+        font-size: 7pt;
     }}
 
     /* -------------------------------------------------------------------------
@@ -469,7 +467,7 @@ def css(page_size: str, lang: str = "en") -> str:
         flex-shrink: 1;
         min-width: 0;
         font-family: 'Fira Code', monospace;
-        font-size: 6.5pt;
+        font-size: 7pt;
         line-height: 1.35;
         text-align: right;
         overflow-wrap: anywhere;
@@ -483,8 +481,8 @@ def css(page_size: str, lang: str = "en") -> str:
 
     .project-description {{
         margin: 0;
-        line-height: 1.28;
-        font-size: 6.95pt;
+        line-height: 1.3;
+        font-size: 7.8pt;
     }}
 
     .project-tags {{
@@ -495,7 +493,7 @@ def css(page_size: str, lang: str = "en") -> str:
         background: var(--tag-bg);
         color: var(--ink-muted);
         font-family: 'Fira Code', monospace;
-        font-size: 6.4pt;
+        font-size: 7pt;
         line-height: 1.2;
     }}
 
@@ -508,9 +506,7 @@ def css(page_size: str, lang: str = "en") -> str:
     }}
 
     .skill-row {{
-        display: flex;
-        align-items: baseline;
-        margin-bottom: 1.5pt;
+        margin-bottom: 3pt;
         line-height: 1.28;
     }}
 
@@ -519,8 +515,7 @@ def css(page_size: str, lang: str = "en") -> str:
     }}
 
     .skill-group {{
-        width: 104pt;
-        flex-shrink: 0;
+        margin-bottom: 1pt;
         color: var(--ink-strong);
         font-weight: 700;
     }}
@@ -533,7 +528,7 @@ def css(page_size: str, lang: str = "en") -> str:
     .skill-item {{
         font-family: 'Fira Code', monospace;
         color: var(--accent);
-        font-size: 6.9pt;
+        font-size: 7.2pt;
         font-weight: 500;
     }}
 
@@ -546,7 +541,7 @@ def css(page_size: str, lang: str = "en") -> str:
     .skill-col {{
         width: 50%;
         vertical-align: top;
-        padding: 0;
+        padding: 0 5pt 0 0;
     }}
 
     /* -------------------------------------------------------------------------
@@ -573,7 +568,7 @@ def css(page_size: str, lang: str = "en") -> str:
         color: var(--ink-strong);
         font-size: 8.3pt;
         font-weight: 700;
-        line-height: 1.2;
+        line-height: 1.3;
     }}
 
     .education-date {{
@@ -581,7 +576,7 @@ def css(page_size: str, lang: str = "en") -> str:
         white-space: nowrap;
         color: var(--ink-muted);
         font-family: 'Fira Code', monospace;
-        font-size: 6.7pt;
+        font-size: 7pt;
     }}
 
     .education-school {{
@@ -686,44 +681,18 @@ def render_header(data: dict, lang: str = "en") -> str:
 
     separator = '<span class="sep">·</span>'
 
-    if basics.get("image"):
-        image_url = escape(basics["image"])
-        return f"""
-        <header style="margin-bottom: 7pt; text-align: left;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <tr>
-                    <td style="vertical-align: top;">
-                        <h1 class="name">{escape(basics["name"])}</h1>
-                        <div class="label">{escape(basics.get("label", ""))}</div>
-                        <div class="contact">
-                            <div>{separator.join(contact_parts)}</div>
-                            <div class="profile-row">{separator.join(profile_parts)}</div>
-                        </div>
-                    </td>
-                    <td style="width: 80px; text-align: right; vertical-align: top;">
-                        <img src="{image_url}" style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 1px solid var(--rule);" />
-                    </td>
-                </tr>
-            </table>
-        </header>
-        """
-    else:
-        return f"""
-        <header>
-            <h1 class="name">{escape(basics["name"])}</h1>
-            <div class="label">{escape(basics.get("label", ""))}</div>
+    # Keep both printable versions photo-free; the factual JSON is untouched.
+    return f"""
+    <header>
+        <h1 class="name">{escape(basics["name"])}</h1>
+        <div class="label">{escape(basics.get("label", ""))}</div>
 
-            <div class="contact">
-                <div>
-                    {separator.join(contact_parts)}
-                </div>
-
-                <div class="profile-row">
-                    {separator.join(profile_parts)}
-                </div>
-            </div>
-        </header>
-        """
+        <div class="contact">
+            <div>{separator.join(contact_parts)}</div>
+            <div class="profile-row">{separator.join(profile_parts)}</div>
+        </div>
+    </header>
+    """
 
 
 def render_summary(data: dict, lang: str = "en") -> str:
@@ -1115,6 +1084,12 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--html",
+        action="store_true",
+        help="Write an HTML preview without requiring WeasyPrint."
+    )
+
+    parser.add_argument(
         "--a4",
         action="store_true",
         help="Render using A4 instead of US Letter."
@@ -1170,10 +1145,11 @@ def main() -> int:
 
     # Default output path if not specified
     if not output_path:
+        suffix = ".html" if args.html else ".pdf"
         if lang == "fr":
-            output_path = ROOT / "public" / "resume-fr.pdf"
+            output_path = ROOT / "public" / f"resume-fr{suffix}"
         else:
-            output_path = ROOT / "public" / "resume.pdf"
+            output_path = ROOT / "public" / f"resume{suffix}"
     elif not output_path.is_absolute():
         output_path = ROOT / output_path
 
@@ -1192,6 +1168,13 @@ def main() -> int:
         page_size=page_size,
         lang=lang,
     )
+
+    if args.html or output_path.suffix == ".html":
+        output_path.write_text(html_document, encoding="utf-8")
+        print(f"✓ wrote {output_path} (HTML, lang: {lang})")
+        return 0
+
+    from weasyprint import HTML
 
     HTML(
         string=html_document,

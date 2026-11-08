@@ -140,6 +140,18 @@ if (themeConfig.renderer === "weasyprint") {
 function runWeasyprintRenderer(resumePath, outputPath, lang, opts) {
   const pyScript = join(__dirname, "render-resume.py");
 
+  // HTML previews only need Python's standard library, not Pango or Nix.
+  if (opts.html || extname(outputPath) === ".html") {
+    const result = spawnSync("python3", [
+      pyScript, resumePath, outputPath, "--a4", "--lang", lang, "--html",
+    ], { stdio: "inherit" });
+    if (result.status !== 0) {
+      console.error("✗ HTML preview failed.");
+      process.exit(result.status ?? 1);
+    }
+    return;
+  }
+
   // Find Python with WeasyPrint (same logic as generate-resume.sh)
   function findPython() {
     const candidates = [

@@ -24,6 +24,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Resume HTML preview regression tests
+        run: python3 scripts/test-resume-preview.py
+
       - name: Lint
         # Non-blocking: `next lint` was removed in Next 15+, so use eslint directly.
         # 5 pre-existing errors in legacy/wasm-glue files (not introduced by this PR).
