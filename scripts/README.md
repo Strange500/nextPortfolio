@@ -96,6 +96,35 @@ scripts/
 
 ## Dépendances
 
+### Prévisualisation et contrôle de mise en page
+
+Le thème custom accepte lui aussi `--html`, sans WeasyPrint/Pango/Nix :
+
+```sh
+node scripts/render-resume.mjs --resume resume.json --html --output public/resume-preview.html
+node scripts/render-resume.mjs --resume resume-fr.json --lang fr --html --output public/resume-fr-preview.html
+python3 scripts/test-resume-preview.py
+```
+
+Ouvrir les fichiers HTML localement. Les fontes référencées sont celles de
+`public/fonts` (préparées par le pipeline complet). Le PDF WeasyPrint reste la
+référence pour la pagination ; l'HTML navigateur n'est pas une preuve de pagination.
+
+Après `npm run resume`, avec **PyMuPDF** installé dans l'environnement Python
+de validation (`python -m pip install PyMuPDF`), générer les PNGs et vérifier les
+deux PDFs :
+
+```sh
+python scripts/check-resume-layout.py --baseline origin/main
+```
+
+Ce contrôle impose une page A4 par langue, toutes les coordonnées dans la page,
+des textes et cibles URI inchangés, des alias identiques, aucune image et aucune
+police sous 7 pt. Il compare aussi les trois JSON factuels au ref Git choisi.
+Les PNGs pleine page sont écrits dans `docs/resume-preview/` ; ils doivent encore
+être examinés par un humain ou un backend de vision fonctionnel. Voir le
+[compte rendu et les previews](../docs/resume-preview/README.md).
+
 - **Node ≥ 22** (pipeline JSON) / **≥ 24** pour `resumed` si utilisé directement.
 - **WeasyPrint** (Python) — auto-provisionné via `nix-shell -p python3Packages.weasyprint` sur NixOS.
 - **Chromium** — auto-provisionné via `nix-shell -p chromium` pour les thèmes npm.
