@@ -43,6 +43,26 @@ Analyse fondée sur le CSS et les métriques PDF, pas sur une vision réussie :
 - En-tête centré sans photo pour les deux langues ; les données JSON, dates,
   intitulés, réalisations et liens restent inchangés.
 
+### Suite de #32 : TOEIC visible dès l'en-tête
+
+La PR #32 a été fusionnée avant cette suite. Ses améliorations sont conservées ;
+le complément est proposé sur `fix/resume-toeic-highlight`, sans push sur `main`.
+
+- La mention existante **TOEIC 980/990** passe dans un badge indigo de 8,5 pt
+  en gras, sous les coordonnées, sur les deux CV. Le libellé source complet
+  reste identique : `English (Professional — TOEIC 980/990)` /
+  `Anglais (Courant — TOEIC 980/990)`.
+- La mention est déplacée, pas dupliquée : la rubrique de bas de page garde
+  le français natif et les centres d'intérêt. Le score est lu dans les JSON,
+  jamais codé en dur dans le renderer ; toutes les données restent inchangées.
+- Aucun niveau CECRL C1/C2, aucune date d'examen ni validité n'est inféré.
+  Le dépôt donne le score, mais pas ces précisions.
+- Nouveau test RED puis GREEN : présence dans l'en-tête EN/FR, occurrence
+  unique, score lu dynamiquement, absence de badge sans TOEIC, données non mutées.
+- L'inspection visuelle des PNG finaux a de nouveau été tentée et échoue avec
+  le même HTTP 404 fournisseur ci-dessus. **Revue visuelle humaine à faire** ;
+  les contrôles géométriques ci-dessous ne sont pas présentés comme une vision.
+
 ## Résultats réellement obtenus
 
 Commandes exécutées à la racine (les chemins scratch sont propres à cet hôte) :
@@ -61,10 +81,10 @@ git diff --check
 
 - Génération EN/FR et quatre PDFs : succès. WeasyPrint 70.0 ; bibliothèque
   Debian PangoFT2 extraite dans le scratch, sans installation système.
-- Tests preview : `Ran 2 tests ... OK` (six sous-cas EN/FR et options HTML),
+- Tests preview : `Ran 3 tests ... OK` (avec régression TOEIC EN/FR),
   également ajoutés à la CI ; import Python `-S` testé sans dépendances.
-- EN : une page A4, 542 mots dans la page, dernier texte à **741,76 pt**.
-- FR : une page A4, 618 mots dans la page, dernier texte à **781,62 pt**.
+- EN : une page A4, 541 boîtes de mots dans la page, dernier texte à **764,46 pt**.
+- FR : une page A4, 617 boîtes de mots dans la page, dernier texte à **804,32 pt**.
 - Polices embarquées Inter/Fira Code ; minimum **7 pt** ; aucun mot ou lien
   hors page ; pas de chevauchement de boîtes de mots supérieur à 0,5 pt dans
   les deux axes ; aucune image ; alias PDF identiques.

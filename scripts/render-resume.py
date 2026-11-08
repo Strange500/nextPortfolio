@@ -302,6 +302,19 @@ def css(page_size: str, lang: str = "en") -> str:
         margin-top: 1pt;
     }}
 
+    .language-highlight {{
+        display: inline-block;
+        margin-top: 5pt;
+        padding: 3pt 8pt;
+        border: 1px solid var(--rule);
+        border-radius: 4px;
+        background: var(--card-bg);
+        color: var(--accent);
+        font-size: 8.5pt;
+        font-weight: 700;
+        line-height: 1.2;
+    }}
+
     /* -------------------------------------------------------------------------
        Sections
        ------------------------------------------------------------------------- */
@@ -681,6 +694,14 @@ def render_header(data: dict, lang: str = "en") -> str:
 
     separator = '<span class="sep">·</span>'
 
+    # Promote the existing credential verbatim, without inferring CEFR or dates.
+    language_highlights = "".join(
+        f'<div class="language-highlight">{escape(language["language"])} '
+        f'({escape(language["fluency"])})</div>'
+        for language in data.get("languages", [])
+        if "TOEIC" in language.get("fluency", "")
+    )
+
     # Keep both printable versions photo-free; the factual JSON is untouched.
     return f"""
     <header>
@@ -691,6 +712,7 @@ def render_header(data: dict, lang: str = "en") -> str:
             <div>{separator.join(contact_parts)}</div>
             <div class="profile-row">{separator.join(profile_parts)}</div>
         </div>
+        {language_highlights}
     </header>
     """
 
@@ -968,6 +990,7 @@ def render_education(data: dict, lang: str = "en") -> str:
             f'{escape(language["language"])} '
             f'({escape(language["fluency"])})'
             for language in data.get("languages", [])
+            if "TOEIC" not in language.get("fluency", "")
         ]
     )
 
