@@ -7,7 +7,7 @@
  * and emits standard, ATS-ready JSON Resume files following the JSON Resume
  * schema (https://jsonresume.org) in both English and French:
  *
- *   - resume.json & resume-en.json (English, US/ATS-oriented)
+ *   - resume.json & resume-en.json (English, Europe-ready / ATS-friendly)
  *   - resume-fr.json (French, standard format)
  *
  * Runs with Node's native TypeScript type-stripping, so the .ts data files are
@@ -44,7 +44,7 @@ const basicsData = {
       "Backend-focused software engineer designing reliable, maintainable systems through " +
       "rigorous automated testing and declarative infrastructure. " +
       "Experienced in Java Spring Boot, Rust, and full-stack delivery. " +
-      "Seeking a 3-month software engineering internship in the US, starting June 2027.",
+      "Available for a 3-month software engineering internship in Europe starting June 2027.",
     location: {
       city: "Villeneuve d'Ascq",
       region: "Hauts-de-France",
@@ -107,8 +107,8 @@ const interestsData = {
   ],
 };
 
-// Flint Group is included on the FR CV (expected in France) but excluded from the US CV
-// to keep the US resume tightly focused on software engineering experience.
+// Flint Group is included on the FR CV but excluded from the English CV
+// to keep the English CV focused on software engineering experience.
 const extraWorkData = {
   en: [],
   fr: [

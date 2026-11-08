@@ -6,7 +6,7 @@
     "email": "benjamin.rogetpro@gmail.com",
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com",
-    "summary": "Backend-focused software engineer designing reliable, maintainable systems through rigorous automated testing and declarative infrastructure. Experienced in Java Spring Boot, Rust, and full-stack delivery. Seeking a 3-month software engineering internship in the US, starting June 2027.",
+    "summary": "Backend-focused software engineer designing reliable, maintainable systems through rigorous automated testing and declarative infrastructure. Experienced in Java Spring Boot, Rust, and full-stack delivery. Available for a 3-month software engineering internship in Europe starting June 2027.",
     "location": {
       "city": "Villeneuve d'Ascq",
       "region": "Hauts-de-France",
@@ -28,7 +28,7 @@
   "work": [
     {
       "name": "Numih France (DOGRH)",
-      "position": "Software Engineer (Co-op)",
+      "position": "Software Engineer (Apprentice)",
       "startDate": "2025-09-01",
       "endDate": "",
       "url": "https://portfolio.qgroget.com/en/blog/automated-testing-framework",

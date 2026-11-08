@@ -89,8 +89,8 @@ scripts/
 
 | Fichier                  | Format    | Thème   | Description                        |
 | ------------------------ | --------- | ------- | ---------------------------------- |
-| `public/resume.pdf`      | US Letter | EN      | CV anglais ATS                     |
-| `public/resume-en.pdf`   | US Letter | EN      | Alias du CV anglais                |
+| `public/resume.pdf`      | A4        | EN      | CV anglais ATS                     |
+| `public/resume-en.pdf`   | A4        | EN      | Alias du CV anglais                |
 | `public/resume-fr.pdf`   | A4        | FR      | CV français                        |
 | `public/cv-fr.pdf`       | A4        | FR      | Alias du CV français               |
 
