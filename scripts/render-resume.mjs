@@ -178,7 +178,7 @@ function runWeasyprintRenderer(resumePath, outputPath, lang, opts) {
     process.exit(1);
   }
 
-  const pageFlag = lang === "fr" ? "--a4" : "--letter";
+  const pageFlag = "--a4";
   const cmdArgs = [pyScript, absResumePath, outputPath, pageFlag, "--lang", lang];
 
   let result;

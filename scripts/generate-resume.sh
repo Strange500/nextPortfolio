@@ -87,7 +87,7 @@ render() {
     ${HTML_FLAG}
 }
 
-# English (US Letter)
+# English (A4)
 render \
   "$ROOT/resume.json" \
   "$ROOT/public/resume.pdf" \

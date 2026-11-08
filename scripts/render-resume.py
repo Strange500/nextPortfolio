@@ -1056,7 +1056,7 @@ def render(data: dict, page_size: str, lang: str = "en") -> str:
         {render_projects(data, lang=lang)}
         """
     else:
-        # Standard US ATS order: Summary -> Experience -> Projects -> Skills -> Education
+        # English CV order: Summary -> Experience -> Projects -> Skills -> Education
         body_content = f"""
         {render_header(data, lang=lang)}
         {render_summary(data, lang=lang)}
@@ -1179,15 +1179,13 @@ def main() -> int:
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    # Page size resolution: A4 standard for FR, Letter standard for EN
+    # A4 by default for European applications; retain explicit Letter support.
     if args.a4:
         page_size = "A4"
     elif args.letter:
         page_size = "Letter"
-    elif lang == "fr":
-        page_size = "A4"
     else:
-        page_size = "Letter"
+        page_size = "A4"
 
     html_document = render(
         data=data,
