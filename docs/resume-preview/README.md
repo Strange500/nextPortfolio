@@ -1,5 +1,68 @@
 # CV — previews et contrôle visuel
 
+## État actuel : cartes équilibrées et liens courts (suite de #33)
+
+Base : `08348d8` (#33 ouverte, contenant #32 fusionnée). Nouvelle branche dédiée,
+avec la branche de #33 comme base pour isoler cette suite. Les trois JSON sources
+et le badge TOEIC restent inchangés ; aucun fait, score, date ou réalisation modifié.
+
+- Liens projets : `GitHub` ; billet nixos-config : `Article` (FR) / `Deep dive`
+  (EN). Les cibles complètes restent cliquables et identiques.
+- Les cellules portent les fonds/bordures : hauteur égale par rangée sans hauteur
+  fixe ni troncature. Une carte impaire ne produit pas de carte vide décorative.
+- Suppression du `width: 50%` des cellules, qui élargissait la grille avec les
+  paddings/gouttières. Le retrait horizontal est désormais symétrique.
+- Dates, liens, tags, coordonnées et mots-clés techniques passent à **7,5 pt**
+  (contre 7 ou 7,2 pt). Corps, palette, rubriques et descriptions conservés.
+
+### Résultats de cette suite
+
+- Tests : **5 OK**, dont les deux nouvelles régressions en RED puis GREEN
+  (libellés/cibles EN-FR, non-mutation des données, cartes paires/impaires).
+- Build Next.js réussi, TypeScript et **14 pages** inclus ; `git diff --check` OK.
+- EN : **1 page A4**, 542 mots, dernier texte à **751,58 pt**.
+- FR : **1 page A4**, 616 mots, dernier texte à **801,58 pt**.
+- Minimum **7,5 pt** ; aucun mot ou lien hors page ; aucun chevauchement de mots
+  > 0,5 pt dans les deux axes ; aucune image ; quatre alias PDF cohérents.
+- **12 cibles URI inchangées par langue**. Multiensemble de mots conservé sauf
+  les substitutions exactes des libellés de liens projets, explicitement autorisées
+  par `--compact-project-links-baseline` ; sans cette option, comparaison stricte.
+- Mesures WeasyPrint : mêmes largeurs/hauteurs dans chaque paire ; hauteurs EN
+  **74,68 / 64,54 / 54,40 pt**, FR **74,68 / 64,54 / 64,55 pt** ; marges
+  projets gauche/droite **29,48 pt**.
+- PNGs finaux à **144 dpi**, **inspection d'image réussie EN et FR** : cartes
+  équilibrées par paire, marges symétriques, liens courts lisibles, TOEIC visible,
+  aucun débordement apparent. Le blocage vision historique ci-dessous ne s'est
+  pas reproduit ; ces observations remplacent les anciennes limites visuelles.
+- ESLint brut : dette existante et `.next`, **28436 erreurs / 8 avertissements**.
+  Hors `.next` : **8 erreurs / 8 avertissements**, mêmes diagnostics que #33.
+  Aucun fichier JS/TS modifié ; aucune correction hors périmètre.
+
+Commandes spécifiques (Python scratch avec WeasyPrint 70.0/PyMuPDF et PangoFT2
+Debian via `LD_LIBRARY_PATH`, aucune installation système) :
+
+```sh
+python scripts/test-resume-preview.py
+"$VIRTUAL_ENV/bin/python" scripts/render-resume.py resume-fr.json public/resume-fr.pdf --lang fr
+"$VIRTUAL_ENV/bin/python" scripts/render-resume.py resume-en.json public/resume.pdf --lang en
+cp public/resume-fr.pdf public/cv-fr.pdf
+cp public/resume.pdf public/resume-en.pdf
+"$VIRTUAL_ENV/bin/python" scripts/check-resume-layout.py --baseline 08348d8 --compact-project-links-baseline
+npm run build
+npm run lint
+npm exec -- eslint . --ignore-pattern '.next/**' --format json
+git diff --check
+```
+
+Les hauteurs sont équilibrées par rangée, pas artificiellement sur toute la grille.
+Les petits textes restent compacts à 7,5 pt ; une épreuve imprimée à taille réelle
+reste utile. Aucun changement factuel, refonte ATS ou déploiement inclus.
+
+## Historique des PR #32 / #33 (avant cette suite)
+
+Les résultats et limites ci-dessous décrivent les exécutions antérieures, pas les
+PNGs courants ni le fonctionnement actuel de l'inspection d'image.
+
 - [Preview anglaise, pleine page](resume-en.png)
 - [Preview française, pleine page](resume-fr.png)
 - PDFs déployables : [`resume.pdf`](../../public/resume.pdf),
