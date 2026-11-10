@@ -1,56 +1,50 @@
 ---
-title: "Mon Ledger maison : d’une idée Arduino au chantier PSBT en Rust"
+title: "Mon Ledger maison : signer ne suffit pas"
 date: "2026-11-10"
-summary: "Pourquoi j’ai quitté l’idée Arduino, comment le prototype a évolué vers le Pico 2 W et Embassy, et ce qu’il reste à vérifier avant de parler de signature sur matériel."
+summary: "D’une idée Arduino à un prototype Rust sur Pico 2 W : construire un portefeuille matériel m’amène surtout à relier ce que l’écran montre à ce que l’utilisateur autorise."
 tags: ["Rust", "Embedded", "Bitcoin", "Raspberry Pi"]
 ---
 
-<Tldr title="Où en est le projet ?">
+Je voulais fabriquer mon propre « Ledger » pour comprendre comment fonctionne un portefeuille matériel. Une carte, un écran, deux boutons, une clé qui reste dans l’appareil : voilà le point de départ. Mais au fil du projet, la question s’est déplacée. **Savoir produire une signature ne suffit pas. L’utilisateur doit savoir exactement ce qu’il autorise.**
 
-- Le firmware cible aujourd’hui le **Raspberry Pi Pico 2 W, avec un RP2350** ; les premiers commits visaient le RP2040.
-- Le cœur portable et ses tests sur ordinateur sont intégrés à `main`. Le travail PSBT reste dans des **PR ouvertes**, dont la revue matérielle en brouillon.
-- La démonstration PSBT utilise une clé publique de test et une transaction factice : **pas les fonds d’un utilisateur**.
-- Le parcours PSBT n’a pas été testé sur un Pico physique. Ce projet reste un prototype d’apprentissage, pas un portefeuille auquel confier des fonds.
+Une signature valide peut porter sur une transaction que personne n’a réellement comprise. Le travail ne s’arrête donc pas au calcul cryptographique : il faut relier les données vérifiées, leur affichage et un geste de confirmation sans laisser de place à une autre interprétation.
+
+<Alert variant="warning">
+
+Ce « Ledger maison » est un prototype d’apprentissage, sans affiliation avec Ledger et sans garantie équivalente. Ne lui confiez pas de fonds. Ce récit décrit le dépôt au **10 novembre 2026** ; le parcours PSBT sur Pico physique reste à vérifier. Je distingue ci-dessous le code intégré des propositions encore en revue.
+
+</Alert>
+
+<Tldr title="Le fil conducteur">
+
+- Le prototype est passé du RP2040 au **Pico 2 W / RP2350**, avec un écran OLED 128 × 64 et deux boutons.
+- Le cœur portable est intégré ; la revue et la confirmation PSBT restent dans une branche de travail.
+- L’objectif : faire correspondre **une transaction vérifiée, des pages réellement affichées et une autorisation fraîche**.
 
 </Tldr>
 
-Fabriquer mon propre « Ledger » est d’abord une manière de comprendre ce qu’un portefeuille matériel doit réellement faire. Produire une signature est une chose. Montrer exactement ce que cette signature autorise, puis recueillir un consentement explicite, en est une autre.
+## Commencer avec une carte, pas avec toutes les réponses
 
-Le mot « Ledger » décrit ici l’idée d’un portefeuille matériel maison, pas un produit Ledger ni une garantie équivalente. Voici l’état du [dépôt pico-ledger](https://github.com/Strange500/pico-ledger) au **10 novembre 2026**, en distinguant le code intégré des expérimentations encore en revue.
+J’étais initialement parti sur Arduino, puis j’ai rencontré des limitations qui m’ont conduit à changer de direction. C’est le souvenir de mon parcours, pas un comparatif matériel : ni le modèle Arduino, ni une mesure de mémoire, ni une incompatibilité précise ne sont documentés dans le dépôt. Je ne peux donc pas transformer cette décision en verdict général sur Arduino.
 
-## Au départ : une idée Arduino
+L’histoire vérifiable dans Git commence avec Rust sur RP2040. Plus tard, la [migration vers le RP2350](https://github.com/Strange500/pico-ledger/commit/a40c4cc) change la cible de compilation, la disposition mémoire et les outils de flash, et ajoute le support CYW43. Le projet vise aujourd’hui le Pico 2 W. Ce n’est pas seulement un nouveau nom sur la même configuration.
 
-Mon premier point de départ était Arduino. Ses limitations m’ont conduit à changer de direction et à partir sur un Raspberry Pi Pico.
+<figure>
+  <img src="/images/blog/pico-ledger-prototype.jpg" alt="Prototype sur plaque d’essai : Raspberry Pi Pico 2 W reliée par des fils à deux boutons et à un écran invitant à générer une phrase BIP39." width="1200" height="600" />
+  <figcaption>Le montage partagé pour cet article : l’écran affiche l’invitation à générer une phrase BIP39, pas une transaction à confirmer. <a href="https://immich.qgroget.com/share/ndMjKLI5DE_a973VinNlAH8ozRyOJNU0nU1GcJMD0GLzuMWQfBdUpr_Yfa9h7PJxzw0">Photo source</a>.</figcaption>
+</figure>
 
-Je ne vais pas attribuer cette décision à un modèle précis, à une mesure de mémoire ou à une bibliothèque Arduino : je n’ai pas ces éléments documentés dans le dépôt. Le début de l’histoire est une intention de conception ; l’historique technique vérifiable commence avec le projet Rust pour RP2040.
+## Un bouton qui attend ne doit pas immobiliser le reste
 
-La distinction compte : je peux raconter pourquoi j’ai changé de famille de carte sans inventer un benchmark rétrospectif.
+Les choix de bibliothèques deviennent plus intéressants quand on regarde le problème qu’ils résolvent. Au début, le bouton est interrogé dans une boucle avec un délai bloquant. Le [passage à Embassy](https://github.com/Strange500/pico-ledger/commit/38e2d15) remplace cette gestion par une tâche qui attend un front GPIO avec `await`, puis temporise l’anti-rebond sans attente bloquante. L’affichage lit un compteur et se rafraîchit dans une autre boucle asynchrone.
 
-## Du premier Pico au Pico 2 W
+Le résultat observable dans le code est une séparation entre l’attente du bouton et le rafraîchissement. Ce commit utilise encore un pilote I2C bloquant : adopter Embassy n’a pas rendu toutes les opérations asynchrones d’un coup. Le firmware actuel sépare ensuite boutons, affichage, verrouillage et signer en tâches, avec une initialisation I2C asynchrone. C’est cette progression qui explique le choix, pas un benchmark reconstruit après coup.
 
-Le [premier projet Rust intégré](https://github.com/Strange500/pico-ledger/commit/eb6b019) utilise `rp-pico`, `embedded-hal` et `cortex-m-rt`, avec un environnement Nix. C’est un socle bare-metal : une carte, des périphériques et une chaîne de compilation croisée, pas encore un portefeuille complet.
+L’écran pose un autre problème : il ne suffit pas d’avoir une chaîne à dessiner, il faut organiser des états et des vues sur 128 × 64 pixels. [L’introduction de Buoyant](https://github.com/Strange500/pico-ledger/commit/cd0014c) fait évoluer la composition de l’interface. Pour la suite, cette contrainte devient décisive : une adresse complète doit tenir sur plusieurs pages, pas disparaître derrière des points de suspension.
 
-L’écran SSD1306 arrive ensuite, puis la gestion des boutons. Le [passage à Embassy](https://github.com/Strange500/pico-ledger/commit/38e2d15) remplace la gestion bloquante du bouton par une tâche asynchrone et fait évoluer la communication I2C vers l’asynchrone. Le framework n’était donc pas un choix figé dès le premier commit : il apparaît à mesure que les interactions se multiplient.
+## Sortir la logique de la carte pour pouvoir la questionner
 
-Autre étape distincte : la [migration vers le RP2350](https://github.com/Strange500/pico-ledger/commit/a40c4cc). La cible passe de `thumbv6m-none-eabi` à `thumbv8m.main-none-eabihf`. Le code actuel vise le **Pico 2 W**, et non le Pico RP2040 des débuts. Configuration du linker, disposition mémoire, outils de flash et pilotes doivent suivre ce changement ; remplacer simplement le nom de la carte ne suffit pas.
-
-## Les bibliothèques se choisissent en construisant
-
-La pile actuelle raconte cette progression :
-
-- **Embassy** orchestre les tâches asynchrones et les échanges entre boutons, affichage, verrouillage et signature.
-- **`ssd1306` et `embedded-graphics`** fournissent le pilote et les primitives graphiques de l’écran OLED 128 × 64.
-- **Buoyant**, [introduit après Embassy](https://github.com/Strange500/pico-ledger/commit/cd0014c), sert à composer les vues de l’interface.
-- **`bip39` et `bitcoin`** apportent les briques de phrase mnémonique, de dérivation de clés et de manipulation Bitcoin.
-- **`chacha20poly1305`, `pbkdf2` et `zeroize`** sont présents dans le cœur pour le chiffrement de l’entropie, la dérivation de clé et l’effacement explicite de certaines données sensibles.
-
-Ce sont les dépendances réellement déclarées dans les deux `Cargo.toml`, pas une liste de bibliothèques que j’aurais toutes comparées avant de démarrer. Leur présence ne prouve ni un stockage durable sécurisé ni l’effacement de toutes les copies de secrets en mémoire.
-
-Le coprocesseur CYW43 intervient aussi, notamment pour la LED embarquée. Cela **ne signifie pas** qu’un protocole réseau de transport des transactions est disponible. De même, les logs USB ne sont pas encore une interface d’import PSBT.
-
-## Ce que Rust embarqué oblige à regarder
-
-Le début de [`src/main.rs`](https://github.com/Strange500/pico-ledger/blob/f60e1ad/src/main.rs) résume une différence avec un programme Rust sur ordinateur :
+Le firmware commence ainsi, dans [`src/main.rs`](https://github.com/Strange500/pico-ledger/blob/f60e1ada64816794126a6d0f017cd6b65b513ccf/src/main.rs) :
 
 ```rust
 #![no_std]
@@ -59,71 +53,72 @@ Le début de [`src/main.rs`](https://github.com/Strange500/pico-ledger/blob/f60e
 extern crate alloc;
 ```
 
-Pas de bibliothèque standard ni de point d’entrée classique ; cela n’empêche pourtant pas l’allocation dynamique. Le firmware initialise actuellement un tas de 128 Kio avec `embedded-alloc`. Il faut donc raisonner sur les allocations, la pile et les limites réelles du microcontrôleur, pas simplement obtenir un binaire compilé.
+Sans bibliothèque standard ne veut pas dire sans allocations : ce même fichier initialise un tas de 128 Kio. Une compilation réussie ne répond donc pas à la question « est-ce que cela tient pendant le traitement d’une transaction ? ».
 
-L’asynchrone déplace aussi la difficulté. Le bouton envoie un événement, une tâche modifie l’état, l’écran rend une vue, puis le signer traite une commande. Une confirmation ne doit pas s’appliquer à une ancienne transaction parce qu’un événement attendait dans une file. Et avoir calculé une vue ne prouve pas que l’écran l’a effectivement affichée.
+Pour examiner la logique sans dépendre de la carte, le [cœur portable intégré](https://github.com/Strange500/pico-ledger/blob/f60e1ada64816794126a6d0f017cd6b65b513ccf/crates/core/src/tests.rs) sépare les états de l’interface et le portefeuille des adaptateurs matériels. Les tests peuvent enregistrer les commandes émises plutôt que piloter des GPIO. Par exemple, si la file de commandes est pleine, l’écran de création du mot de passe reste en place pour permettre une nouvelle tentative ; un échec d’envoi ne doit pas être présenté comme une opération lancée.
 
-La [PR #16, intégrée](https://github.com/Strange500/pico-ledger/pull/16), sépare un cœur portable `pico-ledger-core` des adaptateurs matériels. C’est un progrès concret : tester les états, les erreurs cryptographiques et le verrouillage sur ordinateur, sans dépendre d’une carte branchée. Mais ces tests ne valident pas les GPIO, le TRNG réel, les timings d’Embassy ou la consommation maximale de RAM sur le Pico.
+Le même fichier vérifie le rejet d’un mauvais mot de passe, d’un chiffrement altéré et d’une signature demandée après verrouillage. Ce sont des comportements précis que je peux inspecter sur ordinateur, plutôt qu’une promesse vague de « sécurité grâce à Rust ».
 
-## Le chantier PSBT : ne pas confondre signature et autorisation
+## Une PSBT pour comprendre ce qui va être signé
 
-Une PSBT est une transaction Bitcoin partiellement signée : un format permettant de préparer la transaction ailleurs puis d’en faire vérifier et signer les éléments par un signataire. Le but n’est pas de transformer le Pico en machine qui signe aveuglément un hash fourni par l’ordinateur.
+Une **PSBT**, pour *Partially Signed Bitcoin Transaction*, est un format qui transporte une transaction Bitcoin et les informations nécessaires aux signataires, puis recueille leurs signatures partielles. Le [BIP 174](https://bips.dev/174/) décrit ce format, notamment pour un signataire hors ligne.
 
-À cette date, les étapes sont séparées :
+Dans mon projet, son rôle est très concret : remplacer une demande de signature sur un hash opaque par des données que le cœur peut contrôler et convertir en revue lisible. Le [backend proposé](https://github.com/Strange500/pico-ledger/blob/0990c9a24dfa61675f761b6bc5e06092099ac2f8/docs/psbt.md) vérifie notamment les transactions précédentes, l’appartenance des entrées, les chemins de dérivation et les sorties. Il calcule les totaux et les frais absolus en satoshis. Une sortie ne devient pas de la monnaie rendue simplement parce que l’ordinateur la présente ainsi : cette classification doit être vérifiée.
 
-1. **Sur `main`**, le cœur portable est intégré, mais l’ancienne méthode de signature d’un hash est encore présente. Ce n’est pas un parcours PSBT sécurisé de bout en bout.
-2. La **[PR #18](https://github.com/Strange500/pico-ledger/pull/18), en brouillon**, propose le backend PSBT v0 : validation de la transaction, revue structurée et signatures partielles. Sa politique est volontairement limitée à du P2WPKH testnet avec des origines BIP32 vérifiées et `SIGHASH_ALL`.
-3. La **[PR #19](https://github.com/Strange500/pico-ledger/pull/19), ouverte**, ajoute une démonstration activable explicitement avec `psbt-demo`, sur une clé de test publique et une PSBT intégrée au binaire.
-4. La **[PR #20](https://github.com/Strange500/pico-ledger/pull/20), en brouillon et empilée sur #19**, ajoute la revue paginée et une confirmation physique distincte. Elle n’est pas intégrée à `main`.
+Le cœur revalide la PSBT au moment de signer et soumet la revue exacte à un approbateur de confiance dans le programme. Ce mécanisme ne prouve pas, à lui seul, qu’une personne a lu l’écran. La couche matérielle doit encore faire le lien.
 
-Voici le parcours **proposé par #20 pour la démo**, pas une fonctionnalité de production déjà disponible :
+## Le « oui » qui arrive trop tard
+
+Voici un scénario **hypothétique**, pas un incident observé sur mon montage : une personne lit la transaction A et appuie sur confirmer. L’événement attend dans une file. Entre-temps, A est annulée ou remplacée par B. Si le programme traite ce bouton comme un simple « oui », à quelle transaction vient-il de donner son accord ?
+
+C’est le type de menace qui motive le parcours de [revue et confirmation proposé](https://github.com/Strange500/pico-ledger/blob/0990c9a24dfa61675f761b6bc5e06092099ac2f8/docs/psbt-demo.md). Le signer conserve sa propre revue et l’associe à un jeton de session ; seule une confirmation de cette session peut la consommer. La démonstration revalide les mêmes octets immuables, compilés dans le firmware. Annuler, verrouiller ou commencer une nouvelle demande invalide l’attente précédente ; les confirmations d’une autre session ou déjà consommées ne peuvent pas signer.
+
+Il faut aussi distinguer une vue calculée d’une vue visible. Dans cette proposition, les boutons de revue attendent qu’une trame ait été transférée avec succès à l’OLED ; les événements portent une époque d’affichage et ceux d’anciennes trames sont rejetés. Le choix final commence sur **CANCEL**. Choisir **SIGN**, puis confirmer séparément avec les deux boutons, sont deux gestes distincts.
 
 ```mermaid
 flowchart TD
-    A[PSBT de demonstration integree] --> B[Validation sans signature]
-    B --> C[Revue complete sur OLED]
-    C --> D[Choix final : annuler par defaut]
-    D --> E[Choisir signer puis confirmer separement]
-    E --> F[Revalidation de la meme transaction]
+    A[PSBT immuable de demonstration] --> B[Validation et revue conservee par le signer]
+    B --> C[Pages completes transferees a OLED]
+    C --> D[Choix final CANCEL par defaut]
+    D --> E[Choisir SIGN puis confirmer separement]
+    E --> F[Session correspondante et revue revalidee]
     F --> G[Signature partielle avec cle publique de test]
-    C --> H[Annulation ou verrouillage : revue abandonnee]
+    B --> H[Annuler ou verrouiller]
+    H --> I[Revue en attente supprimee]
 ```
 
-Le détail important est la séparation entre **préparer**, **afficher** et **autoriser**. La proposition lie une session à une transaction immuable, refuse les confirmations périmées ou réutilisées et conditionne la navigation à une transmission réussie de la vue vers l’OLED. Adresses, montants et frais doivent être consultables sans masquer une fin d’adresse derrière des points de suspension.
+Ce schéma décrit la démonstration proposée, pas un import de transactions externes. Son intérêt est de rendre explicite la chaîne entre **ce que je montre** et **ce que j’accepte de signer**.
 
-Cette démo ne reçoit pas de PSBT externe. Elle n’utilise pas le portefeuille normal de l’utilisateur et ne finalise ni ne diffuse une transaction. Une signature partielle réussie dans ce cadre n’est donc pas la preuve qu’on peut déjà dépenser des bitcoins depuis ce prototype.
+## Où j’en suis, et ce qui manque
 
-## Les limites que je ne veux pas escamoter
+<table>
+  <thead><tr><th>Périmètre</th><th>État au 10 novembre 2026</th></tr></thead>
+  <tbody>
+    <tr><td>Cœur portable, états et tests hôte</td><td>Intégrés à main</td></tr>
+    <tr><td>Backend PSBT strict testnet BIP84</td><td>PR #18 ouverte, en brouillon</td></tr>
+    <tr><td>Démo opt-in puis revue et confirmation</td><td>PR #19 ouverte ; #20 en brouillon, empilée sur #19</td></tr>
+    <tr><td>Parcours PSBT sur Pico physique</td><td>À vérifier</td></tr>
+  </tbody>
+</table>
 
-<Alert variant="warning">
+Les [PR du projet](https://github.com/Strange500/pico-ledger/pulls) restent la référence pour leur état vivant. Le code PSBT décrit ici n’est pas encore intégré à `main`, qui conserve l’ancien chemin de signature de démonstration sur hash fixe.
 
-**Prototype uniquement : ne pas y déposer de fonds.** La documentation de la démo interdit de financer sa clé publique. La PR #20 indique explicitement qu’aucun Pico, écran, bouton ou périphérique série physique n’a été testé pendant son implémentation.
+Les limites tiennent en quelques points. La nouvelle démo utilise une **clé de test délibérément publique**, une fixture sans fonds dépensables et un indicateur `psbt-demo` désactivé par défaut. Elle ne signe pas avec le portefeuille de l’utilisateur, n’importe rien par USB ou Wi-Fi, et ne finalise ni ne diffuse de transaction. Les tests hôte documentés ne valident ni GPIO, ni TRNG réel, ni ordonnancement Embassy, ni pic de tas ou de pile. Le garde logiciel contre les événements périmés n’est pas une mesure de latence physique. L’ordonnancement verrouillage/confirmation, le stockage durable, l’effacement de toutes les copies de secrets, l’interopérabilité avec un coordinateur et l’audit indépendant restent des chantiers ; une signature déjà acceptée peut finir avant un verrouillage mis en file ensuite.
 
-</Alert>
+## Le prochain résultat doit venir du Pico
 
-Les tests sur ordinateur et les compilations croisées rapportés dans cette PR sont utiles, mais ne remplacent pas :
+Mon prochain jalon est de dérouler la [procédure matérielle de la démo](https://github.com/Strange500/pico-ledger/blob/0990c9a24dfa61675f761b6bc5e06092099ac2f8/docs/psbt-demo.md) sur le Pico 2 W : flasher explicitement avec `psbt-demo`, ouvrir la capture USB, parcourir toutes les pages et vérifier les **1 000 satoshis** de frais de la fixture. Puis choisir SIGN et confirmer avec les deux boutons.
 
-- une vérification sur carte de chaque page et de la fraîcheur des appuis ;
-- des mesures de pile et de tas pendant l’analyse PSBT et les opérations cryptographiques ;
-- une validation du TRNG, des courses entre confirmation et verrouillage et des erreurs de communication ;
-- un aller-retour avec un véritable coordinateur testnet et un audit de sécurité indépendant.
+Le critère observable sera la capture complète du PSBT signé, vérifiée par l’outil hôte comme correspondant à la fixture signée de **379 octets**. Il faudra aussi constater qu’annuler ou verrouiller pendant la revue ne produit aucune sortie signée, qu’un bouton maintenu ne répète pas l’action et qu’après un flash sans cette option, Home affiche `Signing disabled`. Ce sont des résultats attendus, pas des tests déjà réalisés.
 
-Même dans la démo, une signature déjà autorisée peut finir avant qu’un verrouillage en attente soit traité. Les logs USB restent « best effort » : voir un succès à l’écran ne garantit pas que l’ordinateur a reçu le résultat complet. Et les protections mémoire existantes ne constituent pas une preuve d’effacement exhaustif des secrets.
+C’est là que je veux amener ce projet : pas seulement jusqu’à une signature mathématiquement correcte, mais jusqu’à un geste dont le sens est visible, précis et vérifiable.
 
-## La suite : vérifier les frontières, pas cocher « signature »
+## Contribuer
 
-Le prochain jalon n’est pas d’ajouter un bouton « signer » de plus. C’est de vérifier que l’utilisateur voit la bonne transaction, que seul son accord frais l’autorise et qu’une erreur laisse le système dans un état sûr. Le transport borné de PSBT externes et la signature du portefeuille utilisateur restent des travaux à part entière.
+Si vous voulez aider, le [dépôt pico-ledger](https://github.com/Strange500/pico-ledger) et la branche de revue PSBT sont ouverts : un retour sur la lisibilité des pages, les événements périmés ou une capture matérielle suivant la procédure serait particulièrement utile. Précisez la révision testée et les observations, sans partager de secret ni utiliser de fonds réels.
 
-Ce projet m’intéresse précisément pour cela : il oblige à relier une bibliothèque cryptographique, une machine à états et deux boutons physiques. Aucun de ces éléments, pris isolément, ne suffit à fabriquer un portefeuille matériel fiable.
+<Cta title="Échanger autour de ce travail">
 
-### Sources techniques
-
-- [Historique intégré de pico-ledger, arrêté au commit `f60e1ad`](https://github.com/Strange500/pico-ledger/tree/f60e1ad) : firmware, manifests et cœur portable.
-- [Politique PSBT du chantier #20](https://github.com/Strange500/pico-ledger/blob/0990c9a24dfa61675f761b6bc5e06092099ac2f8/docs/psbt.md) : périmètre accepté, frontière de confiance et blocages.
-- [Documentation de la démo au même commit](https://github.com/Strange500/pico-ledger/blob/0990c9a24dfa61675f761b6bc5e06092099ac2f8/docs/psbt-demo.md) : procédure matérielle proposée et limites non vérifiées.
-
-<Cta title="Échanger autour de Rust embarqué ?">
-
-Je recherche un **stage d’ingénieur logiciel de 3 mois, à partir de juin 2027**. Si vos sujets touchent au Rust, aux systèmes embarqués ou à la fiabilité logicielle, discutons-en sur [LinkedIn](https://www.linkedin.com/in/roget-benjamin).
+Je cherche un **stage d’ingénieur logiciel de 3 mois, à partir de juin 2027**. Pour parler Rust embarqué, tests ou interfaces : [retrouvez-moi sur LinkedIn](https://www.linkedin.com/in/roget-benjamin).
 
 </Cta>
