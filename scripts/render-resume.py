@@ -284,7 +284,7 @@ def css(page_size: str, lang: str = "en") -> str:
     .contact {{
         margin-top: 4pt;
         color: var(--ink-muted);
-        font-size: 7.2pt;
+        font-size: 7.5pt;
         line-height: 1.5;
     }}
 
@@ -300,6 +300,19 @@ def css(page_size: str, lang: str = "en") -> str:
 
     .profile-row {{
         margin-top: 1pt;
+    }}
+
+    .language-highlight {{
+        display: inline-block;
+        margin-top: 5pt;
+        padding: 3pt 8pt;
+        border: 1px solid var(--rule);
+        border-radius: 4px;
+        background: var(--card-bg);
+        color: var(--accent);
+        font-size: 8.5pt;
+        font-weight: 700;
+        line-height: 1.2;
     }}
 
     /* -------------------------------------------------------------------------
@@ -389,7 +402,7 @@ def css(page_size: str, lang: str = "en") -> str:
         flex-shrink: 0;
         white-space: nowrap;
         font-family: 'Fira Code', monospace;
-        font-size: 7.2pt;
+        font-size: 7.5pt;
         color: var(--ink-muted);
     }}
 
@@ -415,7 +428,7 @@ def css(page_size: str, lang: str = "en") -> str:
     .deeplink {{
         margin-top: 2.5pt;
         font-family: 'Fira Code', monospace;
-        font-size: 7pt;
+        font-size: 7.5pt;
     }}
 
     /* -------------------------------------------------------------------------
@@ -425,22 +438,26 @@ def css(page_size: str, lang: str = "en") -> str:
     .projects-table {{
         width: 100%;
         border-collapse: separate;
-        border-spacing: 5pt 0;
+        border-spacing: 5pt 3.5pt;
         table-layout: fixed;
     }}
 
     .proj-col {{
-        width: 50%;
         vertical-align: top;
         padding: 0;
     }}
 
     .project {{
         break-inside: avoid;
-        margin-bottom: 3.5pt;
+        margin: 0;
     }}
 
-    .project.featured {{
+    /* Cells stretch to the tallest card without fixed heights or clipping. */
+    .proj-col.card {{
+        padding: 4.5pt 6.5pt;
+    }}
+
+    .proj-col.featured {{
         border-color: rgba(79, 70, 229, 0.16);
     }}
 
@@ -467,11 +484,10 @@ def css(page_size: str, lang: str = "en") -> str:
         flex-shrink: 1;
         min-width: 0;
         font-family: 'Fira Code', monospace;
-        font-size: 7pt;
+        font-size: 7.5pt;
         line-height: 1.35;
         text-align: right;
         overflow-wrap: anywhere;
-        word-break: break-all;
     }}
 
     .project-links .sep {{
@@ -493,7 +509,7 @@ def css(page_size: str, lang: str = "en") -> str:
         background: var(--tag-bg);
         color: var(--ink-muted);
         font-family: 'Fira Code', monospace;
-        font-size: 7pt;
+        font-size: 7.5pt;
         line-height: 1.2;
     }}
 
@@ -528,7 +544,7 @@ def css(page_size: str, lang: str = "en") -> str:
     .skill-item {{
         font-family: 'Fira Code', monospace;
         color: var(--accent);
-        font-size: 7.2pt;
+        font-size: 7.5pt;
         font-weight: 500;
     }}
 
@@ -576,7 +592,7 @@ def css(page_size: str, lang: str = "en") -> str:
         white-space: nowrap;
         color: var(--ink-muted);
         font-family: 'Fira Code', monospace;
-        font-size: 7pt;
+        font-size: 7.5pt;
     }}
 
     .education-school {{
@@ -681,6 +697,14 @@ def render_header(data: dict, lang: str = "en") -> str:
 
     separator = '<span class="sep">·</span>'
 
+    # Promote the existing credential verbatim, without inferring CEFR or dates.
+    language_highlights = "".join(
+        f'<div class="language-highlight">{escape(language["language"])} '
+        f'({escape(language["fluency"])})</div>'
+        for language in data.get("languages", [])
+        if "TOEIC" in language.get("fluency", "")
+    )
+
     # Keep both printable versions photo-free; the factual JSON is untouched.
     return f"""
     <header>
@@ -691,6 +715,7 @@ def render_header(data: dict, lang: str = "en") -> str:
             <div>{separator.join(contact_parts)}</div>
             <div class="profile-row">{separator.join(profile_parts)}</div>
         </div>
+        {language_highlights}
     </header>
     """
 
@@ -778,20 +803,20 @@ def render_experience(data: dict, lang: str = "en") -> str:
 def render_projects(data: dict, lang: str = "en") -> str:
     projects = []
 
-    for index, project in enumerate(data.get("projects", [])):
+    for project in data.get("projects", []):
         links = []
 
         if project.get("url"):
             links.append(
                 f'<a href="{escape(project["url"])}">'
-                f'{escape(short_url(project["url"]))}'
+                f'{"GitHub" if project["url"].startswith("https://github.com/") else escape(short_url(project["url"]))}'
                 f'</a>'
             )
 
         if project.get("blog"):
             links.append(
                 f'<a href="{escape(project["blog"])}">'
-                f'{escape(short_url(project["blog"]))}'
+                f'{"Article" if lang == "fr" else "Deep dive"}'
                 f'</a>'
             )
 
@@ -818,11 +843,9 @@ def render_projects(data: dict, lang: str = "en") -> str:
             </div>
             """
 
-        featured = " featured" if index < 2 else ""
-
         projects.append(
             f"""
-            <article class="project card{featured}">
+            <article class="project">
                 <div class="project-head">
                     <div class="project-name">
                         {escape(project.get("name", ""))}
@@ -851,10 +874,13 @@ def render_projects(data: dict, lang: str = "en") -> str:
     for i in range(max(len(left), len(right))):
         l = left[i] if i < len(left) else ""
         r = right[i] if i < len(right) else ""
+        featured = " featured" if i == 0 else ""
+        l_class = f"proj-col card{featured}" if l else "proj-col"
+        r_class = f"proj-col card{featured}" if r else "proj-col"
         rows.append(f"""
         <tr>
-            <td class="proj-col">{l}</td>
-            <td class="proj-col">{r}</td>
+            <td class="{l_class}">{l}</td>
+            <td class="{r_class}">{r}</td>
         </tr>
         """)
 
@@ -968,6 +994,7 @@ def render_education(data: dict, lang: str = "en") -> str:
             f'{escape(language["language"])} '
             f'({escape(language["fluency"])})'
             for language in data.get("languages", [])
+            if "TOEIC" not in language.get("fluency", "")
         ]
     )
 

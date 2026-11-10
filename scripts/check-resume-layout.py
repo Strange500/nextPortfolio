@@ -29,9 +29,27 @@ def uris(document):
     return {link["uri"] for page in document for link in page.get_links() if "uri" in link}
 
 
+def compact_project_words(original, data, lang):
+    """Permit only the requested project anchor relabeling, not factual edits."""
+    expected = original.copy()
+    for project in data.get("projects", []):
+        for key, label in (("url", "GitHub"),
+                           ("blog", "Article" if lang == "fr" else "Deep dive")):
+            url = project.get(key, "")
+            if not url or (key == "url" and not url.startswith("https://github.com/")):
+                continue
+            previous = url.replace("https://", "").replace("http://", "").replace("www.", "").rstrip("/")
+            expected.subtract(re.findall(r"\w+", previous))
+            expected.update(re.findall(r"\w+", label))
+    assert all(count >= 0 for count in expected.values()), "baseline does not contain full project URLs"
+    return +expected
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--baseline", default="origin/main")
+    parser.add_argument("--compact-project-links-baseline", action="store_true",
+                        help="Baseline uses full URLs; allow only the project anchor label changes")
     parser.add_argument("--output", type=Path, default=ROOT / "docs/resume-preview")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=True)
@@ -45,7 +63,11 @@ def main():
         document = pymupdf.open(ROOT / path)
         old = pymupdf.open(stream=baseline(args.baseline, path), filetype="pdf")
         assert len(document) == 1, f"{lang}: expected one page, got {len(document)}"
-        assert words(document) == words(old), f"{lang}: text changed: {words(document) - words(old)} / {words(old) - words(document)}"
+        expected = words(old)
+        if args.compact_project_links_baseline:
+            data = json.loads((ROOT / f"resume-{lang}.json").read_text())
+            expected = compact_project_words(expected, data, lang)
+        assert words(document) == expected, f"{lang}: unexpected text: {words(document) - expected} / {expected - words(document)}"
         assert uris(document) == uris(old), f"{lang}: link targets changed"
         assert (ROOT / path).read_bytes() == (ROOT / "public" / alias).read_bytes(), alias
         page = document[0]

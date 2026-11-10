@@ -1,5 +1,68 @@
 # CV — previews et contrôle visuel
 
+## État actuel : cartes équilibrées et liens courts (suite de #33)
+
+Base : `08348d8` (#33 ouverte, contenant #32 fusionnée). Nouvelle branche dédiée,
+avec la branche de #33 comme base pour isoler cette suite. Les trois JSON sources
+et le badge TOEIC restent inchangés ; aucun fait, score, date ou réalisation modifié.
+
+- Liens projets : `GitHub` ; billet nixos-config : `Article` (FR) / `Deep dive`
+  (EN). Les cibles complètes restent cliquables et identiques.
+- Les cellules portent les fonds/bordures : hauteur égale par rangée sans hauteur
+  fixe ni troncature. Une carte impaire ne produit pas de carte vide décorative.
+- Suppression du `width: 50%` des cellules, qui élargissait la grille avec les
+  paddings/gouttières. Le retrait horizontal est désormais symétrique.
+- Dates, liens, tags, coordonnées et mots-clés techniques passent à **7,5 pt**
+  (contre 7 ou 7,2 pt). Corps, palette, rubriques et descriptions conservés.
+
+### Résultats de cette suite
+
+- Tests : **5 OK**, dont les deux nouvelles régressions en RED puis GREEN
+  (libellés/cibles EN-FR, non-mutation des données, cartes paires/impaires).
+- Build Next.js réussi, TypeScript et **14 pages** inclus ; `git diff --check` OK.
+- EN : **1 page A4**, 542 mots, dernier texte à **751,58 pt**.
+- FR : **1 page A4**, 616 mots, dernier texte à **801,58 pt**.
+- Minimum **7,5 pt** ; aucun mot ou lien hors page ; aucun chevauchement de mots
+  > 0,5 pt dans les deux axes ; aucune image ; quatre alias PDF cohérents.
+- **12 cibles URI inchangées par langue**. Multiensemble de mots conservé sauf
+  les substitutions exactes des libellés de liens projets, explicitement autorisées
+  par `--compact-project-links-baseline` ; sans cette option, comparaison stricte.
+- Mesures WeasyPrint : mêmes largeurs/hauteurs dans chaque paire ; hauteurs EN
+  **74,68 / 64,54 / 54,40 pt**, FR **74,68 / 64,54 / 64,55 pt** ; marges
+  projets gauche/droite **29,48 pt**.
+- PNGs finaux à **144 dpi**, **inspection d'image réussie EN et FR** : cartes
+  équilibrées par paire, marges symétriques, liens courts lisibles, TOEIC visible,
+  aucun débordement apparent. Le blocage vision historique ci-dessous ne s'est
+  pas reproduit ; ces observations remplacent les anciennes limites visuelles.
+- ESLint brut : dette existante et `.next`, **28436 erreurs / 8 avertissements**.
+  Hors `.next` : **8 erreurs / 8 avertissements**, mêmes diagnostics que #33.
+  Aucun fichier JS/TS modifié ; aucune correction hors périmètre.
+
+Commandes spécifiques (Python scratch avec WeasyPrint 70.0/PyMuPDF et PangoFT2
+Debian via `LD_LIBRARY_PATH`, aucune installation système) :
+
+```sh
+python scripts/test-resume-preview.py
+"$VIRTUAL_ENV/bin/python" scripts/render-resume.py resume-fr.json public/resume-fr.pdf --lang fr
+"$VIRTUAL_ENV/bin/python" scripts/render-resume.py resume-en.json public/resume.pdf --lang en
+cp public/resume-fr.pdf public/cv-fr.pdf
+cp public/resume.pdf public/resume-en.pdf
+"$VIRTUAL_ENV/bin/python" scripts/check-resume-layout.py --baseline 08348d8 --compact-project-links-baseline
+npm run build
+npm run lint
+npm exec -- eslint . --ignore-pattern '.next/**' --format json
+git diff --check
+```
+
+Les hauteurs sont équilibrées par rangée, pas artificiellement sur toute la grille.
+Les petits textes restent compacts à 7,5 pt ; une épreuve imprimée à taille réelle
+reste utile. Aucun changement factuel, refonte ATS ou déploiement inclus.
+
+## Historique des PR #32 / #33 (avant cette suite)
+
+Les résultats et limites ci-dessous décrivent les exécutions antérieures, pas les
+PNGs courants ni le fonctionnement actuel de l'inspection d'image.
+
 - [Preview anglaise, pleine page](resume-en.png)
 - [Preview française, pleine page](resume-fr.png)
 - PDFs déployables : [`resume.pdf`](../../public/resume.pdf),
@@ -43,6 +106,26 @@ Analyse fondée sur le CSS et les métriques PDF, pas sur une vision réussie :
 - En-tête centré sans photo pour les deux langues ; les données JSON, dates,
   intitulés, réalisations et liens restent inchangés.
 
+### Suite de #32 : TOEIC visible dès l'en-tête
+
+La PR #32 a été fusionnée avant cette suite. Ses améliorations sont conservées ;
+le complément est proposé sur `fix/resume-toeic-highlight`, sans push sur `main`.
+
+- La mention existante **TOEIC 980/990** passe dans un badge indigo de 8,5 pt
+  en gras, sous les coordonnées, sur les deux CV. Le libellé source complet
+  reste identique : `English (Professional — TOEIC 980/990)` /
+  `Anglais (Courant — TOEIC 980/990)`.
+- La mention est déplacée, pas dupliquée : la rubrique de bas de page garde
+  le français natif et les centres d'intérêt. Le score est lu dans les JSON,
+  jamais codé en dur dans le renderer ; toutes les données restent inchangées.
+- Aucun niveau CECRL C1/C2, aucune date d'examen ni validité n'est inféré.
+  Le dépôt donne le score, mais pas ces précisions.
+- Nouveau test RED puis GREEN : présence dans l'en-tête EN/FR, occurrence
+  unique, score lu dynamiquement, absence de badge sans TOEIC, données non mutées.
+- L'inspection visuelle des PNG finaux a de nouveau été tentée et échoue avec
+  le même HTTP 404 fournisseur ci-dessus. **Revue visuelle humaine à faire** ;
+  les contrôles géométriques ci-dessous ne sont pas présentés comme une vision.
+
 ## Résultats réellement obtenus
 
 Commandes exécutées à la racine (les chemins scratch sont propres à cet hôte) :
@@ -61,10 +144,10 @@ git diff --check
 
 - Génération EN/FR et quatre PDFs : succès. WeasyPrint 70.0 ; bibliothèque
   Debian PangoFT2 extraite dans le scratch, sans installation système.
-- Tests preview : `Ran 2 tests ... OK` (six sous-cas EN/FR et options HTML),
+- Tests preview : `Ran 3 tests ... OK` (avec régression TOEIC EN/FR),
   également ajoutés à la CI ; import Python `-S` testé sans dépendances.
-- EN : une page A4, 542 mots dans la page, dernier texte à **741,76 pt**.
-- FR : une page A4, 618 mots dans la page, dernier texte à **781,62 pt**.
+- EN : une page A4, 541 boîtes de mots dans la page, dernier texte à **764,46 pt**.
+- FR : une page A4, 617 boîtes de mots dans la page, dernier texte à **804,32 pt**.
 - Polices embarquées Inter/Fira Code ; minimum **7 pt** ; aucun mot ou lien
   hors page ; pas de chevauchement de boîtes de mots supérieur à 0,5 pt dans
   les deux axes ; aucune image ; alias PDF identiques.
