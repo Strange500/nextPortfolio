@@ -24,13 +24,13 @@ Arduino was my initial starting point. Its limitations led me to change directio
 
 I will not attribute that decision to a particular model, a memory measurement or an Arduino library: those details are not documented in the repository. The beginning of this story is a design intention; the verifiable technical history starts with the Rust RP2040 project.
 
-That distinction matters: I can explain the change in board family without inventing a retrospective benchmark.
+That distinction matters: I can explain the change in board family without inventing a retrospective benchmark. To ground what “Arduino” can mean here, the official [UNO R3 datasheet](https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf) specifies an ATmega328P running at up to 16 MHz, with 32 KB of Flash and 2 KB of SRAM. Those are specifications for that particular board, not a universal limit of the Arduino platform—and the repository does not establish that this was the model I had in mind.
 
 ## From the first Pico to Pico 2 W
 
 The [first merged Rust project](https://github.com/Strange500/pico-ledger/commit/eb6b019) uses `rp-pico`, `embedded-hal` and `cortex-m-rt`, with a Nix environment. It is a bare-metal foundation: a board, peripherals and a cross-compilation toolchain, not a complete wallet.
 
-SSD1306 display support comes next, followed by button handling. The [move to Embassy](https://github.com/Strange500/pico-ledger/commit/38e2d15) replaces blocking button handling with an asynchronous task and moves I2C communication toward async operation. The framework was not a fixed choice from the first commit: it appears as the interactions multiply.
+SSD1306 display support comes next, followed by button handling. The [move to Embassy](https://github.com/Strange500/pico-ledger/commit/38e2d15) replaces blocking button handling with an asynchronous task and moves I2C communication toward async operation. The framework was not a fixed choice from the first commit: it appears as the interactions multiply. This fits [Embassy's](https://github.com/embassy-rs/embassy) own description: an embedded Rust framework centered on async, with an executor that advances cooperative tasks when they can make progress. That helps structure buttons, timers and peripherals; it does not, by itself, solve state races or establish safety.
 
 Another separate step is the [RP2350 migration](https://github.com/Strange500/pico-ledger/commit/a40c4cc). The target changes from `thumbv6m-none-eabi` to `thumbv8m.main-none-eabihf`. Today's code targets **Pico 2 W**, not the original RP2040 Pico. Linker configuration, memory layout, flashing tools and drivers all have to follow; changing the board's name is not enough.
 
@@ -40,7 +40,7 @@ The current stack reflects that progression:
 
 - **Embassy** orchestrates asynchronous tasks and communication between buttons, display, locking and signing.
 - **`ssd1306` and `embedded-graphics`** provide the driver and graphics primitives for the 128 × 64 OLED.
-- **Buoyant**, [introduced after Embassy](https://github.com/Strange500/pico-ledger/commit/cd0014c), composes the interface views.
+- **Buoyant**, [introduced after Embassy](https://github.com/Strange500/pico-ledger/commit/cd0014c), composes the interface views. The project describes itself as a declarative SwiftUI-inspired view toolkit for Rust, targeting `no_std` systems among others and using `embedded-graphics`; it is neither an operating system nor a display driver ([Buoyant repository](https://github.com/riley-williams/buoyant), [documentation](https://docs.rs/buoyant/latest/buoyant/view/index.html)).
 - **`bip39` and `bitcoin`** provide mnemonic, key derivation and Bitcoin building blocks.
 - **`chacha20poly1305`, `pbkdf2` and `zeroize`** are present in the core for entropy encryption, key derivation and explicit cleanup of some sensitive data.
 
@@ -67,7 +67,7 @@ The [merged PR #16](https://github.com/Strange500/pico-ledger/pull/16) separates
 
 ## PSBT work: signing is not authorization
 
-A PSBT is a Partially Signed Bitcoin Transaction: a format for preparing a transaction elsewhere and having a signer verify and sign its components. The goal is not to turn the Pico into a machine that blindly signs a hash supplied by a computer.
+A PSBT is a standardized container for exchanging an unsigned or partially signed Bitcoin transaction, together with data needed by signers ([BIP 174](https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki)). The format improves interoperability; it does not make the transaction safe by itself. The goal is not to turn the Pico into a machine that blindly signs a hash supplied by a computer.
 
 As of this date, the stages remain separate:
 

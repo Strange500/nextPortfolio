@@ -24,13 +24,13 @@ Mon premier point de départ était Arduino. Ses limitations m’ont conduit à 
 
 Je ne vais pas attribuer cette décision à un modèle précis, à une mesure de mémoire ou à une bibliothèque Arduino : je n’ai pas ces éléments documentés dans le dépôt. Le début de l’histoire est une intention de conception ; l’historique technique vérifiable commence avec le projet Rust pour RP2040.
 
-La distinction compte : je peux raconter pourquoi j’ai changé de famille de carte sans inventer un benchmark rétrospectif.
+La distinction compte : je peux raconter pourquoi j’ai changé de famille de carte sans inventer un benchmark rétrospectif. Pour situer ce que signifie « Arduino » ici, l’[UNO R3 officiel](https://docs.arduino.cc/resources/datasheets/A000066-datasheet.pdf) embarque un ATmega328P à 16 MHz, avec 32 Ko de Flash et 2 Ko de SRAM. Ce sont les caractéristiques de cette carte précise, pas une limite universelle de la plateforme Arduino — et le dépôt ne permet pas d’affirmer que c’est le modèle que j’avais envisagé.
 
 ## Du premier Pico au Pico 2 W
 
 Le [premier projet Rust intégré](https://github.com/Strange500/pico-ledger/commit/eb6b019) utilise `rp-pico`, `embedded-hal` et `cortex-m-rt`, avec un environnement Nix. C’est un socle bare-metal : une carte, des périphériques et une chaîne de compilation croisée, pas encore un portefeuille complet.
 
-L’écran SSD1306 arrive ensuite, puis la gestion des boutons. Le [passage à Embassy](https://github.com/Strange500/pico-ledger/commit/38e2d15) remplace la gestion bloquante du bouton par une tâche asynchrone et fait évoluer la communication I2C vers l’asynchrone. Le framework n’était donc pas un choix figé dès le premier commit : il apparaît à mesure que les interactions se multiplient.
+L’écran SSD1306 arrive ensuite, puis la gestion des boutons. Le [passage à Embassy](https://github.com/Strange500/pico-ledger/commit/38e2d15) remplace la gestion bloquante du bouton par une tâche asynchrone et fait évoluer la communication I2C vers l’asynchrone. Le framework n’était donc pas un choix figé dès le premier commit : il apparaît à mesure que les interactions se multiplient. C’est cohérent avec la présentation d’[Embassy](https://github.com/embassy-rs/embassy) : un framework embarqué Rust orienté async, dont l’exécuteur fait progresser des tâches coopératives lorsqu’elles peuvent avancer. Cela aide à structurer boutons, temporisations et périphériques sans prétendre que l’asynchrone résout à lui seul les courses d’état ou les questions de sûreté.
 
 Autre étape distincte : la [migration vers le RP2350](https://github.com/Strange500/pico-ledger/commit/a40c4cc). La cible passe de `thumbv6m-none-eabi` à `thumbv8m.main-none-eabihf`. Le code actuel vise le **Pico 2 W**, et non le Pico RP2040 des débuts. Configuration du linker, disposition mémoire, outils de flash et pilotes doivent suivre ce changement ; remplacer simplement le nom de la carte ne suffit pas.
 
@@ -40,7 +40,7 @@ La pile actuelle raconte cette progression :
 
 - **Embassy** orchestre les tâches asynchrones et les échanges entre boutons, affichage, verrouillage et signature.
 - **`ssd1306` et `embedded-graphics`** fournissent le pilote et les primitives graphiques de l’écran OLED 128 × 64.
-- **Buoyant**, [introduit après Embassy](https://github.com/Strange500/pico-ledger/commit/cd0014c), sert à composer les vues de l’interface.
+- **Buoyant**, [introduit après Embassy](https://github.com/Strange500/pico-ledger/commit/cd0014c), sert à composer les vues de l’interface. Le projet se décrit comme une boîte à outils déclarative de vues inspirées de SwiftUI pour Rust, visant notamment les cibles `no_std` et s’appuyant sur `embedded-graphics` ; ce n’est pas un système d’exploitation ni un pilote d’écran ([dépôt Buoyant](https://github.com/riley-williams/buoyant), [documentation](https://docs.rs/buoyant/latest/buoyant/view/index.html)).
 - **`bip39` et `bitcoin`** apportent les briques de phrase mnémonique, de dérivation de clés et de manipulation Bitcoin.
 - **`chacha20poly1305`, `pbkdf2` et `zeroize`** sont présents dans le cœur pour le chiffrement de l’entropie, la dérivation de clé et l’effacement explicite de certaines données sensibles.
 
@@ -67,7 +67,7 @@ La [PR #16, intégrée](https://github.com/Strange500/pico-ledger/pull/16), sép
 
 ## Le chantier PSBT : ne pas confondre signature et autorisation
 
-Une PSBT est une transaction Bitcoin partiellement signée : un format permettant de préparer la transaction ailleurs puis d’en faire vérifier et signer les éléments par un signataire. Le but n’est pas de transformer le Pico en machine qui signe aveuglément un hash fourni par l’ordinateur.
+Une PSBT est un conteneur normalisé pour échanger une transaction Bitcoin non signée ou partiellement signée, avec les données nécessaires au travail des signataires ([BIP 174](https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki)). Le format facilite l’interopérabilité ; il ne rend pas la transaction sûre par lui-même. Le but n’est pas de transformer le Pico en machine qui signe aveuglément un hash fourni par l’ordinateur.
 
 À cette date, les étapes sont séparées :
 
