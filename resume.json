@@ -168,15 +168,14 @@
       "blog": "https://portfolio.qgroget.com/en/blog/nixos-2026-reproducible"
     },
     {
-      "name": "pixel-war",
-      "description": "Course project — designed a Web3 pixel-canvas dApp in Solidity, exploring on-chain state, pull-over-push refunds to prevent reentrancy, and ERC-721 snapshot minting.",
+      "name": "pico-ledger",
+      "description": "Built an embedded Bitcoin wallet prototype in Rust with a host-tested portable core, BIP39 mnemonic generation, entropy encryption, and wallet locking.",
       "keywords": [
-        "Web3",
-        "Solidity",
-        "JavaScript",
-        "Blockchain"
+        "Rust",
+        "Bitcoin",
+        "Embedded"
       ],
-      "url": "https://github.com/Strange500/pixel-war"
+      "url": "https://github.com/Strange500/pico-ledger"
     },
     {
       "name": "RayTracer-Rust",

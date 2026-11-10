@@ -180,15 +180,14 @@
       "blog": "https://portfolio.qgroget.com/fr/blog/nixos-2026-reproducible"
     },
     {
-      "name": "pixel-war",
-      "description": "Projet de cours — conception d'une dApp Web3 pixel-canvas en Solidity : gestion d'état on-chain, remboursements pull-over-push contre la réentrance et frappe d'instantanés ERC-721.",
+      "name": "pico-ledger",
+      "description": "Prototype de portefeuille Bitcoin embarqué en Rust : cœur portable testé sur hôte, génération de phrases BIP39, chiffrement de l’entropie et verrouillage du portefeuille.",
       "keywords": [
-        "Web3",
-        "Solidity",
-        "JavaScript",
-        "Blockchain"
+        "Rust",
+        "Bitcoin",
+        "Embedded"
       ],
-      "url": "https://github.com/Strange500/pixel-war"
+      "url": "https://github.com/Strange500/pico-ledger"
     },
     {
       "name": "RayTracer-Rust",

@@ -135,9 +135,9 @@ const projectDescriptions = {
       "Declared 6-host NixOS configurations and dotfiles (Nix flakes + Home Manager) — a " +
       "self-hosted server exposing personal services, a backup Raspberry Pi, desktops, a " +
       "laptop and a Steam-OS-style console — all versioned and reproducible as IaC.",
-    "pixel-war":
-      "Course project — designed a Web3 pixel-canvas dApp in Solidity, exploring on-chain " +
-      "state, pull-over-push refunds to prevent reentrancy, and ERC-721 snapshot minting.",
+    "pico-ledger":
+      "Built an embedded Bitcoin wallet prototype in Rust with a host-tested portable core, " +
+      "BIP39 mnemonic generation, entropy encryption, and wallet locking.",
   },
   fr: {
     "min-btc-node":
@@ -148,9 +148,9 @@ const projectDescriptions = {
       "Configurations NixOS déclaratives (6 machines) et dotfiles via Nix flakes + Home Manager — " +
       "serveur auto-hébergé exposant mes services, Raspberry Pi de sauvegarde, PC fixes, portable " +
       "et console « Steam-OS like » — le tout versionné et 100 % reproductible (IaC).",
-    "pixel-war":
-      "Projet de cours — conception d'une dApp Web3 pixel-canvas en Solidity : gestion d'état " +
-      "on-chain, remboursements pull-over-push contre la réentrance et frappe d'instantanés ERC-721.",
+    "pico-ledger":
+      "Prototype de portefeuille Bitcoin embarqué en Rust : cœur portable testé sur hôte, " +
+      "génération de phrases BIP39, chiffrement de l’entropie et verrouillage du portefeuille.",
   },
 };
 
@@ -291,6 +291,15 @@ function buildResume(lang) {
 
   const descMap = projectDescriptions[lang];
   const projectsOut = rawProjects.map((p) => {
+    // Replace the gallery entry only in the resume, without inheriting its links.
+    if (p.title === "pixel-war") {
+      return {
+        name: "pico-ledger",
+        description: descMap["pico-ledger"],
+        keywords: ["Rust", "Bitcoin", "Embedded"],
+        url: "https://github.com/Strange500/pico-ledger",
+      };
+    }
     const github = p.links.find((l) => l.includes("github.com")) ?? "";
     const blog = p.links.find((l) => l.includes("/blog/")) ?? "";
     return {
