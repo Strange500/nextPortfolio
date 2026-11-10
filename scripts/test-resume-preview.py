@@ -58,6 +58,59 @@ class PreviewTests(unittest.TestCase):
                 self.assertNotIn("C1", content)
                 self.assertNotIn("C2", content)
 
+    def test_project_links_have_compact_labels_and_preserve_targets(self):
+        from html.parser import HTMLParser
+
+        class Links(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.links = []
+                self.current = None
+
+            def handle_starttag(self, tag, attrs):
+                if tag == "a":
+                    self.current = [dict(attrs)["href"], ""]
+
+            def handle_data(self, data):
+                if self.current is not None:
+                    self.current[1] += data
+
+            def handle_endtag(self, tag):
+                if tag == "a" and self.current is not None:
+                    self.links.append(tuple(self.current))
+                    self.current = None
+
+        spec = importlib.util.spec_from_file_location("renderer", ROOT / "scripts/render-resume.py")
+        assert spec is not None and spec.loader is not None
+        renderer = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(renderer)
+        for lang in ("en", "fr"):
+            data = json.loads((ROOT / f"resume-{lang}.json").read_text())
+            original = json.dumps(data, sort_keys=True)
+            parser = Links()
+            parser.feed(renderer.render_projects(data, lang))
+            expected = []
+            for project in data["projects"]:
+                if project.get("url"):
+                    expected.append((project["url"], "GitHub"))
+                if project.get("blog"):
+                    expected.append((project["blog"], "Article" if lang == "fr" else "Deep dive"))
+            self.assertEqual(parser.links, expected)
+            self.assertEqual(json.dumps(data, sort_keys=True), original)
+
+    def test_project_cards_share_row_height_including_an_unpaired_project(self):
+        spec = importlib.util.spec_from_file_location("renderer", ROOT / "scripts/render-resume.py")
+        assert spec is not None and spec.loader is not None
+        renderer = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(renderer)
+        data = {"projects": [{"name": str(i)} for i in range(3)]}
+        content = renderer.render_projects(data, "fr")
+        # Card decoration belongs on table cells, whose row heights are equal.
+        self.assertEqual(content.count('class="proj-col card'), 3)
+        self.assertEqual(content.count('class="proj-col"'), 1)
+        self.assertNotIn('class="project card', content)
+        self.assertEqual(renderer.render_projects({}), "")
+
     def test_universal_renderer_preview_flags(self):
         with tempfile.TemporaryDirectory() as directory:
             for lang in ("en", "fr"):
