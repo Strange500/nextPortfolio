@@ -36,7 +36,11 @@ for arbitrary larger zoom values or viewport buffers.
 ```sh
 npm ci
 npm run build
-npm run start -- --hostname 127.0.0.1 --port 3100
+# Match the standalone package layout produced by flake.nix:
+cp -r public .next/standalone/
+mkdir -p .next/standalone/.next
+cp -r .next/static .next/standalone/.next/
+HOSTNAME=127.0.0.1 PORT=3100 node .next/standalone/server.js
 # In another terminal, with a real installed Chrome/Chromium:
 CHROME_PATH=/path/to/chromium node scripts/test-cube-browser.mjs
 ```
