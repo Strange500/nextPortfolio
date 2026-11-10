@@ -3,7 +3,10 @@
 import { useEffect, useRef } from "react";
 import { technologies } from '@/data/technologies';
 
-async function svgToAscii(imageUrl: string, width = 50, height = 50) {
+// Keep the texture grid in sync with the pinned 100×100 WASM face sampler.
+const FACE_TEXTURE_SIZE = 100;
+
+async function svgToAscii(imageUrl: string, width = FACE_TEXTURE_SIZE, height = FACE_TEXTURE_SIZE) {
   return new Promise<{ characters: Uint8Array, colors: Uint32Array }>((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = "Anonymous";
@@ -83,8 +86,8 @@ export default function AsciiCube() {
     const faceSources: (string | HTMLVideoElement | LogoData)[] = new Array(6).fill("");
     
     const videoCanvas = document.createElement('canvas');
-    videoCanvas.width = 50;
-    videoCanvas.height = 50;
+    videoCanvas.width = FACE_TEXTURE_SIZE;
+    videoCanvas.height = FACE_TEXTURE_SIZE;
     const videoCtx = videoCanvas.getContext('2d', { willReadFrequently: true });
 
     async function initWasm() {
@@ -102,7 +105,7 @@ export default function AsciiCube() {
         
         for (const tech of technologies) {
           try {
-            const logoData = await svgToAscii(tech.svg, 50, 50);
+            const logoData = await svgToAscii(tech.svg);
             loadedLogos.push(logoData);
           } catch (e) {
             console.error(`Failed to load SVG for ${tech.name}`, e);
@@ -190,14 +193,14 @@ export default function AsciiCube() {
             }
 
             if (hasVideoFace && videoCtx && video.readyState >= 2) {
-              videoCtx.drawImage(video, 0, 0, 50, 50);
-              const imageData = videoCtx.getImageData(0, 0, 50, 50).data;
-              const chars = new Uint8Array(2500);
-              const colors = new Uint32Array(2500);
+              videoCtx.drawImage(video, 0, 0, FACE_TEXTURE_SIZE, FACE_TEXTURE_SIZE);
+              const imageData = videoCtx.getImageData(0, 0, FACE_TEXTURE_SIZE, FACE_TEXTURE_SIZE).data;
+              const chars = new Uint8Array(FACE_TEXTURE_SIZE * FACE_TEXTURE_SIZE);
+              const colors = new Uint32Array(FACE_TEXTURE_SIZE * FACE_TEXTURE_SIZE);
               let idx = 0;
-              for (let y = 0; y < 50; y++) {
-                for (let x = 0; x < 50; x++) {
-                  const i4 = (y * 50 + x) * 4;
+              for (let y = 0; y < FACE_TEXTURE_SIZE; y++) {
+                for (let x = 0; x < FACE_TEXTURE_SIZE; x++) {
+                  const i4 = (y * FACE_TEXTURE_SIZE + x) * 4;
                   const r = imageData[i4];
                   const g = imageData[i4 + 1];
                   const b = imageData[i4 + 2];
