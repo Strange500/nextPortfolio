@@ -10,6 +10,7 @@ import AsciiCube from '@/components/AsciiCube'
 import { dictionaries } from '@/data/dictionaries'
 import Link from 'next/link'
 import { ResumeDropdown } from '@/components/ResumeDropdown'
+import { ScrollReveal } from '@/components/ScrollReveal'
 
 export async function generateStaticParams() {
   return [{ lang: 'en' }, { lang: 'fr' }];
@@ -30,8 +31,8 @@ export default async function Page({
   return (
     <section className="min-h-screen w-full selection:bg-primary/20">
       {/* Hero Section */}
-      <div className="container mx-auto flex min-h-screen items-center justify-between px-4 md:px-12 py-32 lg:py-0">
-        <div className="flex flex-col items-start max-w-3xl space-y-6 z-10">
+      <div className="hero-grid relative mx-auto flex min-h-screen items-center justify-between overflow-hidden px-4 py-28 md:px-12 lg:py-0">
+        <div className="relative z-10 flex max-w-3xl flex-col items-start space-y-6">
           <Badge variant="outline" className="font-mono text-xs font-normal text-muted-foreground border-border/50">
             {t.hero.badge}
           </Badge>
@@ -75,7 +76,7 @@ export default async function Page({
             <SmallSocialBtn lang={lang} />
           </div>
         </div>
-        <div className="hidden lg:flex flex-col justify-center items-center opacity-80 pl-8">
+        <div className="hidden flex-col items-center justify-center pl-8 opacity-90 lg:flex">
           <AsciiCube />
           <a 
             href="https://github.com/Strange500/ascii-cube-rs" 
@@ -89,13 +90,13 @@ export default async function Page({
       </div>
 
       {/* About & Timeline Section */}
-      <div className="container mx-auto px-4 md:px-12 py-32">
+      <ScrollReveal className="container mx-auto px-4 py-24 md:px-12 md:py-32">
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
           
           {/* Left Column: Experience & Skills */}
           <div className="flex flex-col space-y-12 lg:col-span-7">
             <section className="space-y-6">
-              <h2 className="text-2xl font-medium tracking-tight text-foreground">{t.experience.title}</h2>
+              <h2 className="section-heading text-2xl font-medium tracking-tight text-foreground">{t.experience.title}</h2>
               <div className="space-y-8">
                 {t.experience.jobs.map((job, index) => (
                   <div key={index} className="flex flex-col space-y-2">
@@ -124,7 +125,7 @@ export default async function Page({
             </section>
 
             <section className="space-y-6">
-              <h2 className="text-2xl font-medium tracking-tight text-foreground">{t.about.skills_title}</h2>
+              <h2 className="section-heading text-2xl font-medium tracking-tight text-foreground">{t.about.skills_title}</h2>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
                   <h3 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t.about.systems_iac}</h3>
@@ -194,12 +195,12 @@ export default async function Page({
             </ol>
           </div>
         </div>
-      </div>
+      </ScrollReveal>
 
       {/* Projects Grid */}
-      <div className="container mx-auto px-4 md:px-12 py-32" id="projects">
+      <ScrollReveal className="container mx-auto px-4 py-24 md:px-12 md:py-32" id="projects">
         <div className="mb-12 flex flex-col space-y-4">
-          <h2 className="text-3xl font-medium tracking-tight text-foreground">
+          <h2 className="section-heading text-3xl font-medium tracking-tight text-foreground">
             {t.projects.title}
           </h2>
           <p className="text-muted-foreground">{t.projects.description}</p>
@@ -212,7 +213,7 @@ export default async function Page({
               <ProjectCard key={index} {...project} />
             ))}
         </div>
-      </div>
+      </ScrollReveal>
     </section>
   )
 }
