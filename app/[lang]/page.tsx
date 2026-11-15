@@ -30,7 +30,7 @@ export default async function Page({
   return (
     <section className="min-h-screen w-full selection:bg-primary/20">
       {/* Hero Section */}
-      <div className="container mx-auto flex min-h-screen items-center justify-between px-4 md:px-12 py-32 lg:py-0">
+      <div className="hero-grid container mx-auto flex min-h-screen items-center justify-between px-4 py-32 md:px-12 lg:py-0">
         <div className="flex flex-col items-start max-w-3xl space-y-6 z-10">
           <Badge variant="outline" className="font-mono text-xs font-normal text-muted-foreground border-border/50">
             {t.hero.badge}
@@ -87,6 +87,25 @@ export default async function Page({
           </a>
         </div>
       </div>
+
+      {/* Evidence-led work: claims below are grounded in the experience entries. */}
+      <section aria-labelledby="impact-title" className="portfolio-proof container mx-auto px-4 py-20 md:px-12 md:py-28">
+        <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="mb-3 font-mono text-xs uppercase tracking-[.24em] text-primary">{lang === 'fr' ? 'Journal de terrain / 01—03' : 'Field notes / 01—03'}</p>
+            <h2 id="impact-title" className="text-3xl font-semibold tracking-tight md:text-4xl">{lang === 'fr' ? 'Des systèmes, pas des slogans.' : 'Systems, not slogans.'}</h2>
+          </div>
+          <p className="max-w-md text-sm leading-relaxed text-muted-foreground">{lang === 'fr' ? 'Chaque chiffre renvoie à une mission réelle : le contexte compte autant que le résultat.' : 'Every number points to real work; the context matters as much as the outcome.'}</p>
+        </div>
+        <div className="grid gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60 sm:grid-cols-3">
+          <article className="proof-cell bg-background p-6 md:p-8"><span className="font-mono text-4xl font-semibold text-primary">50–70</span><h3 className="mt-4 font-semibold">{lang === 'fr' ? 'tests d’intégration' : 'integration tests'}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{lang === 'fr' ? 'Moteur E2E unifié, lancé de façon identique par Maven en CI ou via une API REST asynchrone.' : 'One E2E engine, run the same way through Maven in CI or an asynchronous REST API.'}</p></article>
+          <article className="proof-cell bg-background p-6 md:p-8"><span className="font-mono text-4xl font-semibold text-primary">~70%</span><h3 className="mt-4 font-semibold">{lang === 'fr' ? 'de faux positifs en moins' : 'fewer false positives'}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{lang === 'fr' ? 'Après refonte de l’architecture de test chez Numih — un signal de confiance, pas une métrique isolée.' : 'After rebuilding the test architecture at Numih—a reliability signal, not a vanity metric.'}</p></article>
+          <article className="proof-cell bg-background p-6 md:p-8"><span className="font-mono text-4xl font-semibold text-primary">&lt;10 min</span><h3 className="mt-4 font-semibold">{lang === 'fr' ? 'pour migrer l’environnement' : 'to migrate an environment'}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{lang === 'fr' ? 'Contre environ quatre heures avant, grâce à la même refonte et à des abstractions d’isolation.' : 'Down from about four hours, through the same refactor and data-isolation abstractions.'}</p></article>
+        </div>
+        <a className="group mt-6 inline-flex items-center gap-2 font-mono text-xs text-primary hover:underline" href={`/${lang}/blog/automated-testing-framework`}>
+          {lang === 'fr' ? 'Lire la mission : moteur de tests' : 'Read the case study: test engine'} <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+        </a>
+      </section>
 
       {/* About & Timeline Section */}
       <div className="container mx-auto px-4 md:px-12 py-32">
