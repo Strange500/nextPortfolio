@@ -191,8 +191,8 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
           href={`/${lang}`}
           aria-label={t('Benjamin, home', 'Benjamin, accueil')}
         >
-          b<span>_</span>g
-          <span className='wordmark-name'> / Benjamin Groget</span>
+          b<span>_</span>r
+          <span className='wordmark-name'> / Benjamin Roget</span>
         </a>
         <nav aria-label={t('Main navigation', 'Navigation principale')}>
           <a href='#missions'>{t('The work', 'Missions')}</a>
@@ -861,7 +861,7 @@ $ wasm-pack build --target web
           </div>
         </div>
         <div className='footer-colophon mono'>
-          BENJAMIN GROGET
+          BENJAMIN ROGET
           <br />
           {t(
             'BUILT WITH INTENT. SOURCE OPEN.',
