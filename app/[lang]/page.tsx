@@ -1,237 +1,30 @@
-import { SmallSocialBtn } from '@/components/smallSocialBtn'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { ProjectCard } from '@/components/ProjectCard'
-import { education as eduData } from '@/data/education'
-import { technologies as techno } from '@/data/technologies'
-import { loadProjects, type Project } from '@/lib/loadProjects'
-import { ArrowRight } from 'lucide-react'
-import AsciiCube from '@/components/AsciiCube'
-import { dictionaries } from '@/data/dictionaries'
-import Link from 'next/link'
-import { ResumeDropdown } from '@/components/ResumeDropdown'
+import type { Metadata } from 'next'
+import PortfolioNarrative from '@/components/PortfolioNarrative'
 
-export async function generateStaticParams() {
-  return [{ lang: 'en' }, { lang: 'fr' }];
+export function generateStaticParams() {
+  return [{ lang: 'en' }, { lang: 'fr' }]
+}
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ lang: string }>
+}): Promise<Metadata> {
+  const { lang } = await params
+  return {
+    title: 'Benjamin Groget — Software, systems & evidence',
+    description:
+      lang === 'fr'
+        ? 'Quatre facettes d’une même exigence : Rust/WASM, NixOS, automatisation des tests et Bitcoin. Projets, architecture et résultats contextualisés.'
+        : 'Four facets of one engineering practice: Rust/WASM, NixOS, test automation and Bitcoin. Inspect the projects, architecture and evidence.'
+  }
 }
 
 export default async function Page({
-  params,
+  params
 }: {
   params: Promise<{ lang: string }>
 }) {
-  const { lang } = await params;
-  const t = dictionaries[lang as keyof typeof dictionaries] || dictionaries.en;
-  
-  // Pass lang to loadProjects
-  const projects: Project[] = await loadProjects(lang);
-  const education = eduData[lang as keyof typeof eduData] || eduData.en;
-  
-  return (
-    <section className="min-h-screen w-full selection:bg-primary/20">
-      {/* Hero Section */}
-      <div className="hero-grid container mx-auto flex min-h-screen items-center justify-between px-4 py-32 md:px-12 lg:py-0">
-        <div className="flex flex-col items-start max-w-3xl space-y-6 z-10">
-          <Badge variant="outline" className="font-mono text-xs font-normal text-muted-foreground border-border/50">
-            {t.hero.badge}
-          </Badge>
-          
-          <h1 className="font-sans text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl whitespace-pre-line">
-            {t.hero.title_start}<span className="font-mono text-primary">{t.hero.title_highlight}</span>{t.hero.title_end}
-          </h1>
-          
-          <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
-            {t.hero.description_1}<span className="font-mono text-foreground/80 text-sm">{t.hero.description_highlight}</span>{t.hero.description_2}
-          </p>
-
-          <div className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60"></span>
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
-            </span>
-            <span className="font-mono text-sm text-foreground">{t.hero.status}</span>
-          </div>
-          
-          <div className="flex flex-wrap items-center gap-4 pt-4">
-            <Button asChild className="group rounded-full px-6">
-              <a href="#projects">
-                {t.hero.cta}
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </a>
-            </Button>
-            <ResumeDropdown
-              lang={lang as 'en' | 'fr'}
-              label={t.hero.resume}
-              resumeEnLabel={t.hero.resume_en}
-              resumeEnDesc={t.hero.resume_en_desc}
-              resumeFrLabel={t.hero.resume_fr}
-              resumeFrDesc={t.hero.resume_fr_desc}
-            />
-            <Button asChild variant="outline" className="rounded-full px-6 border-primary/20 hover:bg-primary/5">
-              <Link href={`/${lang}/blog`}>
-                {t.hero.blog}
-              </Link>
-            </Button>
-            <SmallSocialBtn lang={lang} />
-          </div>
-        </div>
-        <div className="hidden lg:flex flex-col justify-center items-center opacity-80 pl-8">
-          <AsciiCube />
-          <a 
-            href="https://github.com/Strange500/ascii-cube-rs" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="mt-4 text-xs font-mono text-muted-foreground/60 hover:text-foreground transition-colors"
-          >
-            {t.hero.powered_by}
-          </a>
-        </div>
-      </div>
-
-      {/* Evidence-led work: claims below are grounded in the experience entries. */}
-      <section aria-labelledby="impact-title" className="portfolio-proof container mx-auto px-4 py-20 md:px-12 md:py-28">
-        <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-          <div>
-            <p className="mb-3 font-mono text-xs uppercase tracking-[.24em] text-primary">{lang === 'fr' ? 'Journal de terrain / 01—03' : 'Field notes / 01—03'}</p>
-            <h2 id="impact-title" className="text-3xl font-semibold tracking-tight md:text-4xl">{lang === 'fr' ? 'Des systèmes, pas des slogans.' : 'Systems, not slogans.'}</h2>
-          </div>
-          <p className="max-w-md text-sm leading-relaxed text-muted-foreground">{lang === 'fr' ? 'Chaque chiffre renvoie à une mission réelle : le contexte compte autant que le résultat.' : 'Every number points to real work; the context matters as much as the outcome.'}</p>
-        </div>
-        <div className="grid gap-px overflow-hidden rounded-2xl border border-border/60 bg-border/60 sm:grid-cols-3">
-          <article className="proof-cell bg-background p-6 md:p-8"><span className="font-mono text-4xl font-semibold text-primary">50–70</span><h3 className="mt-4 font-semibold">{lang === 'fr' ? 'tests d’intégration' : 'integration tests'}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{lang === 'fr' ? 'Moteur E2E unifié, lancé de façon identique par Maven en CI ou via une API REST asynchrone.' : 'One E2E engine, run the same way through Maven in CI or an asynchronous REST API.'}</p></article>
-          <article className="proof-cell bg-background p-6 md:p-8"><span className="font-mono text-4xl font-semibold text-primary">~70%</span><h3 className="mt-4 font-semibold">{lang === 'fr' ? 'de faux positifs en moins' : 'fewer false positives'}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{lang === 'fr' ? 'Après refonte de l’architecture de test chez Numih — un signal de confiance, pas une métrique isolée.' : 'After rebuilding the test architecture at Numih—a reliability signal, not a vanity metric.'}</p></article>
-          <article className="proof-cell bg-background p-6 md:p-8"><span className="font-mono text-4xl font-semibold text-primary">&lt;10 min</span><h3 className="mt-4 font-semibold">{lang === 'fr' ? 'pour migrer l’environnement' : 'to migrate an environment'}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{lang === 'fr' ? 'Contre environ quatre heures avant, grâce à la même refonte et à des abstractions d’isolation.' : 'Down from about four hours, through the same refactor and data-isolation abstractions.'}</p></article>
-        </div>
-        <a className="group mt-6 inline-flex items-center gap-2 font-mono text-xs text-primary hover:underline" href={`/${lang}/blog/automated-testing-framework`}>
-          {lang === 'fr' ? 'Lire la mission : moteur de tests' : 'Read the case study: test engine'} <ArrowRight aria-hidden="true" className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-        </a>
-      </section>
-
-      {/* About & Timeline Section */}
-      <div className="container mx-auto px-4 md:px-12 py-32">
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
-          
-          {/* Left Column: Experience & Skills */}
-          <div className="flex flex-col space-y-12 lg:col-span-7">
-            <section className="space-y-6">
-              <h2 className="text-2xl font-medium tracking-tight text-foreground">{t.experience.title}</h2>
-              <div className="space-y-8">
-                {t.experience.jobs.map((job, index) => (
-                  <div key={index} className="flex flex-col space-y-2">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between">
-                      <h3 className="text-lg font-semibold text-foreground">{job.role}</h3>
-                      <span className="font-mono text-xs text-muted-foreground">{job.date}</span>
-                    </div>
-                    <p className="font-medium text-primary text-sm">{job.company}</p>
-                    <ul className="list-disc pl-5 space-y-1.5 text-muted-foreground mt-2">
-                      {job.bullets.map((bullet, i) => (
-                        <li key={i}>{bullet}</li>
-                      ))}
-                    </ul>
-                    {job.deepDive && (
-                      <Link
-                        href={job.deepDive}
-                        className="group mt-3 inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:text-primary/80 transition-colors"
-                      >
-                        Read the engineering deep-dive
-                        <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                      </Link>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="space-y-6">
-              <h2 className="text-2xl font-medium tracking-tight text-foreground">{t.about.skills_title}</h2>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                  <h3 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t.about.systems_iac}</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {techno.filter(t => ['NixOS', 'Linux', 'Docker', 'Git'].includes(t.name)).map((tech, i) => (
-                      <Badge key={i} variant="secondary" className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-all duration-300 hover:border-muted-foreground/50 hover:bg-muted/50 hover:text-foreground">
-                        <img src={tech.light_svg} className="h-4 w-4 dark:hidden" alt={tech.name} />
-                        <img src={tech.svg} className="hidden h-4 w-4 dark:block" alt={tech.name} />
-                        {tech.name}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h3 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t.about.backend_testing}</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {techno.filter(t => ['Rust', 'Java EE', 'Spring Boot', 'Selenium', 'Postgres', 'Python'].includes(t.name)).map((tech, i) => (
-                      <Badge key={i} variant="secondary" className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-all duration-300 hover:border-muted-foreground/50 hover:bg-muted/50 hover:text-foreground">
-                        <img src={tech.light_svg} className="h-4 w-4 dark:hidden" alt={tech.name} />
-                        <img src={tech.svg} className="hidden h-4 w-4 dark:block" alt={tech.name} />
-                        {tech.name}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                <div className="sm:col-span-2">
-                  <h3 className="mb-3 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">{t.about.web}</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {techno.filter(t => !['NixOS', 'Linux', 'Docker', 'Git', 'Rust', 'Java EE', 'Spring Boot', 'Selenium', 'Postgres', 'Python'].includes(t.name)).map((tech, i) => (
-                      <Badge key={i} variant="secondary" className="flex items-center gap-2 border border-border/40 bg-muted/30 px-3 py-1.5 font-mono text-xs font-normal text-foreground transition-all duration-300 hover:border-muted-foreground/50 hover:bg-muted/50 hover:text-foreground">
-                        <img src={tech.light_svg} className="h-4 w-4 dark:hidden" alt={tech.name} />
-                        <img src={tech.svg} className="hidden h-4 w-4 dark:block" alt={tech.name} />
-                        {tech.name}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
-
-          {/* Right Column: Timeline */}
-          <div className="lg:col-span-4 lg:col-start-9">
-            <h2 className="mb-8 text-2xl font-medium tracking-tight text-foreground">{t.education.title}</h2>
-            <ol className="relative space-y-8 border-s border-border/40">
-              {education
-                .sort((a, b) => b.date - a.date)
-                .map((edu, index) => (
-                  <li key={index} className="ms-6">
-                    <span className="absolute -start-1.5 mt-1.5 flex h-3 w-3 items-center justify-center rounded-full bg-muted ring-4 ring-background"></span>
-                    <time className="mb-2 block font-mono text-xs font-medium tracking-widest text-muted-foreground/80 uppercase">
-                      {edu.period}
-                    </time>
-                    <h3 className="text-base font-medium text-foreground">
-                      {edu.title}
-                    </h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {edu.school}
-                    </p>
-                    {edu.description && (
-                      <p className="mt-1 text-sm text-muted-foreground italic">
-                        {edu.description}
-                      </p>
-                    )}
-                  </li>
-                ))}
-            </ol>
-          </div>
-        </div>
-      </div>
-
-      {/* Projects Grid */}
-      <div className="container mx-auto px-4 md:px-12 py-32" id="projects">
-        <div className="mb-12 flex flex-col space-y-4">
-          <h2 className="text-3xl font-medium tracking-tight text-foreground">
-            {t.projects.title}
-          </h2>
-          <p className="text-muted-foreground">{t.projects.description}</p>
-        </div>
-        
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects
-            .sort((a, b) => a.order - b.order)
-            .map((project, index) => (
-              <ProjectCard key={index} {...project} />
-            ))}
-        </div>
-      </div>
-    </section>
-  )
+  const { lang } = await params
+  return <PortfolioNarrative lang={lang === 'fr' ? 'fr' : 'en'} />
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { technologies } from '@/data/technologies';
 
 // Keep the texture grid in sync with the pinned 100×100 WASM face sampler.
@@ -52,7 +52,18 @@ async function svgToAscii(imageUrl: string, width = FACE_TEXTURE_SIZE, height = 
 
 const BASELINE_SPEED = { da: 0.0075, db: 0.005, dc: 0.01 };
 
-export default function AsciiCube() {
+export default function AsciiCube({ paused = false }: { paused?: boolean }) {
+  const pausedRef = useRef(paused);
+  const reducedRef = useRef(false);
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => { pausedRef.current = paused; }, [paused]);
+  useEffect(() => {
+    const media = matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => { reducedRef.current = media.matches; setReduced(media.matches); };
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number | null>(null);
   
@@ -82,6 +93,7 @@ export default function AsciiCube() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let cubeInstance: any = null;
     let cycleInterval: NodeJS.Timeout | undefined;
+    let textureVideo: HTMLVideoElement | undefined;
     type LogoData = { characters: Uint8Array, colors: Uint32Array };
     const faceSources: (string | HTMLVideoElement | LogoData)[] = new Array(6).fill("");
     
@@ -104,6 +116,7 @@ export default function AsciiCube() {
         const loadedLogos: (string | HTMLVideoElement | LogoData)[] = [];
         
         for (const tech of technologies) {
+          if (!active) return;
           try {
             const logoData = await svgToAscii(tech.svg);
             loadedLogos.push(logoData);
@@ -113,18 +126,20 @@ export default function AsciiCube() {
         }
 
         const video = document.createElement("video");
+        textureVideo = video;
         video.src = "/logo/HVjKOGP.mp4";
         video.crossOrigin = "anonymous";
-        video.autoplay = true;
+        // Playback is controlled by visibility/motion preferences in animate().
+        video.autoplay = false;
         video.loop = true;
         video.muted = true;
         video.playsInline = true;
-        video.play().catch(e => console.error("Video play failed", e));
+
         
         loadedLogos.push(video);
         loadedLogos.sort(() => Math.random() - 0.5);
         
-        if (!active || loadedLogos.length === 0) return;
+        if (!active || loadedLogos.length === 0) { video.pause(); return; }
 
         const initialFaces = [0, 4, 2];
         for (let i = 0; i < initialFaces.length; i++) {
@@ -141,7 +156,7 @@ export default function AsciiCube() {
         const facesToCycle = [0, 4, 2, 3, 1, 5];
 
         cycleInterval = setInterval(() => {
-          if (!active || !cubeInstance) return;
+          if (!active || !cubeInstance || reducedRef.current || pausedRef.current || document.hidden) return;
           
           for (let i = 0; i < facesToCycle.length; i++) {
             const face = facesToCycle[currentFaceIdx];
@@ -172,6 +187,7 @@ export default function AsciiCube() {
         }, 2000);
 
         let lastTime = 0;
+        let rendered = false;
         const ctx = canvasRef.current!.getContext('2d', { alpha: true });
         if (!ctx) return;
         
@@ -182,6 +198,15 @@ export default function AsciiCube() {
 
         const animate = (time: number) => {
           if (!active) return;
+          const visible = canvasRef.current?.getBoundingClientRect();
+          const offscreen = document.hidden || !!(visible && (visible.bottom < 0 || visible.top > innerHeight));
+          const stopped = reducedRef.current || pausedRef.current || offscreen;
+          if (stopped && !video.paused) video.pause();
+          else if (!stopped && video.paused) video.play().catch(() => {});
+          if (rendered && (document.hidden || (stopped && !isDragging.current) || (visible && (visible.bottom < 0 || visible.top > innerHeight)))) {
+            requestRef.current = requestAnimationFrame(animate);
+            return;
+          }
           if (time - lastTime >= 16) {
             lastTime = time;
 
@@ -239,6 +264,7 @@ export default function AsciiCube() {
               );
 
               cubeInstance.next_frame();
+              rendered = true;
               
               const charsPtr = cubeInstance.chars_ptr();
               const colorsPtr = cubeInstance.colors_ptr();
@@ -288,6 +314,9 @@ export default function AsciiCube() {
     return () => {
       active = false;
       clearInterval(cycleInterval);
+      textureVideo?.pause();
+      textureVideo?.removeAttribute('src');
+      textureVideo?.load();
       if (requestRef.current !== null) {
         cancelAnimationFrame(requestRef.current);
       }
@@ -319,15 +348,18 @@ export default function AsciiCube() {
   const handlePointerUp = (e: React.PointerEvent) => {
     isDragging.current = false;
     if (e.target instanceof Element) {
-      e.target.releasePointerCapture(e.pointerId);
+      if (e.target.hasPointerCapture(e.pointerId)) e.target.releasePointerCapture(e.pointerId);
     }
   };
 
   return (
     <canvas 
       ref={canvasRef}
+      data-motion={reduced ? 'reduced' : 'full'}
+      role="img"
+      aria-label="Interactive ASCII cube rendered by Rust and WebAssembly"
       className="relative z-20 cursor-grab active:cursor-grabbing select-none w-[960px] h-auto max-w-full"
-      style={{ touchAction: 'none' }}
+      style={{ touchAction: 'pan-y' }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

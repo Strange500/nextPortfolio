@@ -77,6 +77,8 @@ try {
   await page.goto(process.env.CUBE_URL || 'http://127.0.0.1:3100/en', {
     waitUntil: 'networkidle0'
   })
+  // The narrative places the cube below the terminal; rendering sleeps offscreen.
+  await page.$eval('canvas.cursor-grab', el => el.scrollIntoView());
   await page.waitForFunction(
     () =>
       window.__cubeProbe.frames.length >= 180 &&
