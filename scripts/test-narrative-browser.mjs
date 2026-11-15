@@ -18,6 +18,7 @@ try {
   for (const lang of ['en', 'fr']) {
     await page.setViewport({ width: 1440, height: 1000 })
     await page.goto(`${base}/${lang}`, { waitUntil: 'networkidle0' })
+    assert.equal(await page.$('#canvas'), null, 'No hidden animated background on the editorial homepage')
     assert.equal(
       await page.$$eval('[data-facet]', e => e.length),
       4,

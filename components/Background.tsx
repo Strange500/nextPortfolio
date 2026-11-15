@@ -1,7 +1,8 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { useTheme } from 'next-themes'
+import { useTheme } from "next-themes"
+import { usePathname } from 'next/navigation'
 
 // Constants
 const MAX_DISTANCE = 120
@@ -329,7 +330,7 @@ const useCanvasAnimation = () => {
 }
 
 
-const BG = () => {
+const AnimatedBackground = () => {
   useCanvasAnimation()
   return (
     <canvas
@@ -339,4 +340,9 @@ const BG = () => {
   )
 }
 
-export default BG
+export default function BG() {
+  const pathname = usePathname()
+  // The editorial homepage is opaque; don't animate a hidden canvas beneath it.
+  if (pathname === '/en' || pathname === '/fr' || pathname === '/') return null
+  return <AnimatedBackground />
+}
