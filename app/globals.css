@@ -3,6 +3,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* A quiet terminal-era grid gives the existing ASCII cube a proper stage. */
+.hero-grid {
+  position: relative;
+  isolation: isolate;
+  max-width: 90rem;
+  background-image: linear-gradient(to right, rgb(var(--foreground) / .035) 1px, transparent 1px), linear-gradient(to bottom, rgb(var(--foreground) / .035) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+.hero-grid::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(ellipse at 76% 48%, rgb(var(--primary) / .1), transparent 42%);
+  content: "";
+  pointer-events: none;
+}
+.portfolio-proof { position: relative; }
+.proof-cell { transition: background-color 180ms ease, transform 180ms ease; }
+.proof-cell:hover { background-color: rgb(var(--primary) / .035); }
+@media (prefers-reduced-motion: reduce) {
+  .proof-cell { transition: none; }
+  .proof-cell:hover { transform: none; }
+}
+
 :root {
     --black-transparent: rgba(0, 0, 0, 0.5);
     --white-transparent: rgba(255, 255, 255, 0.5);
