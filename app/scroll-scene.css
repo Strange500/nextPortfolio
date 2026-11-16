@@ -1,0 +1,362 @@
+/* Persistent scene. The editorial HTML remains in normal document flow;
+   only the one WASM object is viewport-pinned. No wheel interception. */
+.scroll-scene {
+  position: relative;
+  z-index: 20;
+}
+.scene-cube {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 39vw;
+  height: 39vw;
+  pointer-events: none;
+  will-change: transform;
+}
+.scene-cube canvas,
+.cube-hit-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.cube-hit-layer {
+  overflow: visible;
+}
+.cube-hit-layer g {
+  cursor: pointer;
+  pointer-events: auto;
+}
+.cube-hit-layer polygon {
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 2;
+  transition: fill 0.15s;
+}
+.cube-hit-layer text {
+  font:
+    600 23px var(--font-fira-code),
+    monospace;
+  fill: var(--ink);
+  pointer-events: none;
+}
+.cube-hit-layer g:hover polygon {
+  fill: color-mix(in srgb, var(--acid) 22%, transparent);
+  stroke: var(--ink);
+}
+.cube-hit-layer g:hover text {
+  fill: #222820;
+}
+.cube-hit-layer rect {
+  fill: var(--paper);
+  stroke: var(--line);
+  pointer-events: none;
+}
+.cube-hit-layer g[data-current='true'] rect,
+.cube-hit-layer g:hover rect {
+  fill: var(--acid);
+}
+.cube-caption {
+  position: absolute;
+  top: 91%;
+  left: -10%;
+  width: 120%;
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+.scene-nav {
+  position: fixed;
+  z-index: 30;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  box-shadow: 0 6px 25px #0001;
+  white-space: nowrap;
+}
+.scene-nav a,
+.scene-nav button {
+  min-height: 44px;
+  padding: 11px 14px;
+  color: var(--muted);
+  font-size: 11px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.scene-nav a > span {
+  padding-right: 7px;
+  opacity: 0.6;
+}
+.scene-nav a[aria-current],
+.scene-nav a:hover {
+  background: var(--acid);
+  color: #222820;
+}
+.scene-nav button {
+  border-left: 1px solid var(--line);
+}
+.scene-mobile-mask {
+  display: none;
+}
+.cube-touch-hint {
+  display: none;
+}
+.cube-hit-layer g[data-current='true'] text {
+  fill: #222820;
+  font-weight: 800;
+}
+/* Use a single palette everywhere, including the actual cube and terminal. */
+.narrative .terminal-window {
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.narrative .terminal-window .window-bar,
+.narrative .terminal-window pre,
+.narrative .terminal-note {
+  color: var(--ink);
+  border-color: var(--line);
+}
+.narrative .terminal-note {
+  color: var(--muted);
+}
+.narrative-body {
+  display: block;
+  max-width: none;
+  padding: 0;
+}
+.facet-content {
+  width: 100%;
+  min-width: 0;
+}
+.portfolio-hero {
+  min-height: 105vh;
+  padding-bottom: 12vh;
+}
+.hero-composition {
+  display: block;
+  padding-top: 12vh;
+}
+.hero-copy {
+  width: 48%;
+}
+.hero-composition h1 {
+  font-size: clamp(48px, 5vw, 76px);
+}
+.hero-bottom {
+  max-width: 48%;
+}
+.narrative .facet-section {
+  box-sizing: border-box;
+  min-height: 135vh;
+  width: 49%;
+  margin-left: 48%;
+  padding: 17vh 4vw 32vh 2vw;
+  border: 0;
+}
+.narrative .facet-section:nth-child(even) {
+  margin-left: 2%;
+  padding-left: 4vw;
+  padding-right: 2vw;
+}
+.narrative .facet-section h2 {
+  font-size: clamp(40px, 4.3vw, 64px);
+}
+.narrative .section-intro {
+  max-width: 42em;
+}
+.narrative .terminal-window pre {
+  white-space: pre-wrap;
+  font-size: 12px;
+}
+.narrative .machine-detail {
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.narrative .proof-grid {
+  grid-template-columns: 1fr;
+}
+.narrative .proof-item:nth-child(n) {
+  padding: 24px 0;
+  border-left: 0;
+  border-right: 0;
+}
+.narrative .proof-item strong {
+  font-size: clamp(36px, 3.2vw, 52px);
+}
+.narrative .protocol-path {
+  flex-wrap: wrap;
+}
+.narrative .missions-section {
+  max-width: none;
+  width: 48%;
+  margin: 0 0 0 3%;
+  padding: 2vh 3vw 24vh;
+}
+.narrative .missions-section .section-heading {
+  display: block;
+}
+.narrative .missions-section .section-heading > p {
+  margin-top: 24px;
+}
+.narrative .mission {
+  grid-template-columns: 36px 1fr;
+  gap: 14px;
+}
+.narrative .mission dl {
+  grid-template-columns: 1fr;
+}
+.narrative .portfolio-footer {
+  display: block;
+  min-height: 105vh;
+  padding: 17vh 5vw 18vh 49%;
+}
+.narrative .portfolio-footer h2 {
+  font-size: clamp(46px, 4.5vw, 72px);
+}
+.narrative .footer-colophon {
+  margin-top: 60px;
+}
+.narrative[data-scene='ready']
+  :is(.portfolio-hero, .facet-section, .portfolio-footer) {
+  opacity: var(--scene-opacity, 1);
+}
+@media (max-width: 899px) {
+  .scene-mobile-mask {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 250px;
+    pointer-events: none;
+    background: linear-gradient(var(--paper) 86%, transparent);
+  }
+  .scene-cube {
+    z-index: 1;
+  }
+  .cube-caption {
+    font-size: 10px;
+  }
+  .cube-desktop-hint {
+    display: none;
+  }
+  .cube-touch-hint {
+    display: inline;
+  }
+  .cube-hit-layer text {
+    font-size: 46px;
+  }
+  .scene-nav {
+    bottom: max(8px, env(safe-area-inset-bottom));
+    width: calc(100% - 16px);
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0;
+  }
+  .scene-nav a,
+  .scene-nav button {
+    flex-shrink: 0;
+    padding: 11px 9px;
+    font-size: 10px;
+  }
+  .scene-nav a > span {
+    display: none;
+  }
+  .narrative .portfolio-nav {
+    position: relative;
+    z-index: 25;
+    height: 66px;
+    padding: 0 20px;
+  }
+  .narrative .portfolio-nav nav {
+    display: none;
+  }
+  .narrative .portfolio-hero {
+    min-height: 105vh;
+    padding: 220px 24px 15vh;
+  }
+  .narrative .hero-topline {
+    display: none;
+  }
+  .narrative .hero-composition {
+    padding: 0 0 50px;
+  }
+  .narrative .hero-copy,
+  .narrative .hero-bottom {
+    width: 100%;
+    max-width: none;
+  }
+  .narrative .hero-composition h1 {
+    font-size: clamp(44px, 9vw, 68px);
+  }
+  .narrative .facet-section,
+  .narrative .facet-section:nth-child(even) {
+    width: 100%;
+    margin: 0;
+    padding: 34vh 24px 25vh;
+    min-height: 125vh;
+  }
+  .narrative .facet-section h2 {
+    font-size: clamp(40px, 8vw, 60px);
+  }
+  .narrative .missions-section {
+    width: 100%;
+    margin: 0;
+    padding: 30vh 24px 12vh;
+  }
+  .narrative .portfolio-footer {
+    padding: 34vh 24px 18vh;
+    min-height: 110vh;
+  }
+  .narrative .topology {
+    height: 330px;
+  }
+  .narrative .topology button {
+    padding: 6px 8px;
+  }
+  .narrative .proof-item strong {
+    font-size: 42px;
+  }
+}
+@media (max-height: 550px) and (min-width: 650px) {
+  .scene-mobile-mask {
+    display: none;
+  }
+  .narrative .facet-section,
+  .narrative .facet-section:nth-child(even),
+  .narrative .missions-section,
+  .narrative .portfolio-footer {
+    width: 58%;
+    margin-left: 40%;
+    padding-left: 12px;
+    padding-right: 24px;
+  }
+  .narrative .facet-section,
+  .narrative .facet-section:nth-child(even) {
+    padding-top: 12vh;
+  }
+  .narrative .facet-section h2 {
+    font-size: 38px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-cube {
+    will-change: auto;
+  }
+  .cube-hit-layer polygon {
+    transition: none;
+  }
+  .narrative[data-scene='ready']
+    :is(.portfolio-hero, .facet-section, .portfolio-footer) {
+    opacity: 1;
+  }
+}

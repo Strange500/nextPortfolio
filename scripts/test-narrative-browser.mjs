@@ -18,7 +18,11 @@ try {
   for (const lang of ['en', 'fr']) {
     await page.setViewport({ width: 1440, height: 1000 })
     await page.goto(`${base}/${lang}`, { waitUntil: 'networkidle0' })
-    assert.equal(await page.$('#canvas'), null, 'No hidden animated background on the editorial homepage')
+    assert.equal(
+      await page.$('#canvas'),
+      null,
+      'No hidden animated background on the editorial homepage'
+    )
     assert.equal(
       await page.$$eval('[data-facet]', e => e.length),
       4,
@@ -34,9 +38,7 @@ try {
       await page.click(`[data-facet-link="${id}"]`)
       await page.waitForFunction(
         id =>
-          Math.abs(
-            document.getElementById(id).getBoundingClientRect().top - 32
-          ) < 3,
+          Math.abs(document.getElementById(id).getBoundingClientRect().top) < 3,
         {},
         id
       )
@@ -123,7 +125,7 @@ try {
     true
   )
   assert.equal(
-    await page.$eval('canvas.cursor-grab', el => el.dataset.motion),
+    await page.$eval('.scroll-scene', el => el.dataset.motion),
     'reduced'
   )
   assert.equal(

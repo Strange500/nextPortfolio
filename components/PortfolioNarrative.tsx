@@ -1,17 +1,12 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import AsciiCube from './AsciiCube'
+import ScrollCubeScene from './ScrollCubeScene'
+import '../app/scroll-scene.css'
 import { ResumeDropdown } from './ResumeDropdown'
 
 type Language = 'en' | 'fr'
-const facets = ['rust', 'nix', 'testing', 'bitcoin'] as const
-const cube = `    +-------+
-   /       /|
-  +-------+ |
-  |       | +
-  |       |/
-  +-------+`
+
 const machines = [
   {
     name: 'Server',
@@ -144,10 +139,10 @@ function Counter({
 export default function PortfolioNarrative({ lang }: { lang: Language }) {
   const fr = lang === 'fr'
   const t = (en: string, french: string) => (fr ? french : en)
-  const [active, setActive] = useState('rust')
+
   const [selected, setSelected] = useState(0)
   const [reduced, setReduced] = useState(false)
-  const [paused, setPaused] = useState(false)
+
   const root = useRef<HTMLElement>(null)
   const machine = machines[selected]
   const blog = (slug: string) => `/${lang}/blog/${slug}`
@@ -156,23 +151,8 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
     const update = () => setReduced(preference.matches)
     update()
     preference.addEventListener('change', update)
-    let frame = 0
-    const trackFacet = () => {
-      cancelAnimationFrame(frame)
-      frame = requestAnimationFrame(() => {
-        const sections = [...(root.current?.querySelectorAll('[data-facet]') || [])]
-        const current = sections.filter(el => el.getBoundingClientRect().top <= innerHeight * 0.4).at(-1)
-        setActive(current?.id || 'rust')
-      })
-    }
-    window.addEventListener('scroll', trackFacet, { passive: true })
-    window.addEventListener('resize', trackFacet)
-    trackFacet()
     return () => {
       preference.removeEventListener('change', update)
-      window.removeEventListener('scroll', trackFacet)
-      window.removeEventListener('resize', trackFacet)
-      cancelAnimationFrame(frame)
     }
   }, [])
 
@@ -203,7 +183,12 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
         </nav>
       </header>
 
-      <section className='portfolio-hero' aria-labelledby='hero-title'>
+      <ScrollCubeScene lang={lang} />
+      <section
+        id='intro'
+        className='portfolio-hero'
+        aria-labelledby='hero-title'
+      >
         <div className='hero-topline mono'>
           <span>
             <i className='status-dot' />{' '}
@@ -237,48 +222,6 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
               <span>↓</span>
             </a>
           </div>
-          <div
-            className='hero-object'
-            aria-label={t(
-              'An ASCII cube, four facets of one engineering practice',
-              'Un cube ASCII, quatre facettes d’une même pratique'
-            )}
-          >
-            <span className='object-coordinate mono'>
-              FIG. 001 —{' '}
-              {t(
-                'ONE OBJECT. MANY PERSPECTIVES.',
-                'UN OBJET. PLUSIEURS PERSPECTIVES.'
-              )}
-            </span>
-            <pre
-              className='hero-ascii'
-              aria-hidden='true'
-            >{`          .----------------.
-         /                /|
-        /   R U S T      / |
-       /                /  |
-      .----------------.   |
-      |                |   |
-      |   B U I L D    | N |
-      |                | I |
-      |   T R U S T    | X /
-      |                |  /
-      |    0 1 0 1     | /
-      '----------------'`}</pre>
-            <div className='object-axis mono'>
-              <span>+ logic</span>
-              <span>+ infrastructure</span>
-              <span>+ confidence</span>
-            </div>
-            <a className='object-caption' href='#rust'>
-              {t(
-                'Not a decoration. A starting point.',
-                'Pas un décor. Un point de départ.'
-              )}{' '}
-              <span>↘</span>
-            </a>
-          </div>
         </div>
         <div className='hero-bottom mono'>
           <span>RUST → WASM → {t('REAL-WORLD SYSTEMS', 'SYSTÈMES RÉELS')}</span>
@@ -287,42 +230,6 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
       </section>
 
       <div className='narrative-body'>
-        <aside
-          className='facet-rail'
-          aria-label={t('The four facets', 'Les quatre facettes')}
-        >
-          <pre aria-hidden='true'>{cube}</pre>
-          <span className='eyebrow'>
-            {t('ONE MINDSET', 'UNE MÊME EXIGENCE')}
-          </span>
-          <nav>
-            {facets.map((id, index) => (
-              <a
-                key={id}
-                href={`#${id}`}
-                data-facet-link={id}
-                aria-current={active === id ? 'step' : undefined}
-              >
-                <span>0{index + 1}</span>
-                {
-                  [
-                    'Rust / WASM',
-                    'NixOS',
-                    t('Test automation', 'Automatisation'),
-                    'Bitcoin'
-                  ][index]
-                }
-                <span className='rail-arrow'>↗</span>
-              </a>
-            ))}
-          </nav>
-          <p>
-            {t(
-              'Make it work. Make it repeatable. Show the evidence.',
-              'Le faire fonctionner. Le rendre reproductible. En apporter la preuve.'
-            )}
-          </p>
-        </aside>
         <div className='facet-content'>
           <section
             id='rust'
@@ -355,15 +262,15 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
                 <code>{`$ cargo run --release
   Compiling ascii-cube …
 
-${cube}
+renderer: Rust · output: ASCII frame buffers
 
 $ wasm-pack build --target web
   Rust → WebAssembly → your browser`}</code>
               </pre>
               <span className='terminal-note'>
                 {t(
-                  'The build path, illustrated. The cube below is live.',
-                  'Le parcours de compilation, illustré. Le cube ci-dessous est réel.'
+                  'The build path, illustrated. The same cube stays with you throughout the page.',
+                  'Le parcours de compilation, illustré. Le même cube vous accompagne dans toute la page.'
                 )}
               </span>
             </div>
@@ -371,29 +278,7 @@ $ wasm-pack build --target web
               ↓ {t('SAME ENGINE. NEW CANVAS.', 'MÊME MOTEUR. NOUVEAU TERRAIN.')}{' '}
               ↓
             </div>
-            <div className='live-cube'>
-              <div className='window-bar'>
-                <span>
-                  <i className='status-dot' />{' '}
-                  {t('LIVE / WEBASSEMBLY', 'EN DIRECT / WEBASSEMBLY')}
-                </span>
-                <button
-                  onClick={() => setPaused(!paused)}
-                  aria-pressed={paused}
-                >
-                  {paused
-                    ? t('Resume', 'Reprendre')
-                    : t('Pause motion', 'Mettre en pause')}
-                </button>
-              </div>
-              <AsciiCube paused={paused} />
-              <p>
-                {t(
-                  'Drag to rotate · Rust computes the frame, the browser draws the characters.',
-                  'Glisser pour tourner · Rust calcule l’image, le navigateur dessine les caractères.'
-                )}
-              </p>
-            </div>
+
             <div className='mission-result'>
               <span>↳</span>
               <p>
@@ -741,8 +626,8 @@ $ wasm-pack build --target web
               'Garder le moteur Rust et exposer ses buffers via WebAssembly.'
             ),
             result: t(
-              'The draggable, textured ASCII cube you just used. One engine across two environments.',
-              'Le cube ASCII texturé que vous venez de manipuler. Un moteur, deux environnements.'
+              'The interactive ASCII cube accompanying this page. One engine across two environments.',
+              'Le cube ASCII interactif qui accompagne cette page. Un moteur, deux environnements.'
             )
           },
           {
@@ -838,7 +723,6 @@ $ wasm-pack build --target web
         ))}
       </section>
       <footer id='contact' className='portfolio-footer'>
-        <pre aria-hidden='true'>{cube}</pre>
         <div>
           <p className='eyebrow'>
             {t(
