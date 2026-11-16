@@ -72,7 +72,7 @@ LABELS = {
         "skills": "Skills",
         "education": "Education",
         "languages_interests": "Languages & Interests",
-        "languages": "Languages:",
+        "languages": "Languages",
         "interests": "Interests:",
         "present": "Present",
     },
@@ -84,7 +84,7 @@ LABELS = {
         "skills": "Compétences Techniques",
         "education": "Formation",
         "languages_interests": "Langues & Centres d'intérêt",
-        "languages": "Langues :",
+        "languages": "Langues",
         "interests": "Centres d'intérêt :",
         "present": "Présent",
     },
@@ -164,9 +164,9 @@ def join_non_empty(parts, separator=" · "):
 # -----------------------------------------------------------------------------
 
 def css(page_size: str, lang: str = "en") -> str:
-    # Use the spare A4 height for readable text, not a denser redesign.
-    body_font_size = "8.1pt" if lang == "fr" else "8.25pt"
-    body_line_height = "1.3"
+    # Keep the body readable on one A4 page instead of shrinking it.
+    body_font_size = "8.9pt" if lang == "fr" else "9pt"
+    body_line_height = "1.34"
 
     return f"""
     @font-face {{
@@ -213,7 +213,7 @@ def css(page_size: str, lang: str = "en") -> str:
 
     @page {{
         size: {page_size};
-        margin: 0.34in;
+        margin: 0.42in;
         background: #FAFAFA;
     }}
 
@@ -340,10 +340,10 @@ def css(page_size: str, lang: str = "en") -> str:
        ------------------------------------------------------------------------- */
 
     .card {{
-        background: var(--card-bg);
-        border-radius: 4px;
-        padding: 4.5pt 6.5pt;
-        border: 1px solid rgba(226, 232, 240, 0.55);
+        background: transparent;
+        border-radius: 0;
+        padding: 0;
+        border: 0;
     }}
 
     /* -------------------------------------------------------------------------
@@ -351,7 +351,7 @@ def css(page_size: str, lang: str = "en") -> str:
        ------------------------------------------------------------------------- */
 
     .summary .card {{
-        padding: 4.5pt 6.5pt;
+        padding: 0;
     }}
 
     .summary p {{
@@ -412,7 +412,7 @@ def css(page_size: str, lang: str = "en") -> str:
     }}
 
     .job li {{
-        margin: 0 0 1pt 0;
+        margin: 0 0 2pt 0;
         padding-left: 1.5pt;
         line-height: 1.3;
     }}
@@ -449,7 +449,7 @@ def css(page_size: str, lang: str = "en") -> str:
 
     .project {{
         break-inside: avoid;
-        margin: 0;
+        margin-bottom: 3.5pt;
     }}
 
     /* Cells stretch to the tallest card without fixed heights or clipping. */
@@ -498,7 +498,7 @@ def css(page_size: str, lang: str = "en") -> str:
     .project-description {{
         margin: 0;
         line-height: 1.3;
-        font-size: 7.8pt;
+        font-size: 8.25pt;
     }}
 
     .project-tags {{
@@ -531,12 +531,14 @@ def css(page_size: str, lang: str = "en") -> str:
     }}
 
     .skill-group {{
+        display: inline;
         margin-bottom: 1pt;
         color: var(--ink-strong);
         font-weight: 700;
     }}
 
     .skill-items {{
+        display: inline;
         color: var(--ink);
         min-width: 0;
     }}
@@ -581,6 +583,12 @@ def css(page_size: str, lang: str = "en") -> str:
     }}
 
     .education-degree {{
+        margin-top: 0.5pt;
+        color: var(--ink);
+        line-height: 1.3;
+    }}
+
+    .education-institution {{
         color: var(--ink-strong);
         font-size: 8.3pt;
         font-weight: 700;
@@ -593,12 +601,6 @@ def css(page_size: str, lang: str = "en") -> str:
         color: var(--ink-muted);
         font-family: 'Fira Code', monospace;
         font-size: 7.5pt;
-    }}
-
-    .education-school {{
-        margin-top: 1pt;
-        color: var(--ink-muted);
-        line-height: 1.22;
     }}
 
     .education-honor {{
@@ -697,15 +699,7 @@ def render_header(data: dict, lang: str = "en") -> str:
 
     separator = '<span class="sep">·</span>'
 
-    # Promote the existing credential verbatim, without inferring CEFR or dates.
-    language_highlights = "".join(
-        f'<div class="language-highlight">{escape(language["language"])} '
-        f'({escape(language["fluency"])})</div>'
-        for language in data.get("languages", [])
-        if "TOEIC" in language.get("fluency", "")
-    )
-
-    # Keep both printable versions photo-free; the factual JSON is untouched.
+    # Keep both printable versions photo-free; languages live in one section.
     return f"""
     <header>
         <h1 class="name">{escape(basics["name"])}</h1>
@@ -715,7 +709,6 @@ def render_header(data: dict, lang: str = "en") -> str:
             <div>{separator.join(contact_parts)}</div>
             <div class="profile-row">{separator.join(profile_parts)}</div>
         </div>
-        {language_highlights}
     </header>
     """
 
@@ -726,12 +719,26 @@ def render_summary(data: dict, lang: str = "en") -> str:
     if not summary:
         return ""
 
+    # Keep a one-line availability callout, then the profile paragraph.
+    marker = "À la recherche" if lang == "fr" else "Seeking"
+    content = ""
+    profile = summary
+
+    if summary.startswith(marker):
+        head, point, tail = summary.partition(". ")
+        availability = head + (point or "")
+        content += f'<p class="availability"><strong>{escape(availability)}</strong></p>'
+        profile = tail
+
+    if profile.strip():
+        content += f'<p>{escape(profile.strip())}</p>'
+
     return f"""
     <section class="summary">
         <h2>{LABELS[lang]["summary"]}</h2>
 
         <div class="card">
-            <p>{escape(summary)}</p>
+            {content}
         </div>
     </section>
     """
@@ -845,7 +852,7 @@ def render_projects(data: dict, lang: str = "en") -> str:
 
         projects.append(
             f"""
-            <article class="project">
+            <article class="project card">
                 <div class="project-head">
                     <div class="project-name">
                         {escape(project.get("name", ""))}
@@ -866,30 +873,10 @@ def render_projects(data: dict, lang: str = "en") -> str:
     if not projects:
         return ""
 
-    # Split into two columns using a table
-    left = projects[::2]
-    right = projects[1::2]
-
-    rows = []
-    for i in range(max(len(left), len(right))):
-        l = left[i] if i < len(left) else ""
-        r = right[i] if i < len(right) else ""
-        featured = " featured" if i == 0 else ""
-        l_class = f"proj-col card{featured}" if l else "proj-col"
-        r_class = f"proj-col card{featured}" if r else "proj-col"
-        rows.append(f"""
-        <tr>
-            <td class="{l_class}">{l}</td>
-            <td class="{r_class}">{r}</td>
-        </tr>
-        """)
-
     return f"""
     <section>
         <h2>{LABELS[lang]["projects"]}</h2>
-        <table class="projects-table">
-            {"".join(rows)}
-        </table>
+        {"".join(projects)}
     </section>
     """
 
@@ -913,26 +900,13 @@ def render_skills(data: dict, lang: str = "en") -> str:
         </div>
         """
 
-    left = skills[::2]
-    right = skills[1::2]
-    rows = []
-    for i in range(max(len(left), len(right))):
-        l = skill_cell(left[i] if i < len(left) else None)
-        r = skill_cell(right[i] if i < len(right) else None)
-        rows.append(f"""
-        <tr>
-            <td class="skill-col">{l}</td>
-            <td class="skill-col">{r}</td>
-        </tr>
-        """)
+    rows = [skill_cell(skill) for skill in skills]
 
     return f"""
     <section>
         <h2>{LABELS[lang]["skills"]}</h2>
         <div class="card skills-card">
-            <table class="skills-table">
-                {"".join(rows)}
-            </table>
+            {"".join(rows)}
         </div>
     </section>
     """
@@ -969,8 +943,8 @@ def render_education(data: dict, lang: str = "en") -> str:
             f"""
             <article class="education card">
                 <div class="education-head">
-                    <div class="education-degree">
-                        {escape(degree)}
+                    <div class="education-institution">
+                        {escape(education.get("institution", ""))}
                     </div>
 
                     <div class="education-date">
@@ -978,9 +952,8 @@ def render_education(data: dict, lang: str = "en") -> str:
                     </div>
                 </div>
 
-                <div class="education-school">
-                    {escape(education.get("institution", ""))}
-                    {honor}
+                <div class="education-degree">
+                    {escape(degree)}{honor}
                 </div>
             </article>
             """
@@ -989,47 +962,45 @@ def render_education(data: dict, lang: str = "en") -> str:
     if not entries:
         return ""
 
+    return f"""
+    <section>
+        <h2>{LABELS[lang]["education"]}</h2>
+        {"".join(entries)}
+    </section>
+    """
+
+
+def render_languages(data: dict, lang: str = "en") -> str:
     languages = join_non_empty(
         [
-            f'{escape(language["language"])} '
-            f'({escape(language["fluency"])})'
+            f'{escape(language["language"])} — {escape(language["fluency"])}'
             for language in data.get("languages", [])
-            if "TOEIC" not in language.get("fluency", "")
-        ]
+        ],
+        "; ",
     )
 
     interests = join_non_empty(
-        [
-            escape(interest["name"])
-            for interest in data.get("interests", [])
-        ]
+        [escape(interest["name"]) for interest in data.get("interests", [])]
     )
 
-    lang_int_html = f"""
-    <div class="card compact-card" style="margin-top:0">
-        <p class="compact-line">
-            <strong>{LABELS[lang]["languages"]}</strong> {languages}
-        </p>
-        <p class="compact-line" style="margin-top:3pt">
-            <strong>{LABELS[lang]["interests"]}</strong> {interests}
-        </p>
-    </div>
-    """
+    lines = ""
+
+    if languages:
+        lines += f'<p class="compact-line">{languages}</p>'
+
+    if interests:
+        lines += (
+            f'<p class="compact-line" style="margin-top:2pt">'
+            f'<strong>{LABELS[lang]["interests"]}</strong> {interests}</p>'
+        )
+
+    if not lines:
+        return ""
 
     return f"""
     <section>
-        <table style="width:100%; border-collapse:collapse; table-layout:fixed;">
-            <tr>
-                <td style="width:55%; vertical-align:top; padding-right:6pt;">
-                    <h2>{LABELS[lang]["education"]}</h2>
-                    {"".join(entries)}
-                </td>
-                <td style="width:45%; vertical-align:top; padding-left:2pt;">
-                    <h2>{LABELS[lang]["languages_interests"]}</h2>
-                    {lang_int_html}
-                </td>
-            </tr>
-        </table>
+        <h2>{LABELS[lang]["languages"]}</h2>
+        {lines}
     </section>
     """
 
@@ -1041,8 +1012,8 @@ def render_education(data: dict, lang: str = "en") -> str:
 def render(data: dict, page_size: str, lang: str = "en") -> str:
     basics = data["basics"]
 
+    # Both CVs lead with Education (student applications), then experience.
     if lang == "fr":
-        # Standard French CV order: Profile -> Education -> Experience -> Skills -> Projects
         body_content = f"""
         {render_header(data, lang=lang)}
         {render_summary(data, lang=lang)}
@@ -1050,16 +1021,17 @@ def render(data: dict, page_size: str, lang: str = "en") -> str:
         {render_experience(data, lang=lang)}
         {render_skills(data, lang=lang)}
         {render_projects(data, lang=lang)}
+        {render_languages(data, lang=lang)}
         """
     else:
-        # English CV order: Summary -> Experience -> Projects -> Skills -> Education
         body_content = f"""
         {render_header(data, lang=lang)}
         {render_summary(data, lang=lang)}
+        {render_education(data, lang=lang)}
         {render_experience(data, lang=lang)}
         {render_projects(data, lang=lang)}
         {render_skills(data, lang=lang)}
-        {render_education(data, lang=lang)}
+        {render_languages(data, lang=lang)}
         """
 
     return f"""<!DOCTYPE html>

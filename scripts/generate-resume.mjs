@@ -36,15 +36,15 @@ const projectsFr = JSON.parse(
 const basicsData = {
   en: {
     name: "Benjamin Roget",
-    label: "Software Engineer — Backend & Systems",
+    label: "Software Engineering Student | Backend & Systems",
     email: "benjamin.rogetpro@gmail.com",
     phone: "+33 7 83 03 95 25",
     url: "https://portfolio.qgroget.com",
     summary:
-      "Backend-focused software engineer designing reliable, maintainable systems through " +
-      "rigorous automated testing and declarative infrastructure. " +
-      "Experienced in Java Spring Boot, Rust, and full-stack delivery. " +
-      "Available for a 3-month software engineering internship in Europe or the US, starting June 2027.",
+      "Seeking a 3-month software engineering internship starting June 2027 in Poland, Romania, " +
+      "Czechia or the Nordics, in English-speaking teams; the US is a secondary option. " +
+      "Engineering student and software engineering apprentice with experience building Java/Spring Boot " +
+      "applications and automated testing tools. Personal projects focus on Rust, networking and Linux infrastructure.",
     location: {
       city: "Villeneuve d'Ascq",
       region: "Hauts-de-France",
@@ -63,10 +63,9 @@ const basicsData = {
     url: "https://portfolio.qgroget.com/fr",
     image: `file://${join(ROOT, "public/img/cv-profile.jpg")}`,
     summary:
-      "Apprenti ingénieur logiciel à l'IMT Nord Europe (alternance), spécialisé en développement " +
-      "backend et outillage système. Je conçois des systèmes fiables et maintenables en combinant " +
-      "tests automatisés rigoureux (Spring Boot, Selenium, JUnit 5) et environnements déclaratifs " +
-      "(NixOS, Docker). À la recherche d'un stage de fin d'études de 3 mois, à partir de juin 2027.",
+      "À la recherche d'un stage d'ingénieur de 3 mois à partir de juin 2027. " +
+      "Apprenti ingénieur à l'IMT Nord Europe, spécialisé en backend Java/Spring Boot, " +
+      "tests automatisés et outillage système (Rust, NixOS, Docker).",
     location: {
       address: "12 bis rue Jules Ferry",
       postalCode: "59491",
@@ -84,12 +83,12 @@ const basicsData = {
 const languagesData = {
   en: [
     { language: "French",  fluency: "Native" },
-    { language: "English", fluency: "Professional — TOEIC 980/990" },
+    { language: "English", fluency: "TOEIC Listening & Reading: 980/990, 2026" },
     { language: "Spanish", fluency: "Intermediate" },
   ],
   fr: [
     { language: "Français", fluency: "Langue maternelle" },
-    { language: "Anglais",  fluency: "Courant — TOEIC 980/990" },
+    { language: "Anglais",  fluency: "Courant (TOEIC 980/990)" },
     { language: "Espagnol", fluency: "Intermédiaire" },
   ],
 };
@@ -107,47 +106,28 @@ const interestsData = {
   ],
 };
 
-// Flint Group is included on the FR CV but excluded from the English CV
-// to keep the English CV focused on software engineering experience.
-const extraWorkData = {
-  en: [],
-  fr: [
-    {
-      name: "Flint Group",
-      position: "Assistant Logistique",
-      startDate: "2023-06-01",
-      endDate: "2024-08-31",
-      summary: "Emploi saisonnier — étés 2023 et 2024.",
-      highlights: [
-        "Gestion des stocks avec SAP, inventaires hebdomadaires et suivi des flux de produits finis.",
-      ],
-    },
-  ],
-};
 
 const projectDescriptions = {
   en: {
     "min-btc-node":
-      "Wrote a Rust tool that tracks a Bitcoin address's balance and transaction history by " +
-      "hand-implementing the P2P wire protocol, fetching block headers from multiple peers " +
-      "in parallel without full-chain validation.",
+      "Built a Rust Bitcoin light-client prototype with asynchronous P2P networking across " +
+      "multiple peers, block-header synchronization, and BIP157/158 compact filters to retrieve " +
+      "relevant blocks and track wallet UTXOs.",
     "nixos-config":
-      "Declared 6-host NixOS configurations and dotfiles (Nix flakes + Home Manager) — a " +
-      "self-hosted server exposing personal services, a backup Raspberry Pi, desktops, a " +
-      "laptop and a Steam-OS-style console — all versioned and reproducible as IaC.",
+      "Managed six hosts with declarative NixOS configurations, Nix flakes and Home Manager, " +
+      "with version-controlled settings and dotfiles.",
     "pico-ledger":
       "Built an embedded Bitcoin wallet prototype in Rust with a host-tested portable core, " +
       "BIP39 mnemonic generation, entropy encryption, and wallet locking.",
   },
   fr: {
     "min-btc-node":
-      "Outil Rust suivant le solde et l'historique de transactions d'une adresse Bitcoin : " +
-      "implémentation manuelle du protocole P2P, récupération des en-têtes de blocs auprès de " +
-      "plusieurs pairs en parallèle, sans validation complète de la chaîne.",
+      "Prototype de client léger Bitcoin en Rust : réseau P2P asynchrone multi-pairs, " +
+      "synchronisation des en-têtes de blocs et filtres compacts BIP157/158 pour récupérer les " +
+      "blocs pertinents et suivre les UTXO du portefeuille.",
     "nixos-config":
-      "Configurations NixOS déclaratives (6 machines) et dotfiles via Nix flakes + Home Manager — " +
-      "serveur auto-hébergé exposant mes services, Raspberry Pi de sauvegarde, PC fixes, portable " +
-      "et console « Steam-OS like » — le tout versionné et 100 % reproductible (IaC).",
+      "Gestion de six machines via des configurations NixOS déclaratives (Nix flakes, " +
+      "Home Manager), avec réglages système et dotfiles versionnés.",
     "pico-ledger":
       "Prototype de portefeuille Bitcoin embarqué en Rust : cœur portable testé sur hôte, " +
       "génération de phrases BIP39, chiffrement de l’entropie et verrouillage du portefeuille.",
@@ -159,24 +139,23 @@ const extraProjectsData = {
     {
       name: "RayTracer-Rust",
       description:
-        "CPU ray tracer in Rust with Bounding Volume Hierarchy (BVH) spatial partitioning " +
-        "for O(log N) ray-primitive intersections, Phong shading, and reflections.",
+        "CPU ray tracer in Rust with BVH acceleration, Phong shading and reflections.",
       keywords: ["Rust", "Graphics", "Ray Tracing", "BVH"],
       url: "https://github.com/Strange500/RayTracer-Rust",
     },
     {
       name: "QGChat",
       description:
-        "Full-stack chat app in Java EE with Docker Compose deployment, " +
-        "SQL persistence, and a JavaScript frontend.",
-      keywords: ["Java", "Java EE", "Docker", "WebSocket", "SQL"],
+        "Java EE MVC chat application with a REST API for channels and messages, PostgreSQL " +
+        "persistence, temporary JWT tokens for channel invitations, and Docker Compose deployment.",
+      keywords: ["Java EE", "PostgreSQL", "Docker"],
       url: "https://github.com/Strange500/QGChat",
     },
     {
       name: "ascii-cube-rs",
       description:
-        "Real-time ASCII 3D cube renderer compiled to WebAssembly via a Nix flake — " +
-        "powers the hero widget on this portfolio.",
+        "Real-time ASCII 3D cube renderer compiled to WebAssembly via a Nix flake; " +
+        "powers the interactive hero on my portfolio website.",
       keywords: ["Rust", "WebAssembly", "Nix"],
       url: "https://github.com/Strange500/ascii-cube-rs",
     },
@@ -185,24 +164,23 @@ const extraProjectsData = {
     {
       name: "RayTracer-Rust",
       description:
-        "Moteur de ray tracing CPU en Rust avec partitionnement spatial BVH pour des " +
-        "intersections en O(log N), ombrage de Phong et réflexions récursives.",
+        "Moteur de ray tracing CPU en Rust avec accélération BVH, ombrage de Phong et réflexions.",
       keywords: ["Rust", "Graphisme", "Ray Tracing", "BVH"],
       url: "https://github.com/Strange500/RayTracer-Rust",
     },
     {
       name: "QGChat",
       description:
-        "Application de messagerie instantanée en Java EE avec déploiement Docker Compose, " +
-        "persistance SQL et interface JavaScript.",
-      keywords: ["Java", "Java EE", "Docker", "WebSocket", "SQL"],
+        "Application de chat MVC en Java EE : API REST pour les canaux et les messages, " +
+        "persistance PostgreSQL, invitations par jetons JWT temporaires et déploiement Docker Compose.",
+      keywords: ["Java EE", "PostgreSQL", "Docker"],
       url: "https://github.com/Strange500/QGChat",
     },
     {
       name: "ascii-cube-rs",
       description:
-        "Moteur de rendu 3D d'un cube ASCII en temps réel compilé en WebAssembly via un flake Nix — " +
-        "anime le widget hero de ce portfolio.",
+        "Moteur de rendu 3D d'un cube ASCII en temps réel compilé en WebAssembly via un flake Nix ; " +
+        "anime la scène interactive de mon site portfolio.",
       keywords: ["Rust", "WebAssembly", "Nix"],
       url: "https://github.com/Strange500/ascii-cube-rs",
     },
@@ -211,16 +189,18 @@ const extraProjectsData = {
 
 const skillGroupsData = {
   en: {
-    "Languages & Systems": ["Rust", "Java", "C", "Python", "TypeScript", "JavaScript", "WebAssembly"],
-    "Backend & Web": ["Spring Boot", "Java EE", "React", "Next.js", "Node.js", "Angular"],
-    "DevOps & Infrastructure": ["NixOS", "Linux", "Docker", "Podman", "Jenkins", "Traefik", "Git"],
-    "Architecture & Quality": ["Selenium", "JUnit 5", "Design Patterns", "Agile"],
+    "Backend": ["Java", "Spring Boot", "Java EE", "REST APIs", "SQL", "Maven"],
+    "Systems & Languages": ["Rust", "C", "Python", "TypeScript", "JavaScript", "WebAssembly"],
+    "Web": ["Angular", "React", "Next.js"],
+    "Testing & Tooling": ["Selenium", "JUnit 5", "Jenkins", "Git"],
+    "Infrastructure": ["NixOS", "Linux", "Docker", "Podman"],
   },
   fr: {
-    "Langages & Systèmes": ["Rust", "Java", "C", "Python", "TypeScript", "JavaScript", "WebAssembly"],
-    "Backend & Web": ["Spring Boot", "Java EE", "React", "Next.js", "Node.js", "Angular"],
-    "DevOps & Infrastructure": ["NixOS", "Linux", "Docker", "Podman", "Jenkins", "Traefik", "Git"],
-    "Architecture & Qualité": ["Selenium", "JUnit 5", "Design Patterns", "Agile"],
+    "Backend": ["Java", "Spring Boot", "Java EE", "API REST", "SQL", "Maven"],
+    "Langages & Systèmes": ["Rust", "C", "Python", "TypeScript", "JavaScript", "WebAssembly"],
+    "Web": ["Angular", "React", "Next.js"],
+    "Tests & Outillage": ["Selenium", "JUnit 5", "Jenkins", "Git"],
+    "Infrastructure": ["NixOS", "Linux", "Docker", "Podman"],
   },
 };
 
@@ -233,23 +213,25 @@ const workDateMap = {
 
 const educationMaps = {
   en: {
-    "Bachelor's Degree in Computer Science (BUT)": {
-      area: "Computer Science",
-      studyType: "Bachelor of Science",
+    "DUT Informatique (University Diploma of Technology in Computer Science)": {
+      area: "",
+      studyType: "DUT Informatique (University Diploma of Technology in Computer Science)",
+      score: "Ranked first in the cohort in each year.",
     },
-    "M.Eng. in Software Engineering (Diplôme d'Ingénieur)": {
-      area: "Software Engineering",
-      studyType: "Master of Engineering",
+    "Diplôme d'ingénieur (expected 2028)": {
+      area: "Computer Science, Telecommunications and Networks",
+      studyType: "Diplôme d'ingénieur, expected 2028 (apprenticeship)",
     },
   },
   fr: {
-    "BUT Informatique (Bachelor Universitaire de Technologie)": {
-      area: "Informatique",
-      studyType: "BUT Informatique",
+    "DUT Informatique (Diplôme Universitaire de Technologie)": {
+      area: "",
+      studyType: "DUT Informatique (Diplôme Universitaire de Technologie)",
+      score: "Premier de promotion chacune des deux années.",
     },
-    "Diplôme d'Ingénieur en Ingénierie Logicielle": {
-      area: "Ingénierie Logicielle",
-      studyType: "Diplôme d'Ingénieur (Grade de Master)",
+    "Diplôme d'ingénieur (prévu en 2028)": {
+      area: "Informatique, télécommunications et réseaux",
+      studyType: "Diplôme d'ingénieur, diplôme prévu en 2028 (apprentissage)",
     },
   },
 };
@@ -272,12 +254,11 @@ function buildResume(lang) {
     .map((e) => {
       const [startRaw, endRaw] = e.period.split("-").map((s) => s.trim());
       const isCurrent = /now|présent|aujourd/i.test(endRaw);
-      const { area, studyType } = eduMap[e.title] ?? {
+      const { area, studyType, score: mappedScore } = eduMap[e.title] ?? {
         area: e.title,
         studyType: "",
       };
-      const score =
-        e.description && /top|major/i.test(e.description) ? e.description : undefined;
+      const score = mappedScore;
       return {
         institution: e.school,
         area,
@@ -316,6 +297,13 @@ function buildResume(lang) {
     ...extraProjectsData[lang],
   ];
 
+  // Curate only the resume, leaving the portfolio gallery intact.
+  const selectedProjects = ["min-btc-node", "QGChat", "nixos-config"].map((name) => {
+    const project = allProjects.find((entry) => entry.name === name);
+    if (!project) throw new Error(`Missing selected resume project: ${name}`);
+    return project;
+  });
+
   const skills = Object.entries(skillGroupsData[lang]).map(([name, keywords]) => ({
     name,
     keywords,
@@ -325,12 +313,12 @@ function buildResume(lang) {
     $schema:
       "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
     basics: basicsData[lang],
-    work: [...work, ...extraWorkData[lang]],
+    work,
     education: educationOut,
     skills,
     languages: languagesData[lang],
     interests: interestsData[lang],
-    projects: allProjects,
+    projects: selectedProjects,
     meta: {
       version: "1.0.0",
       lang,

@@ -11,7 +11,7 @@ tags: ["Java", "Spring Boot", "JUnit 5", "Tests E2E", "System Design", "Architec
 **Résultat :** La plateforme de test E2E a été refondue pour qu'une seule définition de test s'exécute à la fois en CI synchrone (JUnit / Maven) et via un tableau de bord asynchrone interactif — sans dupliquer la moindre logique de test.
 
 **Impact mesuré :**
-- **~70 % d'échecs faussement positifs** en moins.
+- **Rapports CI plus fiables**, distinguant les tests ignorés des véritables échecs.
 - Les exécutions invalides échouent en **~50 ms** au lieu de lancer une session navigateur de **20 s**.
 - Une exécution non prête ne touche jamais l'état partagé : les testeurs **travaillant en parallèle sur le même environnement ne se gênent pas**.
 </Tldr>
@@ -297,7 +297,7 @@ public class TestSuiteFactory {
 }
 ```
 
-> **Note sur l'Affichage CI :** En mappant le statut interne `SKIPPED` avec le `Assumptions.assumeTrue(false)` de JUnit, les lanceurs de tests natifs enregistrent l'exécution comme *Avortée*. Les outils de CI/CD comme Jenkins consomment ce rapport et classifient correctement le test comme instable ou ignoré (skipped), évitant ainsi les échecs de pipeline faussement positifs. En pratique, cette correspondance a réduit d'environ 70 % les échecs de pipeline faussement positifs.
+> **Note sur l'Affichage CI :** En mappant le statut interne `SKIPPED` avec le `Assumptions.assumeTrue(false)` de JUnit, les lanceurs de tests natifs enregistrent l'exécution comme *Avortée*. Les outils de CI/CD comme Jenkins consomment ce rapport et classifient correctement le test comme instable ou ignoré (skipped), distinguant ainsi les préconditions indisponibles des véritables échecs de test.
 
 ---
 
@@ -361,7 +361,7 @@ En traitant un test E2E comme un modèle de domaine paramétré (`TestCase` → 
 
 Les résultats mesurés :
 
-* **~70 % d'échecs faussement positifs** en moins.
+* **Rapports CI plus fiables**, distinguant les tests ignorés des véritables échecs.
 * Les exécutions invalides échouent en **~50 ms** au lieu de lancer une session navigateur de **20 s**.
 * L'exécution d'un testeur **n'interfère plus** avec celles des autres testeurs sur le même environnement partagé.
 
