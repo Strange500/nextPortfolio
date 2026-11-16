@@ -33,26 +33,27 @@ export const dictionaries = {
       title: "Experience",
       jobs: [
         {
-          role: "Software Engineer (Apprentice)",
-          company: "Numih France (DOGRH)",
+          role: "Software Engineer Apprentice",
+          company: "Numih France",
           date: "Sept 2025 – Present",
           deepDive: "/en/blog/automated-testing-framework",
           bullets: [
-            "Develop and maintain production application screens using Java and Angular, working across backend and frontend in an Agile team.",
-            "Architected and maintained a unified E2E test engine (Java Spring Boot, Selenium) running 50–70 automated integration tests, executable identically via Maven in CI or an async REST API.",
-            "Refactored the test architecture to cut the false-positive rate by ~70% and reduce environment/version migrations from ~4 hours to under 10 minutes.",
-            "Built developer tooling and data-isolation abstractions (Jenkins) to interact easily with in-house applications and eliminate concurrent test collisions.",
-            "Developed and deployed a Spring Boot internal tool that auto-distributes daily product-support duties across ~40 developers."
+            "Refactored and structured an existing Selenium/Java test framework, separating framework code from test scenarios and introducing reusable abstractions to factor out duplication and improve readability.",
+            "Migrated the testing platform to Spring Boot and built an Angular interface to launch and monitor runs; tests execute identically through Maven in CI (Jenkins) or an asynchronous REST API, across roughly 50 to 70 automated tests depending on scope.",
+            "Improved automated test reliability through framework refactoring and test-data lifecycle management (creation, update and deletion) in shared environments where other users also modify the data.",
+            "Cut the time needed to adapt tests after an environment change or a major application version from about four hours to under ten minutes.",
+            "Develop and maintain business application features in Java and Angular, and designed a Spring Boot internal tool that now distributes daily product-support duties across about 40 developers.",
+            "Led technical assessments for intern and apprentice recruitment, designing Java coding exercises and questionnaires on Java, Hibernate and Agile practices and conducting technical interviews; trained an intern and an apprentice on the testing framework."
           ]
         },
         {
-          role: "Fullstack Developer Intern",
+          role: "Full-Stack Developer Intern",
           company: "Ekeep-IT",
           date: "April 2025 – June 2025",
           deepDive: "",
           bullets: [
-            "Engineered RESTful backend services (Java Spring Boot, relational database) powering My-UUU, an equestrian-facility directory and review platform.",
-            "Developed responsive interfaces in Next.js (React) and shipped sprint user stories in an Agile/Scrum team for a production-facing product."
+            "Developed REST APIs with Java and Spring Boot for My-UUU, an equestrian-facility directory and review platform.",
+            "Built responsive Next.js interfaces and delivered features in an Agile/Scrum team."
           ]
         }
       ]
@@ -98,24 +99,26 @@ export const dictionaries = {
       jobs: [
         {
           role: "Ingénieur Logiciel (Alternance)",
-          company: "Numih France (DOGRH)",
+          company: "Numih France",
           date: "Sept 2025 – Présent",
           deepDive: "/fr/blog/automated-testing-framework",
           bullets: [
-            "Architecture et maintien d'un moteur de tests E2E unifié (Spring Boot, Selenium) pilotant 50 à 70 tests d'intégration, exécutable à l'identique via Maven en CI ou via API REST asynchrone.",
-            "Refactoring de l'architecture de test ayant réduit le taux de faux positifs de ~70 % et ramené les migrations (version/environnement) de ~4 h à moins de 10 min.",
-            "Conception d'outils développeur et d'abstractions d'isolation de données (Jenkins) pour interagir facilement avec les applications internes et éliminer les collisions concurrentes.",
-            "Développement et déploiement en production d'un outil Spring Boot répartissant chaque jour le support produit auprès d'environ 40 développeurs."
+            "Refactoring et structuration d'un framework de tests Selenium/Java existant : séparation du code du framework et des scénarios, introduction d'abstractions réutilisables pour factoriser le code et améliorer sa lisibilité.",
+            "Migration de la plateforme de tests vers Spring Boot et développement d'une interface Angular pour lancer et superviser les exécutions ; les tests s'exécutent à l'identique via Maven en CI (Jenkins) ou via une API REST asynchrone, sur un ensemble d'environ 50 à 70 tests automatisés selon le périmètre.",
+            "Amélioration de la fiabilité des tests via le refactoring du framework et la gestion du cycle de vie des données de test (création, mise à jour, suppression) dans des environnements partagés où d'autres utilisateurs modifient aussi les données.",
+            "Réduction du temps d'adaptation des tests après un changement d'environnement ou une version majeure de l'application, d'environ quatre heures à moins de dix minutes.",
+            "Développement et déploiement d'un outil interne Spring Boot répartissant chaque jour les tâches de support produit entre environ 40 développeurs, et maintenance de fonctionnalités métier en Java et Angular.",
+            "Responsabilité de l'évaluation technique des candidats stagiaires et alternants : conception d'un exercice Java sur ordinateur et de QCM Java, Hibernate et pratiques Agile, entretiens techniques ; formation d'un stagiaire et d'un alternant au framework de tests."
           ]
         },
         {
-          role: "Ingénieur Fullstack (Stage)",
+          role: "Stagiaire Développeur Full-Stack",
           company: "Ekeep-IT",
           date: "Avril 2025 – Juin 2025",
           deepDive: "",
           bullets: [
-            "Développement des services backend (Java Spring Boot, base relationnelle) de My-UUU, plateforme de référencement et d'avis sur les structures équestres.",
-            "Réalisation d'interfaces responsive Next.js (React) et livraison de user stories en équipe Agile/Scrum pour un produit en production."
+            "Développement d'API REST en Java et Spring Boot pour My-UUU, plateforme d'annuaire et d'avis sur les établissements équestres.",
+            "Réalisation d'interfaces responsive en Next.js et livraison de fonctionnalités au sein d'une équipe Agile/Scrum."
           ]
         }
       ]

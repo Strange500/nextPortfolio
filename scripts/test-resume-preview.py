@@ -29,7 +29,7 @@ class PreviewTests(unittest.TestCase):
                     self.assertIn("Inter-Regular.ttf", content)
                     self.assertNotIn("<img", content)
 
-    def test_toeic_moves_to_header_without_inventing_or_repeating_facts(self):
+    def test_toeic_lives_in_one_languages_section_without_inventing_facts(self):
         spec = importlib.util.spec_from_file_location("renderer", ROOT / "scripts/render-resume.py")
         assert spec is not None and spec.loader is not None
         renderer = importlib.util.module_from_spec(spec)
@@ -41,19 +41,21 @@ class PreviewTests(unittest.TestCase):
                 language = next(item for item in data["languages"] if "TOEIC" in item["fluency"])
                 content = renderer.render(data, "A4", lang=lang)
                 header = content.split("<header>")[1].split("</header>")[0]
-                self.assertIn('class="language-highlight"', header)
-                self.assertIn(language["language"], header)
-                self.assertIn(language["fluency"], header)
-                self.assertEqual(content.count("TOEIC 980/990"), 1)
+                # No isolated TOEIC badge: the score belongs to the Languages section only.
+                self.assertNotIn("TOEIC", header)
+                self.assertEqual(content.count("TOEIC"), 1)
+                self.assertEqual(content.count("980/990"), 1)
+                languages_html = renderer.render_languages(data, lang)
+                self.assertIn(language["language"], languages_html)
+                self.assertIn("980/990", languages_html)
                 self.assertEqual(json.dumps(data, sort_keys=True), original)
                 # The renderer must use source data, not a hardcoded score or CEFR claim.
-                language["fluency"] = "Professional — TOEIC 950/990"
+                language["fluency"] = "TOEIC Listening & Reading: 950/990, 2026"
                 changed = renderer.render(data, "A4", lang=lang)
-                self.assertIn("TOEIC 950/990", changed)
+                self.assertIn("950/990", changed)
                 self.assertNotIn("980/990", changed)
                 language["fluency"] = "Professional"
                 absent = renderer.render(data, "A4", lang=lang).split("<body>")[1]
-                self.assertNotIn('class="language-highlight"', absent)
                 self.assertNotIn("TOEIC", absent)
                 self.assertNotIn("C1", content)
                 self.assertNotIn("C2", content)
@@ -98,17 +100,16 @@ class PreviewTests(unittest.TestCase):
             self.assertEqual(parser.links, expected)
             self.assertEqual(json.dumps(data, sort_keys=True), original)
 
-    def test_project_cards_share_row_height_including_an_unpaired_project(self):
+    def test_projects_follow_source_order_in_a_single_column(self):
         spec = importlib.util.spec_from_file_location("renderer", ROOT / "scripts/render-resume.py")
         assert spec is not None and spec.loader is not None
         renderer = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(renderer)
         data = {"projects": [{"name": str(i)} for i in range(3)]}
         content = renderer.render_projects(data, "fr")
-        # Card decoration belongs on table cells, whose row heights are equal.
-        self.assertEqual(content.count('class="proj-col card'), 3)
-        self.assertEqual(content.count('class="proj-col"'), 1)
-        self.assertNotIn('class="project card', content)
+        self.assertEqual(content.count('<article class="project card">'), 3)
+        self.assertNotIn('<table', content)
+        self.assertRegex(content, r'(?s)project-name">\s*0\s*</div>.*project-name">\s*1\s*</div>.*project-name">\s*2\s*</div>')
         self.assertEqual(renderer.render_projects({}), "")
 
     def test_universal_renderer_preview_flags(self):
@@ -125,6 +126,19 @@ class PreviewTests(unittest.TestCase):
                         )
                         self.assertEqual(result.returncode, 0, result.stderr)
                         self.assertTrue(output.read_text().startswith("<!DOCTYPE html>"))
+
+    def test_single_column_layout_and_prominent_availability(self):
+        spec = importlib.util.spec_from_file_location("renderer", ROOT / "scripts/render-resume.py")
+        assert spec is not None and spec.loader is not None
+        renderer = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(renderer)
+        for lang in ("en", "fr"):
+            data = json.loads((ROOT / f"resume-{lang}.json").read_text())
+            content = renderer.render(data, "A4", lang)
+            self.assertNotIn("<table", content)
+            summary = renderer.render_summary(data, lang)
+            self.assertRegex(summary, r'<strong>[^<]*3(?:-month| mois)[^<]*2027[^<]*</strong>')
+            self.assertEqual(summary.count("2027"), 1)
 
 
 if __name__ == "__main__":

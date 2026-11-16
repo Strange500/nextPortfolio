@@ -2,11 +2,11 @@
   "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
   "basics": {
     "name": "Benjamin Roget",
-    "label": "Software Engineer — Backend & Systems",
+    "label": "Software Engineering Student | Backend & Systems",
     "email": "benjamin.rogetpro@gmail.com",
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com",
-    "summary": "Backend-focused software engineer designing reliable, maintainable systems through rigorous automated testing and declarative infrastructure. Experienced in Java Spring Boot, Rust, and full-stack delivery. Available for a 3-month software engineering internship in Europe or the US, starting June 2027.",
+    "summary": "Seeking a 3-month software engineering internship starting June 2027 in Poland, Romania, Czechia or the Nordics, in English-speaking teams; the US is a secondary option. Engineering student and software engineering apprentice with experience building Java/Spring Boot applications and automated testing tools. Personal projects focus on Rust, networking and Linux infrastructure.",
     "location": {
       "city": "Villeneuve d'Ascq",
       "region": "Hauts-de-France",
@@ -27,53 +27,64 @@
   },
   "work": [
     {
-      "name": "Numih France (DOGRH)",
-      "position": "Software Engineer (Apprentice)",
+      "name": "Numih France",
+      "position": "Software Engineer Apprentice",
       "startDate": "2025-09-01",
       "endDate": "",
       "url": "https://portfolio.qgroget.com/en/blog/automated-testing-framework",
       "highlights": [
-        "Develop and maintain production application screens using Java and Angular, working across backend and frontend in an Agile team.",
-        "Architected and maintained a unified E2E test engine (Java Spring Boot, Selenium) running 50–70 automated integration tests, executable identically via Maven in CI or an async REST API.",
-        "Refactored the test architecture to cut the false-positive rate by ~70% and reduce environment/version migrations from ~4 hours to under 10 minutes.",
-        "Built developer tooling and data-isolation abstractions (Jenkins) to interact easily with in-house applications and eliminate concurrent test collisions.",
-        "Developed and deployed a Spring Boot internal tool that auto-distributes daily product-support duties across ~40 developers."
+        "Refactored and structured an existing Selenium/Java test framework, separating framework code from test scenarios and introducing reusable abstractions to factor out duplication and improve readability.",
+        "Migrated the testing platform to Spring Boot and built an Angular interface to launch and monitor runs; tests execute identically through Maven in CI (Jenkins) or an asynchronous REST API, across roughly 50 to 70 automated tests depending on scope.",
+        "Improved automated test reliability through framework refactoring and test-data lifecycle management (creation, update and deletion) in shared environments where other users also modify the data.",
+        "Cut the time needed to adapt tests after an environment change or a major application version from about four hours to under ten minutes.",
+        "Develop and maintain business application features in Java and Angular, and designed a Spring Boot internal tool that now distributes daily product-support duties across about 40 developers.",
+        "Led technical assessments for intern and apprentice recruitment, designing Java coding exercises and questionnaires on Java, Hibernate and Agile practices and conducting technical interviews; trained an intern and an apprentice on the testing framework."
       ]
     },
     {
       "name": "Ekeep-IT",
-      "position": "Fullstack Developer Intern",
+      "position": "Full-Stack Developer Intern",
       "startDate": "2025-04-01",
       "endDate": "2025-06-30",
       "highlights": [
-        "Engineered RESTful backend services (Java Spring Boot, relational database) powering My-UUU, an equestrian-facility directory and review platform.",
-        "Developed responsive interfaces in Next.js (React) and shipped sprint user stories in an Agile/Scrum team for a production-facing product."
+        "Developed REST APIs with Java and Spring Boot for My-UUU, an equestrian-facility directory and review platform.",
+        "Built responsive Next.js interfaces and delivered features in an Agile/Scrum team."
       ]
     }
   ],
   "education": [
     {
       "institution": "IMT Nord Europe, Institut Mines-Télécom",
-      "area": "Software Engineering",
-      "studyType": "Master of Engineering",
+      "area": "Computer Science, Telecommunications and Networks",
+      "studyType": "Diplôme d'ingénieur, expected 2028 (apprenticeship)",
       "startDate": "2025-09-01",
       "endDate": ""
     },
     {
-      "institution": "University Institute of Technology of Lille",
-      "area": "Computer Science",
-      "studyType": "Bachelor of Science",
+      "institution": "University of Lille",
+      "area": "",
+      "studyType": "DUT Informatique (University Diploma of Technology in Computer Science)",
       "startDate": "2023-09-01",
       "endDate": "2025-06-01",
-      "score": "Graduated top of the class"
+      "score": "Ranked first in the cohort in each year."
     }
   ],
   "skills": [
     {
-      "name": "Languages & Systems",
+      "name": "Backend",
+      "keywords": [
+        "Java",
+        "Spring Boot",
+        "Java EE",
+        "REST APIs",
+        "SQL",
+        "Maven"
+      ]
+    },
+    {
+      "name": "Systems & Languages",
       "keywords": [
         "Rust",
-        "Java",
         "C",
         "Python",
         "TypeScript",
@@ -82,35 +93,29 @@
       ]
     },
     {
-      "name": "Backend & Web",
+      "name": "Web",
       "keywords": [
-        "Spring Boot",
-        "Java EE",
+        "Angular",
         "React",
-        "Next.js",
-        "Node.js",
-        "Angular"
+        "Next.js"
       ]
     },
     {
-      "name": "DevOps & Infrastructure",
+      "name": "Testing & Tooling",
       "keywords": [
-        "NixOS",
-        "Linux",
-        "Docker",
-        "Podman",
+        "Selenium",
+        "JUnit 5",
         "Jenkins",
-        "Traefik",
         "Git"
       ]
     },
     {
-      "name": "Architecture & Quality",
+      "name": "Infrastructure",
       "keywords": [
-        "Selenium",
-        "JUnit 5",
-        "Design Patterns",
-        "Agile"
+        "NixOS",
+        "Linux",
+        "Docker",
+        "Podman"
       ]
     }
   ],
@@ -121,7 +126,7 @@
     },
     {
       "language": "English",
-      "fluency": "Professional — TOEIC 980/990"
+      "fluency": "TOEIC Listening & Reading: 980/990, 2026"
     },
     {
       "language": "Spanish",
@@ -147,7 +152,7 @@
   "projects": [
     {
       "name": "min-btc-node",
-      "description": "Wrote a Rust tool that tracks a Bitcoin address's balance and transaction history by hand-implementing the P2P wire protocol, fetching block headers from multiple peers in parallel without full-chain validation.",
+      "description": "Built a Rust Bitcoin light-client prototype with asynchronous P2P networking across multiple peers, block-header synchronization, and BIP157/158 compact filters to retrieve relevant blocks and track wallet UTXOs.",
       "keywords": [
         "Rust",
         "Bitcoin",
@@ -156,8 +161,18 @@
       "url": "https://github.com/Strange500/min-btc-node"
     },
     {
+      "name": "QGChat",
+      "description": "Java EE MVC chat application with a REST API for channels and messages, PostgreSQL persistence, temporary JWT tokens for channel invitations, and Docker Compose deployment.",
+      "keywords": [
+        "Java EE",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "url": "https://github.com/Strange500/QGChat"
+    },
+    {
       "name": "nixos-config",
-      "description": "Declared 6-host NixOS configurations and dotfiles (Nix flakes + Home Manager) — a self-hosted server exposing personal services, a backup Raspberry Pi, desktops, a laptop and a Steam-OS-style console — all versioned and reproducible as IaC.",
+      "description": "Managed six hosts with declarative NixOS configurations, Nix flakes and Home Manager, with version-controlled settings and dotfiles.",
       "keywords": [
         "Nix",
         "NixOS",
@@ -166,49 +181,6 @@
       ],
       "url": "https://github.com/Strange500/nixos-config",
       "blog": "https://portfolio.qgroget.com/en/blog/nixos-2026-reproducible"
-    },
-    {
-      "name": "pico-ledger",
-      "description": "Built an embedded Bitcoin wallet prototype in Rust with a host-tested portable core, BIP39 mnemonic generation, entropy encryption, and wallet locking.",
-      "keywords": [
-        "Rust",
-        "Bitcoin",
-        "Embedded"
-      ],
-      "url": "https://github.com/Strange500/pico-ledger"
-    },
-    {
-      "name": "RayTracer-Rust",
-      "description": "CPU ray tracer in Rust with Bounding Volume Hierarchy (BVH) spatial partitioning for O(log N) ray-primitive intersections, Phong shading, and reflections.",
-      "keywords": [
-        "Rust",
-        "Graphics",
-        "Ray Tracing",
-        "BVH"
-      ],
-      "url": "https://github.com/Strange500/RayTracer-Rust"
-    },
-    {
-      "name": "QGChat",
-      "description": "Full-stack chat app in Java EE with Docker Compose deployment, SQL persistence, and a JavaScript frontend.",
-      "keywords": [
-        "Java",
-        "Java EE",
-        "Docker",
-        "WebSocket",
-        "SQL"
-      ],
-      "url": "https://github.com/Strange500/QGChat"
-    },
-    {
-      "name": "ascii-cube-rs",
-      "description": "Real-time ASCII 3D cube renderer compiled to WebAssembly via a Nix flake — powers the hero widget on this portfolio.",
-      "keywords": [
-        "Rust",
-        "WebAssembly",
-        "Nix"
-      ],
-      "url": "https://github.com/Strange500/ascii-cube-rs"
     }
   ],
   "meta": {

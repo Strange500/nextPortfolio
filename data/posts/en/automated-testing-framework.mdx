@@ -11,7 +11,7 @@ tags: ["Java", "Spring Boot", "JUnit 5", "E2E Testing", "System Design", "Archit
 **Result:** Rebuilt the E2E test platform so a single test definition runs through both synchronous CI (JUnit / Maven) and an asynchronous interactive dashboard — without duplicating any test logic.
 
 **Measured impact:**
-- **~70% fewer false-positive** pipeline failures.
+- **More reliable CI reporting** by distinguishing skipped tests from actual failures.
 - Invalid runs fail in **~50 ms** instead of spinning up a **20 s** browser session.
 - A run that isn't ready to proceed never touches shared state, so testers **working concurrently on the same environment don't interfere** with each other.
 </Tldr>
@@ -305,7 +305,7 @@ public class TestSuiteFactory {
 
 ```
 
-> **Note on CI Visuals:** By mapping the internal `SKIPPED` status to JUnit's `Assumptions.assumeTrue(false)`, native test runners register the execution as *Aborted*. CI/CD tools like Jenkins consume this report and properly classify the test as unstable or skipped, preventing false-positive pipeline failures. In practice, this mapping cut false-positive pipeline failures by roughly 70%.
+> **Note on CI Visuals:** By mapping the internal `SKIPPED` status to JUnit's `Assumptions.assumeTrue(false)`, native test runners register the execution as *Aborted*. CI/CD tools like Jenkins consume this report and properly classify the test as unstable or skipped, distinguishing unavailable preconditions from actual test failures.
 
 ---
 
@@ -370,7 +370,7 @@ By treating an E2E test as a parameterized domain model (`TestCase` → `TestRun
 
 The measured outcomes:
 
-* **~70% fewer false-positive** pipeline failures.
+* **More reliable CI reporting** by distinguishing skipped tests from actual failures.
 * Invalid runs fail in **~50 ms** instead of spinning up a **20 s** browser session.
 * One tester's run **no longer interferes** with others working on the same shared environment.
 
