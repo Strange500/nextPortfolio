@@ -68,8 +68,8 @@ try {
     'First transition moves continuously left'
   )
   assert.ok(
-    mid.width > initial.width && rust.width >= mid.width,
-    'First transition zooms progressively'
+    mid.width > initial.width * 1.5 && rust.width < mid.width * 0.7,
+    'Central close-up is followed by a smaller reading pose'
   )
   assert.equal(rust.active, '#rust')
   await scroll(rustY * 0.45)

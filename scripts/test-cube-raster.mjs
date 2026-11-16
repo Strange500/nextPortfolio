@@ -87,3 +87,61 @@ assert.equal(
   0,
   'A solid convex cube must not have empty cells inside a scanline'
 )
+
+// The persistent scene uses a larger, uncropped grid and a higher projection zoom.
+// Raising zoom past the upstream sampler's useful density creates interior holes.
+const sceneCube = new Cube(200, 100)
+sceneCube.set_zoom(3300)
+sceneCube.set_rotation_speed(0, 0, 0)
+let sceneHoles = 0
+for (let frame = 0; frame < 720; frame++) {
+  sceneCube.set_rotation(frame * 0.037, frame * 0.053, frame * 0.019)
+  sceneCube.next_frame()
+  const chars = new Uint8Array(memory.buffer, sceneCube.chars_ptr(), 200 * 100)
+  for (let y = 0; y < 100; y++) {
+    const row = chars.subarray(y * 200, (y + 1) * 200)
+    const first = row.findIndex(c => c !== 32)
+    const last = row.findLastIndex(c => c !== 32)
+    for (let x = first; x < last; x++) if (row[x] === 32) sceneHoles++
+  }
+}
+// Higher sampling must not change the legacy 100×100 upload coordinates.
+sceneCube.set_rotation(0, 0, 0)
+for (let y = 0; y < 100; y++)
+  for (let x = 0; x < 100; x++) {
+    const q = (y >= 50 ? 2 : 0) + (x >= 50 ? 1 : 0)
+    texture[y * 100 + x] = 65 + q
+    colors[y * 100 + x] = palette[q]
+  }
+sceneCube.update_face_fast(5, texture, colors)
+sceneCube.next_frame()
+const sceneChars = new Uint8Array(memory.buffer, sceneCube.chars_ptr(), 20000)
+const sceneColors = new Uint32Array(
+  memory.buffer,
+  sceneCube.colors_ptr(),
+  20000
+)
+for (const [q, x, y] of [
+  [0, 80, 40],
+  [1, 120, 40],
+  [2, 80, 60],
+  [3, 120, 60]
+]) {
+  assert.equal(
+    sceneChars[y * 200 + x],
+    65 + q,
+    'High-resolution texture quadrant'
+  )
+  assert.equal(
+    sceneColors[y * 200 + x],
+    palette[q],
+    'High-resolution texture color'
+  )
+}
+sceneCube.free()
+assert.equal(
+  sceneHoles,
+  0,
+  'Scene projection must stay watertight at 200×100 / zoom 3300'
+)
+console.log(JSON.stringify({ sceneFrames: 720, sceneHoles }))

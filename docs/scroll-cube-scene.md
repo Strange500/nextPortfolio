@@ -1,41 +1,85 @@
-# Scroll-driven Rust/WASM scene
+# One scroll-driven Rust/WASM scene
 
-The homepage mounts **one** `ScrollCubeScene` and one `ascii-cube` `Cube` for its entire lifetime. It uses the existing flake-pinned Rust engine and 120×60 shared-memory raster, not a CSS cube or a static substitute. The old standalone `AsciiCube` component remains available outside this homepage.
+The homepage keeps one `ScrollCubeScene`, one Rust `Cube` allocation and one
+visible canvas from intro through contact. The renderer is the upstream engine
+pinned in `flake.lock`, with a rebuilt generated artifact in `wasm-cube/`. See
+[local development](local-development.md) for setup and deployment commands.
 
-## State and interaction
+## Composition and motion
 
-- Native `window.scrollY` is the source of truth. Section document offsets define reading anchors; a smoothstep interpolates position, size and Euler XYZ orientation during the transition before each anchor. Long sections retain a stable cube pose while their HTML scrolls naturally.
-- Intro → Rust progressively enlarges and moves the object left; the next chapters alternate sides. All text stays selectable, fully opaque HTML in document order. Reduced section padding shortens empty intervals without compressing the actual content.
-- Six projected face polygons correspond to intro, Rust, NixOS, testing, Bitcoin and contact. Projection matches Rust's face order, XYZ matrix, camera distance 100, zoom 2100 and 8×16 character cells. Back faces are not interactive. Short labels use the same theme variables as the page.
-- Hover highlights a face and suspends the small autonomous orientation drift. Clicking a face or using the six-entry text navigation invokes the same native smooth-scroll function, without another pose animation. Keyboard users use the equivalent ordinary links; decorative SVG is hidden from assistive technology.
-- A single requestAnimationFrame loop updates translation/size at the display refresh rate, with frame-rate-independent 85 ms exponential damping of the illustration pose (never of `scrollY`). Raster and projected face geometry update together at up to 30 fps. It skips work while the document is hidden. Cleanup cancels the loop, removes listeners and frees the Rust allocation.
-- Theme tokens own both canvas inks (`--cube-ink`, `--cube-accent`), interactive accents and focus rings. Rust still owns the material glyphs and geometry, but raw engine colors no longer bypass the light/dark palette. Dark-on-accent labels deliberately retain a dark ink in both themes.
-- Reduced motion snaps between chapter poses and draws only after scroll, resize or theme invalidation. No autonomous motion or fades. Failed WASM loading leaves all content and text navigation usable, with an explicit fallback message.
-- Mobile places the object above the text. The navigation wraps rather than hiding contact behind a horizontal scroll. Landscape uses side-by-side composition. All long content can scroll past the fixed navigation; it is not trapped inside viewport-height panels.
+The homepage uses a full-width charcoal-green surface with off-white text, sage
+secondary text and citron for interactive/active elements. It has the same
+palette under both global theme settings; blog themes remain independent. There
+is no 1600px outer panel or blue margin for the viewport-fixed cube to cross.
 
-## Reproducible browser verification
+Native `scrollY` is the scene clock. Intro → Rust approaches the center, holds a
+brief close-up, then retreats left before the Rust copy finishes appearing on
+the right. The intro fades during approach. Both directions use the same
+piecewise smoothstep curve, with no delayed pose interpolation after scroll
+ends. Later chapters vary scale and orientation; Nix → Testing stays on the
+right, and Bitcoin → Contact stays on the left. Large traversals are deliberate
+rather than an automatic alternating pattern. Each chapter retains a reading
+plateau of at least 45vh before its next transition (longer chapters retain
+more).
 
-Install dependencies normally and build with `npm run build`. Serve the standalone output including `.next/static` and `public`, or run the exact deployed Nix package. Then:
+The document remains native HTML in normal flow. The text navigation and visible
+face clicks call the same native smooth scroll; they do not run a second cube
+animation. Wheel, touch, pointer and scrolling-key input explicitly cancel a
+pending navigation animation without preventing the native input. Keyboard
+navigation and ordinary section links provide access to every chapter, including
+hidden faces. Reduced motion changes chapter poses directly, suppresses
+fades/drift and skips repeated raster work. A WASM-load failure leaves the HTML
+and navigation available with a fallback message.
 
-```sh
-CHROME_PATH=/absolute/path/to/chromium \
-PORTFOLIO_URL=http://localhost:3101 \
-REVIEW_DIR="$TMPDIR/portfolio-scroll-review" \
-node scripts/test-scroll-scene.mjs
-```
+## Material and interaction
 
-The suite checks bidirectional first-transition coordinates/zoom, reading plateau, persistent canvas, pause, EN/FR section navigation, keyboard selection, seven infrastructure targets, 390/768/1440px, all six face reading poses and polygon-centroid hover/click, resumed manual scrolling, landscape resize, dark palette screenshot, frozen reduced-motion raster, and WASM-request failure fallback. `evidence.json` contains actual observed positions and checkpoints; screenshots accompany it. A second new page must not be opened until the first page's animation tests finish: Chromium can suspend rAF on the background page.
+The stable 200×100 ASCII buffer avoids density changes during zoom. Projection
+uses camera distance 100, zoom 3300 and 8×16 logical cells. Rust surface
+sampling adapts to the buffer width, capped at 256; legacy clients keep their
+historical grid, and texture uploads retain 100×100 row-major coordinates. The
+raster test checks 720 orientations at the scene settings with zero interior
+holes and verifies texture/color mapping at both sizes.
 
-`scripts/test-scroll-comfort.mjs` uses the same environment variables. It additionally instruments actual canvas text colors in both themes, verifies an uncancelled 240 px wheel gesture without delayed snap, samples a large scroll jump over 36 animation frames to rule out single-frame object teleporting, and checks fully opaque text at section entry. It writes `comfort-evidence.json` and three screenshots. Pose-equivalence checks in the main suite wait 650 ms to compare settled positions rather than intermediate damping frames.
+A regular monospace glyph is measured to fit each 8px cell, avoiding bold
+overlap and programming ligatures. Contiguous material runs are drawn together
+rather than shaping thousands of individual glyphs. Canvas backing resolution
+follows CSS size × device pixel ratio (capped at 2). Directional face luminance
+makes the volume readable without coloring passive material citron. One stable
+ASCII grid is used at every scale; mobile has a smaller viewport composition.
 
-### Color / scroll correction verification
+Six face polygons use the same XYZ transform, camera, zoom and cell dimensions
+as Rust. Only visible faces accept pointer input. Raster and hit geometry update
+together; idle drift is capped at 30fps and scroll invalidations draw promptly.
+Viewport transforms follow display frames. Hover identifies the face and
+suspends the quiet autonomous drift. The Pause control also suspends drift while
+leaving scroll/navigation operational. Cleanup frees the Rust allocation,
+removes listeners and cancels the frame loop.
 
-The comfort regression first failed on the original code with `No single-frame pose teleport`. After correction, both browser suites passed against `npm run start` serving the real optimized build locally: comfort PASS, scene PASS (27 checkpoints), zero page errors. Build, TypeScript, targeted ESLint and `git diff --check` passed. See [the recorded browser evidence](validation/scroll-comfort/comfort-evidence.json) and the accompanying light/dark screenshots. This is Chromium desktop/mobile-viewport coverage, not physical-device or WCAG certification.
+## Validation
 
-Also run `node scripts/test-narrative-browser.mjs`, `node scripts/test-cube-raster.mjs`, TypeScript, targeted ESLint and `git diff --check`. Whole-repo ESLint has six pre-existing errors in the blog, Mermaid, résumé script and Tailwind config; do not interpret this as a green global lint gate.
+Use `scripts/test-scroll-scene.mjs` for EN/FR, desktop/mobile/landscape, reverse
+scrolling, persistent allocation, reading plateaus, all six visible-face
+hover/click interactions, keyboard access, manual scroll after clicks, pause,
+reduced motion and WASM-failure injection.
 
-## Preview deployment boundary
+`scripts/test-scroll-comfort.mjs` checks theme-owned ink, distinct face
+lighting, uncancelled native wheel distance, absence of scroll snap, and pose
+agreement within two frames after an instant scroll with no subsequent position
+inertia. `scripts/test-narrative-browser.mjs` exercises retained content and
+infrastructure controls. `scripts/capture-scroll-review.mjs` records viewport
+states including intermediate transitions and can record a WebM traversal; it
+also records WASM HTTP/MIME status and canvas backing sizes. Inspect these
+images and recording, not only full-page screenshots.
 
-The color/scroll correction does **not** deploy anything. The notes below document the earlier preview arrangement only; deploying requires a new explicit request.
+The older evidence under `validation/scroll-comfort/` describes the prior 85ms
+amortized scene and remains historical. It does not verify this revision or its
+remote deployment. Current results and limitations are recorded separately.
 
-The requested name `test-portoflio` does **not** match a declared hostname. The existing preview is **test-portfolio.qgroget.com**, routed to the rootless `portfolio-test.service` on 127.0.0.1:3002, with mTLS. Preserve that route and production's independent `portfolio` input. Pin only `portfolio-test` in a separate nixos-config PR, build its exact generated Home Manager service unit, and activate only that user unit. A manual unit symlink activation is temporary until the pin PR merges; later Home Manager activation may restore the main pin. Browser QA through an SSH tunnel is application verification, not an assertion that unauthenticated public HTTPS returns 200.
+## Test deployment
+
+The configured route is `test-portfolio.qgroget.com`, rootless
+`portfolio-test.service`, port 3002, with mTLS. No literal `test-portoflio`
+route is declared. Only the `portfolio-test` consumer pin may change;
+production's independent `portfolio` input must stay unchanged. Deployment
+requires host access, which is absent in this environment; a prepared deployment
+pin is not an activated or verified service.

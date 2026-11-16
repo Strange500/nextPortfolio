@@ -44,13 +44,17 @@ To get a local copy of this portfolio up and running, follow these steps:
    ```
 2. Install the dependencies:
    ```bash
-    npm install
+    npm ci
     ```
 3. Run the development server:
    ```bash
     npm run dev
     ```
 4. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+See [the development and visual-review guide](docs/local-development.md) for the
+locked Nix shell, exact Rust/WASM rebuild, standalone server, browser tests and
+the separate test deployment target.
 
 ## Configuration
 

@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
@@ -32,10 +32,23 @@ jobs:
 
       - name: Lint
         # Non-blocking: `next lint` was removed in Next 15+, so use eslint directly.
-        # 5 pre-existing errors in legacy/wasm-glue files (not introduced by this PR).
+        # 6 pre-existing errors in blog, Mermaid, résumé and Tailwind files.
         # Clean the debt in a follow-up, then flip continue-on-error to false.
         continue-on-error: true
         run: npm run lint
 
       - name: Build (standalone server)
         run: npm run build
+      - name: Package standalone test server
+        run: |
+          cp -r public .next/standalone/
+          mkdir -p .next/standalone/.next
+          cp -r .next/static .next/standalone/.next/
+          tar -czf portfolio-test-node22.tar.gz -C .next/standalone .
+
+      - name: Upload test server for manual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-test-node22
+          path: portfolio-test-node22.tar.gz
+          retention-days: 7

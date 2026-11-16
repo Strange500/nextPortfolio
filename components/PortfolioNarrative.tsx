@@ -200,7 +200,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
           <span>FR / {t('OPEN TO THE WORLD', 'OUVERT SUR LE MONDE')}</span>
         </div>
         <div className='hero-composition'>
-          <div>
+          <div className='hero-copy'>
             <p className='eyebrow'>
               01 / {t('BEYOND THE SURFACE', 'AU-DELÀ DE LA SURFACE')}
             </p>

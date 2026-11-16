@@ -58,7 +58,7 @@
 }
 .cube-caption {
   position: absolute;
-  top: 91%;
+  top: 102%;
   left: -10%;
   width: 120%;
   margin: 0;
@@ -156,10 +156,10 @@
 }
 .narrative .facet-section {
   box-sizing: border-box;
-  min-height: 115vh;
+  min-height: 100vh;
   width: 49%;
   margin-left: 48%;
-  padding: 17vh 4vw 22vh 2vw;
+  padding: 12vh 4vw 16vh 2vw;
   border: 0;
 }
 .narrative .facet-section:nth-child(even) {
@@ -197,9 +197,9 @@
 }
 .narrative .missions-section {
   max-width: none;
-  width: 48%;
-  margin: 0 0 0 3%;
-  padding: 2vh 3vw 24vh;
+  width: 49%;
+  margin: 0 0 0 48%;
+  padding: 2vh 4vw 16vh 2vw;
 }
 .narrative .missions-section .section-heading {
   display: block;
@@ -208,8 +208,14 @@
   margin-top: 24px;
 }
 .narrative .mission {
-  grid-template-columns: 36px 1fr;
+  grid-template-columns: 56px 1fr;
   gap: 14px;
+}
+.narrative .mission-number {
+  font-size: 28px;
+}
+.narrative .mission-number span {
+  font-size: 14px;
 }
 .narrative .mission dl {
   grid-template-columns: 1fr;
@@ -351,5 +357,69 @@
   }
   .cube-hit-layer polygon {
     transition: none;
+  }
+}
+
+/* Viewport and reading columns share a single continuous surface. */
+body:has(.narrative) {
+  background: #141c18;
+  color: #eeeee4;
+}
+.narrative {
+  width: 100%;
+  max-width: none;
+  border: 0;
+  margin: 0;
+}
+.narrative .portfolio-nav,
+.narrative .portfolio-hero {
+  max-width: none;
+  padding-left: 6vw;
+  padding-right: 6vw;
+}
+.narrative .hero-copy,
+.narrative .hero-bottom,
+.narrative .hero-topline {
+  opacity: var(--intro-opacity, 1);
+}
+.narrative .hero-copy:focus-within {
+  opacity: 1;
+}
+.narrative #testing {
+  margin-left: 2%;
+  padding-left: 4vw;
+  padding-right: 2vw;
+}
+.narrative #bitcoin {
+  margin-left: 48%;
+  padding-left: 2vw;
+  padding-right: 4vw;
+}
+@media (max-width: 899px) {
+  .narrative #testing,
+  .narrative #bitcoin {
+    margin-left: 0;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+  .narrative .portfolio-hero {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+@media (max-height: 550px) and (min-width: 650px) and (max-width: 899px) {
+  .narrative #testing,
+  .narrative #bitcoin {
+    margin-left: 40%;
+    padding-left: 12px;
+    padding-right: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .narrative .hero-copy,
+  .narrative .hero-bottom,
+  .narrative .hero-topline,
+  .narrative #rust {
+    opacity: 1 !important;
   }
 }

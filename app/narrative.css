@@ -1,16 +1,16 @@
 /* The portfolio is an isolated editorial surface; blog styles stay unchanged. */
 .narrative {
-  --paper: #f3f2ec;
-  --ink: #222820;
-  --muted: #60665a;
-  --line: #cdd0c2;
+  --paper: #141c18;
+  --ink: #eeeee4;
+  --muted: #b4bfb2;
+  --line: #3c4a3f;
   --acid: #d6f268;
-  --panel: #e9ebdf;
-  --accent-ink: #526719;
-  --on-accent: #222820;
-  --accent-hover: #c3e653;
-  --cube-ink: #38452f;
-  --cube-accent: #526719;
+  --panel: #1d2821;
+  --accent-ink: #d6f268;
+  --on-accent: #20271d;
+  --accent-hover: #e3ff80;
+  --cube-ink: #e0e9db;
+  --cube-accent: #d6f268;
   position: relative;
   z-index: 1;
   background: var(--paper);
@@ -20,16 +20,7 @@
   line-height: 1.6;
   scroll-behavior: auto;
 }
-.dark .narrative {
-  --paper: #171d18;
-  --ink: #e9ecdf;
-  --muted: #b4bcad;
-  --line: #414c3c;
-  --panel: #222c22;
-  --accent-ink: #d6f268;
-  --cube-ink: #b4bcad;
-  --cube-accent: #d6f268;
-}
+
 .narrative *,
 .narrative *::before,
 .narrative *::after {
@@ -720,14 +711,6 @@
     to {
       transform: translateY(0);
     }
-  }
-}
-@media (min-width: 1500px) {
-  .narrative {
-    border-left: 1px solid var(--line);
-    border-right: 1px solid var(--line);
-    max-width: 1600px;
-    margin: auto;
   }
 }
 @media (max-width: 1100px) {

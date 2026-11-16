@@ -15,14 +15,24 @@ const normals = [
   [0, 0, 1],
   [0, 0, -1]
 ]
+// A stable material grid avoids density popping during scroll. The pinned Rust
+// sampler adapts to this resolution (see raster and texture regression).
+const columns = 200,
+  rows = 100,
+  zoom = 3300
+const logicalSize = 1600
 const poses = [
-  { x: 0.74, size: 0.39, rotation: [0.18, 2.78, -0.06] },
-  { x: 0.24, size: 0.43, rotation: [-1.25, 0.22, -0.08] },
-  { x: 0.76, size: 0.43, rotation: [0.22, -1.22, 0.08] },
-  { x: 0.24, size: 0.43, rotation: [0.18, 1.24, -0.08] },
-  { x: 0.76, size: 0.4, rotation: [0.22, 0.28, 0.08] },
+  { x: 0.74, size: 0.44, rotation: [0.32, 2.6, -0.08] },
+  { x: 0.25, size: 0.46, rotation: [-1.08, 0.38, -0.12] },
+  { x: 0.75, size: 0.4, rotation: [0.32, -1.08, 0.12] },
+  { x: 0.73, size: 0.47, rotation: [0.38, 1.12, -0.12] },
+  { x: 0.25, size: 0.39, rotation: [0.3, 0.4, 0.12] },
   { x: 0.25, size: 0.37, rotation: [1.25, 0.22, -0.06] }
 ]
+const smooth = (p: number) => {
+  const t = clamp(p)
+  return t * t * (3 - 2 * t)
+}
 const clamp = (n: number) => Math.max(0, Math.min(1, n))
 const mix = (a: number, b: number, p: number) => a + (b - a) * p
 function rotate(v: number[], angles: number[]) {
@@ -68,6 +78,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
   const canvas = useRef<HTMLCanvasElement>(null)
   const paused = useRef(false)
   const hovered = useRef('')
+  const navigating = useRef(false)
   const [pause, setPause] = useState(false)
   const [status, setStatus] = useState('loading')
   const [current, setCurrent] = useState('intro')
@@ -82,7 +93,6 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       lastTime = 0,
       phase = 0
     let lastRaster = 0
-    let displayed: { x: number; size: number; rotation: number[] } | undefined
     const media = matchMedia('(prefers-reduced-motion: reduce)')
     const nodes = sections.map(id => document.getElementById(id)!)
     const surface = document.querySelector<HTMLElement>('.narrative')!
@@ -95,6 +105,33 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       attributes: true,
       attributeFilter: ['class']
     })
+    const stopNavigation = () => {
+      if (!navigating.current) return
+      navigating.current = false
+      window.scrollTo({ top: scrollY, behavior: 'instant' })
+    }
+    const endNavigation = () => {
+      navigating.current = false
+    }
+    const scrollKey = (event: KeyboardEvent) => {
+      if (
+        [
+          'ArrowUp',
+          'ArrowDown',
+          'PageUp',
+          'PageDown',
+          'Home',
+          'End',
+          ' '
+        ].includes(event.key)
+      )
+        stopNavigation()
+    }
+    window.addEventListener('wheel', stopNavigation, { passive: true })
+    window.addEventListener('touchstart', stopNavigation, { passive: true })
+    window.addEventListener('pointerdown', stopNavigation, { passive: true })
+    window.addEventListener('keydown', scrollKey)
+    window.addEventListener('scrollend', endNavigation)
     window.addEventListener('scroll', invalidate, { passive: true })
     window.addEventListener('resize', invalidate)
     media.addEventListener('change', invalidate)
@@ -135,9 +172,13 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         from = i - 1
         to = i
         const start =
-          i === 1 ? 0 : Math.max(anchors[i - 1], anchors[i] - vh * 0.95)
+          i === 1
+            ? 0
+            : Math.min(
+                anchors[i] - 1,
+                Math.max(anchors[i - 1] + vh * 0.45, anchors[i] - vh * 0.75)
+              )
         p = clamp((y - start) / (anchors[i] - start))
-        p = p * p * (3 - 2 * p)
         break
       }
       if (reduced) {
@@ -145,34 +186,53 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         to = index
         p = 0
       }
-      const a = poses[from],
-        b = poses[to]
-      // Damp only the illustration, never scrollY. Time-based damping keeps
-      // wheel, touch, keyboard and reverse traversal independent of refresh rate.
-      const target = {
-        x: mix(a.x, b.x, p),
-        size: mix(a.size, b.size, p),
-        rotation: a.rotation.map((n, i) => mix(n, b.rotation[i], p))
+      let a = poses[from],
+        b = poses[to],
+        progress = smooth(p)
+      if (from === 0 && to === 1 && !reduced) {
+        // Approach, a brief close-up, then retreat to the reading composition.
+        const close = { x: 0.5, size: 0.78, rotation: [-0.42, 2.16, 0.14] }
+        if (p < 0.34) {
+          b = close
+          progress = smooth(p / 0.34)
+        } else if (p < 0.48) {
+          a = close
+          b = close
+          progress = 0
+        } else {
+          a = close
+          progress = smooth((p - 0.48) / 0.42)
+        }
       }
-      const follow = reduced || !displayed ? 1 : 1 - Math.exp(-dt / 0.085)
-      const prior = displayed || target
-      displayed = {
-        x: mix(prior.x, target.x, follow),
-        size: mix(prior.size, target.size, follow),
-        rotation: prior.rotation.map((n, i) =>
-          mix(n, target.rotation[i], follow)
-        )
+      const displayed = {
+        x: mix(a.x, b.x, progress),
+        size: mix(a.size, b.size, progress),
+        rotation: a.rotation.map((n, i) => mix(n, b.rotation[i], progress))
       }
+      // Scroll is the pose clock: no delayed interpolation after it stops.
+      const firstProgress = clamp(y / anchors[1])
+      surface.style.setProperty(
+        '--intro-opacity',
+        String(reduced ? 1 : 1 - smooth(firstProgress / 0.3))
+      )
+      nodes[1].style.opacity = String(
+        reduced ? 1 : smooth((firstProgress - 0.67) / 0.17)
+      )
       const size = mobile
-        ? Math.min(240, vw * 0.6)
-        : Math.min(760, vw * displayed.size)
+        ? Math.min(260, vw * 0.64) *
+          (reduced ? 1 : 1 + Math.sin(p * Math.PI) * 0.08)
+        : Math.min(vh * 1.12, vw * displayed.size)
       const landscape = mobile && vh < 550 && vw >= 650
       const x = landscape
         ? vw * 0.2
         : mobile
           ? vw * 0.5 + Math.sin(p * Math.PI) * 12
           : vw * displayed.x
-      const cy = landscape ? vh * 0.44 : mobile ? 142 : vh * 0.49
+      const cy = landscape
+        ? vh * 0.44
+        : mobile
+          ? 132
+          : vh * (from === 0 && to === 1 ? mix(0.47, 0.49, p) : 0.49)
       stage.current!.style.width = `${size}px`
       stage.current!.style.height = `${size}px`
       stage.current!.style.transform = `translate3d(${x - size / 2}px, ${cy - size / 2}px, 0)`
@@ -181,40 +241,76 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       const angles = displayed.rotation.map((n, i) => n + (i < 2 ? drift : 0))
       stage.current!.dataset.active = id
       root.current!.dataset.motion = reduced ? 'reduced' : 'full'
-      // Content stays fully opaque: the object moves, the reading surface does not.
       if (!cube || !memory || !canvas.current) return
-      // Transform follows every display frame; raster and exact hit geometry stay
-      // together at 30 fps to avoid doubling the WASM/canvas workload.
-      if (!dirty && time - lastRaster < 33) return
+      // Transform follows every display frame. Raster and hit geometry stay
+      // together; idle drift is capped at 30fps, scroll invalidations draw promptly.
+      if (time - lastRaster < 33 && !dirty) return
       lastRaster = time
       dirty = false
       stage.current!.dataset.rotation = angles.map(n => n.toFixed(4)).join(',')
       cube.set_rotation(...(angles as [number, number, number]))
       cube.set_rotation_speed(0, 0, 0)
       cube.next_frame()
-      const chars = new Uint8Array(memory.buffer, cube.chars_ptr(), 120 * 60)
-      const colors = new Uint32Array(memory.buffer, cube.colors_ptr(), 120 * 60)
+      const chars = new Uint8Array(
+        memory.buffer,
+        cube.chars_ptr(),
+        columns * rows
+      )
+      const colors = new Uint32Array(
+        memory.buffer,
+        cube.colors_ptr(),
+        columns * rows
+      )
       const ctx = canvas.current.getContext('2d')!
-      ctx.clearRect(0, 0, 960, 960)
-      ctx.font = 'bold 16px monospace'
+      // Backing pixels follow the actual CSS size and DPR, independent of the
+      // stable ASCII grid. Glyph advances fit their cells without horizontal bleed.
+      const backing = Math.ceil(size * Math.min(devicePixelRatio || 1, 2))
+      if (canvas.current.width !== backing) {
+        canvas.current.width = backing
+        canvas.current.height = backing
+      }
+      ctx.setTransform(backing / logicalSize, 0, 0, backing / logicalSize, 0, 0)
+      ctx.clearRect(0, 0, logicalSize, logicalSize)
+      // Fit the native monospace advance to the projected 8px cell exactly.
+      // Plain monospace avoids programming ligatures joining ASCII materials.
+      ctx.font = '13px monospace'
+      ctx.font = `${(13 * 8) / ctx.measureText('M').width}px monospace`
+      ctx.fontKerning = 'none'
       ctx.textBaseline = 'top'
       const palette = getComputedStyle(surface)
       const ink = palette.getPropertyValue('--cube-ink').trim()
-      const accent = palette.getPropertyValue('--cube-accent').trim()
-      for (let row = 0; row < 60; row++)
-        for (let col = 0; col < 120; col++) {
-          const n = row * 120 + col,
-            ch = chars[n]
-          if (ch === 32) continue
-          // Material glyphs remain Rust-owned; color belongs to the active theme.
-          ctx.fillStyle = colors[n] === 0x123456 ? ink : accent
-          ctx.fillText(
-            ch === 255 ? '█' : ch === 254 ? '▒' : String.fromCharCode(ch),
-            col * 8,
-            row * 16
-          )
+      ctx.fillStyle = ink
+      const faceLight = normals.map(normal => {
+        const n = rotate(normal, angles)
+        return 0.53 + Math.max(0, -n[0] * 0.32 - n[1] * 0.5 - n[2] * 0.8) * 0.47
+      })
+      // Batch contiguous material runs rather than shaping thousands of glyphs
+      // individually. The Rust buffers remain the complete source of each row.
+      for (let row = 0; row < rows; row++) {
+        let col = 0
+        while (col < columns) {
+          const index = row * columns + col
+          if (chars[index] === 32) {
+            col++
+            continue
+          }
+          const color = colors[index],
+            start = col
+          let run = ''
+          while (
+            col < columns &&
+            chars[row * columns + col] !== 32 &&
+            colors[row * columns + col] === color
+          ) {
+            const ch = chars[row * columns + col++]
+            run += ch === 255 ? '█' : ch === 254 ? '▒' : String.fromCharCode(ch)
+          }
+          ctx.globalAlpha = faceLight[color - 0x100001] ?? 1
+          ctx.fillText(run, start * 8, row * 16)
         }
-      // Exact same XYZ matrix, camera distance, zoom and 8×16 character cells
+      }
+      ctx.globalAlpha = 1
+      // Same XYZ matrix, camera distance, zoom and 8×16 character cells
       // as Rust. No rectangular proxy hitboxes and no independent CSS rotation.
       faceSections.forEach((section, face) => {
         const group = root.current!.querySelector<SVGGElement>(
@@ -227,8 +323,8 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         const points = corners(face).map(v => {
           const [x, y, z] = rotate(v, angles)
           return [
-            (60 + (2100 / (z + 100)) * x * 2) * 8,
-            (30 + (2100 / (z + 100)) * y) * 16
+            (columns / 2 + (zoom / (z + 100)) * x * 2) * 8,
+            (rows / 2 + (zoom / (z + 100)) * y) * 16
           ]
         })
         group
@@ -240,8 +336,8 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         text.setAttribute('x', String(cx))
         text.setAttribute('y', String(cy))
         const plate = group.querySelector('rect')!
-        const labelWidth = mobile ? 360 : 230
-        const labelHeight = mobile ? 80 : 52
+        const labelWidth = mobile ? 420 : 230
+        const labelHeight = mobile ? 96 : 60
         plate.setAttribute('width', String(labelWidth))
         plate.setAttribute('height', String(labelHeight))
         plate.setAttribute('x', String(cx - labelWidth / 2))
@@ -255,12 +351,15 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         const wasm = await import('ascii-cube')
         const instance = await wasm.default()
         if (disposed) return
+        await document.fonts.ready
+        if (disposed) return
         memory = instance.memory
-        cube = new wasm.Cube(120, 60)
-        cube.set_zoom(2100)
+        cube = new wasm.Cube(columns, rows)
+        cube.set_zoom(zoom)
+        for (let face = 0; face < 6; face++)
+          cube.set_face_color(face, `#${(0x100001 + face).toString(16)}`)
         cube.set_rotation_speed(0, 0, 0)
-        // Preserve the engine's six distinctive ASCII materials. One restrained
-        // terminal palette; labels are HTML/SVG, not unrelated rotating logos.
+        // Rust still supplies every material glyph and depth sample.
         dirty = true
         setStatus('ready')
       } catch {
@@ -273,9 +372,17 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       cancelAnimationFrame(frame)
       cube?.free()
       themeObserver.disconnect()
+      window.removeEventListener('wheel', stopNavigation)
+      window.removeEventListener('touchstart', stopNavigation)
+      window.removeEventListener('pointerdown', stopNavigation)
+      window.removeEventListener('keydown', scrollKey)
+      window.removeEventListener('scrollend', endNavigation)
+      navigating.current = false
       window.removeEventListener('scroll', invalidate)
       window.removeEventListener('resize', invalidate)
       media.removeEventListener('change', invalidate)
+      surface.style.removeProperty('--intro-opacity')
+      nodes[1].style.removeProperty('opacity')
       delete surface.dataset.scene
     }
   }, [])
@@ -288,12 +395,9 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
     const node = document.getElementById(id)
     if (!node) return
     const top = id === 'intro' ? 0 : node.getBoundingClientRect().top + scrollY
-    window.scrollTo({
-      top,
-      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches
-        ? 'instant'
-        : 'smooth'
-    })
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches
+    navigating.current = !reduced
+    window.scrollTo({ top, behavior: reduced ? 'instant' : 'smooth' })
     history.replaceState(null, '', `#${id}`)
   }
 
@@ -319,7 +423,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           role='img'
         />
         <svg
-          viewBox='0 0 960 960'
+          viewBox='0 0 1600 1600'
           className='cube-hit-layer'
           aria-hidden='true'
           onPointerLeave={() => enter('')}

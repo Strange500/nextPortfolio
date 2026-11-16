@@ -18,9 +18,12 @@ try {
   await page.setViewport({ width: 1440, height: 900 })
   await page.evaluateOnNewDocument(() => {
     window.cubeInks = new Set()
+    window.cubeLights = new Set()
     const draw = CanvasRenderingContext2D.prototype.fillText
     CanvasRenderingContext2D.prototype.fillText = function (...args) {
       window.cubeInks.add(this.fillStyle)
+      if (this.canvas.closest('[data-persistent-cube]'))
+        window.cubeLights.add(Math.round(this.globalAlpha * 100))
       return draw.apply(this, args)
     }
   })
@@ -32,7 +35,7 @@ try {
   for (const dark of [false, true]) {
     await page.evaluate(dark => {
       document.documentElement.classList.toggle('dark', dark)
-      window.cubeInks.clear()
+      // Lighting is applied at draw time, independently of the theme ink.
     }, dark)
     await new Promise(r => setTimeout(r, 250))
     const palette = await page.evaluate(() => {
@@ -45,7 +48,8 @@ try {
       }
       return {
         actual: [...window.cubeInks],
-        allowed: ['--cube-ink', '--cube-accent'].map(token => {
+        lights: [...window.cubeLights],
+        allowed: ['--cube-ink'].map(token => {
           const color = css.getPropertyValue(token).trim()
           if (!color) throw new Error(`Missing palette token ${token}`)
           return normalize(color)
@@ -54,8 +58,9 @@ try {
     })
     assert.ok(palette.actual.length > 0)
     assert.ok(
-      palette.actual.every(c => palette.allowed.includes(c)),
-      `Cube uses theme tokens: ${JSON.stringify(palette)}`
+      palette.actual.every(c => palette.allowed.includes(c)) &&
+        palette.lights.length >= 3,
+      `Faces have distinct lighting; citron is reserved for interaction: ${JSON.stringify(palette)}`
     )
     await page.screenshot({
       path: `${output}/${dark ? 'dark' : 'light'}-intro.png`
@@ -94,7 +99,8 @@ try {
     stableY,
     'No delayed scroll snap'
   )
-  // A large native scroll jump must ease the object, never the document.
+  // An instant scroll must update the pose within two paint frames, then stop.
+  // Native wheel input supplies its own intermediate scroll positions.
   const samples = await page.evaluate(async () => {
     const stage = document.querySelector('[data-persistent-cube]')
     const rust =
@@ -111,12 +117,15 @@ try {
   const total = Math.abs(samples.xs.at(-1) - samples.xs[0])
   const steps = samples.xs.slice(1).map((x, i) => Math.abs(x - samples.xs[i]))
   assert.ok(total > 100)
-  assert.ok(Math.max(...steps) < total * 0.65, 'No single-frame pose teleport')
   assert.ok(
-    steps.filter(s => s > 0.1).length > 5,
-    'Pose settles over several frames'
+    Math.abs(samples.xs[2] - samples.xs.at(-1)) < 1,
+    'Pose follows the native scroll within two frames'
   )
-  // Editorial text stays opaque even on section entry/exit.
+  assert.ok(
+    steps.slice(2).every(s => s < 1),
+    'No position inertia after scroll stops'
+  )
+  // Reading content is fully visible by the time its title enters the viewport.
   await page.evaluate(() => scrollBy({ top: -150, behavior: 'instant' }))
   await new Promise(r => setTimeout(r, 300))
   assert.equal(await page.$eval('#rust', e => getComputedStyle(e).opacity), '1')
