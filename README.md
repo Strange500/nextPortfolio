@@ -56,6 +56,9 @@ See [the development and visual-review guide](docs/local-development.md) for the
 locked Nix shell, exact Rust/WASM rebuild, standalone server, browser tests and
 the separate test deployment target.
 
+The [homepage design review](docs/homepage-design-review.md) explains the current
+readability choices and links to the visual checks.
+
 ## Configuration
 
 ### Custom Projects Data File

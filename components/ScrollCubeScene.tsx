@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import type { Cube } from 'ascii-cube'
+import { Pause, Play } from 'lucide-react'
 
 const sections = ['intro', 'rust', 'nix', 'testing', 'bitcoin', 'contact']
 // Face indices and projection match ascii-cube-rs at the flake.lock revision:
@@ -22,12 +23,12 @@ const columns = 200,
   zoom = 3300
 const logicalSize = 1600
 const poses = [
-  { x: 0.74, size: 0.44, rotation: [0.32, 2.6, -0.08] },
-  { x: 0.25, size: 0.46, rotation: [-1.08, 0.38, -0.12] },
-  { x: 0.75, size: 0.4, rotation: [0.32, -1.08, 0.12] },
-  { x: 0.73, size: 0.47, rotation: [0.38, 1.12, -0.12] },
-  { x: 0.25, size: 0.39, rotation: [0.3, 0.4, 0.12] },
-  { x: 0.25, size: 0.37, rotation: [1.25, 0.22, -0.06] }
+  { x: 0.74, size: 0.4, rotation: [0.32, 2.6, -0.08] },
+  { x: 0.25, size: 0.4, rotation: [-1.08, 0.38, -0.12] },
+  { x: 0.75, size: 0.37, rotation: [0.32, -1.08, 0.12] },
+  { x: 0.73, size: 0.4, rotation: [0.38, 1.12, -0.12] },
+  { x: 0.25, size: 0.36, rotation: [0.3, 0.4, 0.12] },
+  { x: 0.25, size: 0.34, rotation: [1.25, 0.22, -0.06] }
 ]
 const smooth = (p: number) => {
   const t = clamp(p)
@@ -219,7 +220,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         reduced ? 1 : smooth((firstProgress - 0.67) / 0.17)
       )
       const size = mobile
-        ? Math.min(260, vw * 0.64) *
+        ? Math.min(190, vw * 0.46) *
           (reduced ? 1 : 1 + Math.sin(p * Math.PI) * 0.08)
         : Math.min(vh * 1.12, vw * displayed.size)
       const landscape = mobile && vh < 550 && vw >= 650
@@ -231,7 +232,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       const cy = landscape
         ? vh * 0.44
         : mobile
-          ? 132
+          ? mix(156, 100, clamp(y / 160))
           : vh * (from === 0 && to === 1 ? mix(0.47, 0.49, p) : 0.49)
       stage.current!.style.width = `${size}px`
       stage.current!.style.height = `${size}px`
@@ -336,8 +337,8 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         text.setAttribute('x', String(cx))
         text.setAttribute('y', String(cy))
         const plate = group.querySelector('rect')!
-        const labelWidth = mobile ? 420 : 230
-        const labelHeight = mobile ? 96 : 60
+        const labelWidth = mobile ? 620 : 300
+        const labelHeight = mobile ? 150 : 72
         plate.setAttribute('width', String(labelWidth))
         plate.setAttribute('height', String(labelHeight))
         plate.setAttribute('x', String(cx - labelWidth / 2))
@@ -476,24 +477,50 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
             key={id}
             href={`#${id}`}
             data-facet-link={id}
+            aria-label={labels[i]}
             aria-current={current === id ? 'step' : undefined}
             onClick={e => {
               e.preventDefault()
               navigate(id)
             }}
           >
-            <span>0{i}</span>
-            {labels[i]}
+            <span className='scene-index'>0{i}</span>
+            <span className={id === 'rust' ? 'scene-label-wide' : undefined}>
+              {labels[i]}
+            </span>
+            {id === 'rust' && <span className='scene-label-short'>Rust</span>}
           </a>
         ))}
         <button
           aria-pressed={pause}
+          aria-label={
+            pause
+              ? fr
+                ? 'Reprendre la rotation du cube'
+                : 'Resume cube rotation'
+              : fr
+                ? 'Suspendre la rotation du cube'
+                : 'Pause cube rotation'
+          }
+          title={
+            pause
+              ? fr
+                ? 'Reprendre la rotation'
+                : 'Resume rotation'
+              : fr
+                ? 'Suspendre la rotation'
+                : 'Pause rotation'
+          }
           onClick={() => {
             paused.current = !pause
             setPause(!pause)
           }}
         >
-          {pause ? (fr ? 'Reprendre' : 'Resume') : 'Pause'}
+          {pause ? (
+            <Play size={16} aria-hidden='true' />
+          ) : (
+            <Pause size={16} aria-hidden='true' />
+          )}
         </button>
       </nav>
     </div>

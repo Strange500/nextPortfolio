@@ -87,55 +87,6 @@ const machines = [
   }
 ]
 
-function Counter({
-  value,
-  end,
-  suffix = '',
-  reduced
-}: {
-  value: string
-  end: number
-  suffix?: string
-  reduced: boolean
-}) {
-  const ref = useRef<HTMLSpanElement>(null)
-  const [progress, setProgress] = useState<number | null>(null)
-  useEffect(() => {
-    const node = ref.current
-    if (!node || reduced) return
-    let frame = 0
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return
-        observer.disconnect()
-        const start = performance.now()
-        const tick = (now: number) => {
-          const p = Math.min((now - start) / 1000, 1)
-          setProgress(p)
-          if (p < 1) frame = requestAnimationFrame(tick)
-        }
-        frame = requestAnimationFrame(tick)
-      },
-      { threshold: 0.5 }
-    )
-    observer.observe(node)
-    return () => {
-      observer.disconnect()
-      cancelAnimationFrame(frame)
-    }
-  }, [reduced])
-  const complete = reduced || progress === 1
-  return (
-    <span ref={ref} data-counter data-complete={complete} aria-label={value}>
-      <span aria-hidden='true'>
-        {progress === null || complete
-          ? value
-          : `${Math.round(end * progress)}${suffix}`}
-      </span>
-    </span>
-  )
-}
-
 export default function PortfolioNarrative({ lang }: { lang: Language }) {
   const fr = lang === 'fr'
   const t = (en: string, french: string) => (fr ? french : en)
@@ -160,6 +111,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
     <main
       ref={root}
       className='narrative'
+      lang={lang}
       data-motion={reduced ? 'reduced' : 'full'}
     >
       <a className='skip-link' href='#rust'>
@@ -193,16 +145,19 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
           <span>
             <i className='status-dot' />{' '}
             {t(
-              'SOFTWARE ENGINEER · SYSTEMS THINKER',
-              'INGÉNIEUR LOGICIEL · ESPRIT SYSTÈME'
+              'SOFTWARE, SYSTEMS & EXPERIMENTS',
+              'LOGICIEL, SYSTÈMES & EXPÉRIMENTATIONS'
             )}
           </span>
-          <span>FR / {t('OPEN TO THE WORLD', 'OUVERT SUR LE MONDE')}</span>
+          <span>RUST / WASM · NIXOS · {t('TESTING', 'TESTS')} · BITCOIN</span>
         </div>
         <div className='hero-composition'>
           <div className='hero-copy'>
             <p className='eyebrow'>
-              01 / {t('BEYOND THE SURFACE', 'AU-DELÀ DE LA SURFACE')}
+              {t(
+                'BENJAMIN ROGET · SOFTWARE ENGINEER',
+                'BENJAMIN ROGET · INGÉNIEUR LOGICIEL'
+              )}
             </p>
             <h1 id='hero-title'>
               {t('Small details.', 'Le détail.')}
@@ -218,8 +173,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
               )}
             </p>
             <a className='solid-link' href='#rust'>
-              {t('Explore the four facets', 'Explorer les quatre facettes')}{' '}
-              <span>↓</span>
+              {t('Explore my work', 'Découvrir mon travail')} <span>↓</span>
             </a>
           </div>
         </div>
@@ -259,13 +213,13 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
                 <span>RUST</span>
               </div>
               <pre>
-                <code>{`$ cargo run --release
-  Compiling ascii-cube …
+                <code>{`$ wasm-pack build --target web --mode no-install --release
+  Rust → wasm-bindgen → WebAssembly
 
-renderer: Rust · output: ASCII frame buffers
+$ npm run build
+  Next.js → browser
 
-$ wasm-pack build --target web
-  Rust → WebAssembly → your browser`}</code>
+frame buffers → canvas → visible faces`}</code>
               </pre>
               <span className='terminal-note'>
                 {t(
@@ -437,14 +391,11 @@ $ wasm-pack build --target web
                 <span>~/experience/numih</span>
                 <span>{t('EVIDENCE LOG', 'JOURNAL DE PREUVES')}</span>
               </div>
-              <p className='console-command mono'>
-                $ evidence --context --no-hype
-              </p>
               <div className='proof-grid'>
                 {[
                   {
                     value: '50–70',
-                    end: 70,
+
                     label: t('integration tests', 'tests d’intégration'),
                     context: t(
                       'One Spring Boot / Selenium engine. The same execution path through Maven CI or an asynchronous REST API.',
@@ -453,8 +404,7 @@ $ wasm-pack build --target web
                   },
                   {
                     value: '≈70%',
-                    end: 70,
-                    suffix: '%',
+
                     label: t(
                       'fewer false positives',
                       'de faux positifs en moins'
@@ -466,8 +416,7 @@ $ wasm-pack build --target web
                   },
                   {
                     value: '4h → <10m',
-                    end: 10,
-                    suffix: 'm',
+
                     label: t(
                       'environment / version migration',
                       'migration d’environnement / version'
@@ -479,7 +428,7 @@ $ wasm-pack build --target web
                   },
                   {
                     value: '≈40',
-                    end: 40,
+
                     label: t(
                       'developers supported',
                       'développeurs accompagnés'
@@ -496,7 +445,9 @@ $ wasm-pack build --target web
                     href={blog('automated-testing-framework')}
                   >
                     <strong>
-                      <Counter {...p} reduced={reduced} />
+                      <span data-counter data-complete='true'>
+                        {p.value}
+                      </span>
                     </strong>
                     <h3>{p.label}</h3>
                     <p>{p.context}</p>
@@ -604,8 +555,8 @@ $ wasm-pack build --target web
           </div>
           <p>
             {t(
-              'Different surfaces. The same thread: understand the problem, choose deliberately, make the result inspectable.',
-              'Des terrains différents. Un fil commun : comprendre le problème, choisir avec intention, rendre le résultat vérifiable.'
+              'Four case studies. Open a mission to inspect the problem, the decisions and the outcome.',
+              'Quatre études de cas. Ouvrez une mission pour découvrir le problème, les choix et le résultat.'
             )}
           </p>
         </div>
@@ -691,16 +642,18 @@ $ wasm-pack build --target web
             )
           }
         ].map((m, i) => (
-          <article className='mission' key={m.tag}>
-            <div className='mission-number mono'>
-              0{i + 1}
-              <span>↗</span>
-            </div>
+          <details className='mission' name='portfolio-missions' key={m.tag}>
+            <summary>
+              <div className='mission-number mono'>0{i + 1}</div>
+              <div className='mission-heading'>
+                <p className='eyebrow'>{m.tag}</p>
+                <h3>{m.title}</h3>
+              </div>
+              <span className='mission-toggle' aria-hidden='true'>
+                <span>+</span>
+              </span>
+            </summary>
             <div className='mission-main'>
-              <p className='eyebrow'>{m.tag}</p>
-              <h3>
-                <a href={m.href}>{m.title}</a>
-              </h3>
               <dl>
                 <div>
                   <dt>{t('Problem', 'Problème')}</dt>
@@ -719,7 +672,7 @@ $ wasm-pack build --target web
                 {t('Inspect the mission', 'Explorer la mission')} ↗
               </a>
             </div>
-          </article>
+          </details>
         ))}
       </section>
       <footer id='contact' className='portfolio-footer'>
@@ -734,6 +687,12 @@ $ wasm-pack build --target web
             {t('Let’s connect', 'Faisons le lien')}
             <em>_</em>
           </h2>
+          <p className='contact-intro'>
+            {t(
+              'A project to build, a system to improve? Let’s talk.',
+              'Un projet à construire, un système à faire évoluer ? Parlons-en.'
+            )}
+          </p>
           <div className='inline-links'>
             <a className='solid-link' href='mailto:benjamin.rogetpro@gmail.com'>
               {t('Say hello', 'Écrivez-moi')} ↗

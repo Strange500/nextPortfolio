@@ -52,3 +52,16 @@ jobs:
           name: portfolio-test-node22
           path: portfolio-test-node22.tar.gz
           retention-days: 7
+
+  nix-package:
+    name: Reproducible portfolio package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+      - name: Build the portfolio package without activating a service
+        run: nix build .#packages.x86_64-linux.default --no-link --print-build-logs

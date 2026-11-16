@@ -1,0 +1,78 @@
+{
+  "result": "PASS",
+  "evidence": [
+    {
+      "lang": "fr",
+      "width": 320,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "fr",
+      "width": 390,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "fr",
+      "width": 768,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "fr",
+      "width": 1024,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "fr",
+      "width": 1440,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "fr",
+      "width": 1920,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "en",
+      "width": 320,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "en",
+      "width": 390,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "en",
+      "width": 768,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "en",
+      "width": 1024,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "en",
+      "width": 1440,
+      "readable": true,
+      "navAccessible": true
+    },
+    {
+      "lang": "en",
+      "width": 1920,
+      "readable": true,
+      "navAccessible": true
+    }
+  ],
+  "errors": []
+}

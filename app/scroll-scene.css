@@ -35,7 +35,7 @@
 }
 .cube-hit-layer text {
   font:
-    600 23px var(--font-fira-code),
+    600 30px var(--font-fira-code),
     monospace;
   fill: var(--ink);
   pointer-events: none;
@@ -86,14 +86,14 @@
   min-height: 44px;
   padding: 11px 14px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   border: 0;
   background: transparent;
   cursor: pointer;
 }
-.scene-nav a > span {
+.scene-nav a > .scene-index {
   padding-right: 7px;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 .scene-nav a[aria-current],
 .scene-nav a:hover {
@@ -168,7 +168,7 @@
   padding-right: 2vw;
 }
 .narrative .facet-section h2 {
-  font-size: clamp(40px, 4.3vw, 64px);
+  font-size: clamp(36px, 3.9vw, 60px);
 }
 .narrative .section-intro {
   max-width: 42em;
@@ -239,7 +239,7 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 250px;
+    height: 220px;
     pointer-events: none;
     background: linear-gradient(var(--paper) 86%, transparent);
   }
@@ -256,28 +256,31 @@
     display: inline;
   }
   .cube-hit-layer text {
-    font-size: 46px;
+    font-size: 76px;
   }
   .scene-nav {
     bottom: max(8px, env(safe-area-inset-bottom));
     width: calc(100% - 16px);
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr)) 44px;
     gap: 0;
+    padding: 4px;
   }
   .scene-nav a,
   .scene-nav button {
     flex-shrink: 0;
-    padding: 11px 9px;
-    font-size: 10px;
+    padding: 11px 2px;
+    font-size: clamp(10px, 2.82vw, 12px);
+    text-align: center;
+    letter-spacing: -0.02em;
   }
-  .scene-nav a > span {
+  .scene-nav a > .scene-index {
     display: none;
   }
   .narrative .portfolio-nav {
     position: relative;
     z-index: 25;
-    height: 66px;
+    height: 80px;
     padding: 0 20px;
   }
   .narrative .portfolio-nav nav {
@@ -285,7 +288,7 @@
   }
   .narrative .portfolio-hero {
     min-height: 105vh;
-    padding: 220px 24px 15vh;
+    padding: 210px 24px 12vh;
   }
   .narrative .hero-topline {
     display: none;
@@ -305,20 +308,20 @@
   .narrative .facet-section:nth-child(even) {
     width: 100%;
     margin: 0;
-    padding: 34vh 24px 16vh;
-    min-height: 110vh;
+    padding: 240px 24px 100px;
+    min-height: 100svh;
   }
   .narrative .facet-section h2 {
-    font-size: clamp(40px, 8vw, 60px);
+    font-size: clamp(30px, 8vw, 48px);
   }
   .narrative .missions-section {
     width: 100%;
     margin: 0;
-    padding: 30vh 24px 12vh;
+    padding: 240px 24px 100px;
   }
   .narrative .portfolio-footer {
-    padding: 34vh 24px 18vh;
-    min-height: 110vh;
+    padding: 240px 24px 100px;
+    min-height: 100svh;
   }
   .narrative .topology {
     height: 330px;
@@ -330,7 +333,7 @@
     font-size: 42px;
   }
 }
-@media (max-height: 550px) and (min-width: 650px) {
+@media (max-height: 550px) and (min-width: 650px) and (max-width: 899px) {
   .scene-mobile-mask {
     display: none;
   }
@@ -421,5 +424,350 @@ body:has(.narrative) {
   .narrative .hero-topline,
   .narrative #rust {
     opacity: 1 !important;
+  }
+}
+
+/* Reading hierarchy and consistent controls for the editorial homepage. */
+.narrative {
+  line-height: 1.7;
+}
+.narrative h2 {
+  line-height: 1.12;
+  letter-spacing: -0.045em;
+}
+.narrative .eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.07em;
+}
+.narrative .hero-description {
+  font-size: 17px;
+  line-height: 1.75;
+  max-width: 38ch;
+}
+.narrative .section-intro {
+  font-size: 16px;
+  line-height: 1.75;
+  max-width: 58ch;
+}
+.narrative .solid-link {
+  min-height: 48px;
+  font-size: 14px;
+  border-color: transparent;
+}
+.narrative .text-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  padding: 8px 0;
+}
+.narrative .window-bar {
+  font-size: 11px;
+}
+.narrative .terminal-window pre {
+  font-size: 13px;
+  line-height: 1.65;
+}
+.narrative .terminal-note,
+.narrative .source-note,
+.narrative .machine-profile {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.narrative .machine-detail p:not(.eyebrow) {
+  font-size: 14px;
+  line-height: 1.7;
+}
+.narrative .topology button {
+  font-size: 11px;
+}
+.narrative .flake-hub small {
+  font-size: 10px;
+}
+.narrative .console-command {
+  font-size: 11px;
+}
+.narrative .proof-item strong {
+  font-size: clamp(27px, 2.9vw, 42px);
+  letter-spacing: -0.055em;
+}
+.narrative .proof-item h3 {
+  font-size: 16px;
+}
+.narrative .proof-item p {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.narrative .proof-link {
+  font-size: 13px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+.narrative .bitcoin-note p,
+.narrative .mission-result {
+  font-size: 15px;
+  line-height: 1.75;
+}
+.narrative .hero-bottom,
+.narrative .hero-topline {
+  font-size: 11px;
+}
+.narrative .portfolio-nav nav {
+  font-size: 13px;
+  margin-right: 80px;
+}
+.narrative .portfolio-nav nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+body:has(.narrative) .global-controls {
+  right: 6vw;
+  top: 30px;
+}
+body:has(.narrative) [data-theme-toggle] {
+  display: none;
+}
+body:has(.narrative) [data-language-switch] {
+  min-width: 44px;
+  min-height: 44px;
+  color: #eeeee4;
+  border: 1px solid #3c4a3f;
+  border-radius: 0;
+}
+body:has(.narrative) [data-language-switch]:hover {
+  background: #1d2821;
+}
+body:has(.narrative) [data-language-switch]:focus-visible {
+  outline: 2px solid #d6f268;
+  outline-offset: 4px;
+}
+.cube-hit-layer g rect,
+.cube-hit-layer g text {
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+.cube-hit-layer g[data-current='true'] rect,
+.cube-hit-layer g[data-current='true'] text,
+.cube-hit-layer g:hover rect,
+.cube-hit-layer g:hover text {
+  opacity: 1;
+}
+.scene-label-short {
+  display: none;
+}
+.scene-nav button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 44px;
+}
+.narrative .mission {
+  display: block;
+  padding: 0;
+}
+.narrative .mission summary {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) 32px;
+  gap: 18px;
+  align-items: center;
+  padding: 26px 0;
+  list-style: none;
+  cursor: pointer;
+}
+.narrative .mission summary::-webkit-details-marker {
+  display: none;
+}
+.narrative .mission summary:focus-visible {
+  outline: 2px solid var(--acid);
+  outline-offset: 6px;
+}
+.narrative .mission-number {
+  font-size: 22px;
+}
+.narrative .mission-heading .eyebrow {
+  margin-bottom: 10px;
+}
+.narrative .mission-heading h3 {
+  font-size: clamp(21px, 2vw, 27px);
+  line-height: 1.3;
+  letter-spacing: -0.035em;
+}
+.narrative .mission-toggle {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 22px;
+}
+.narrative .mission[open] .mission-toggle {
+  color: var(--on-accent);
+  background: var(--acid);
+  border-color: var(--acid);
+}
+.narrative .mission-toggle > span {
+  display: block;
+  line-height: 1;
+}
+.narrative .mission[open] .mission-toggle > span {
+  transform: rotate(45deg);
+}
+.narrative .mission[open] .mission-number {
+  color: var(--acid);
+}
+.narrative .mission-main {
+  padding: 16px 0 28px 60px;
+}
+.narrative .mission dt {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+}
+.narrative .mission dd {
+  font-size: 15px;
+  line-height: 1.75;
+}
+.narrative .portfolio-footer {
+  background: var(--paper);
+  min-height: 100vh;
+}
+.narrative .contact-intro {
+  max-width: 38ch;
+  font-size: 17px;
+  line-height: 1.75;
+  color: var(--muted);
+  margin: 28px 0;
+}
+.narrative .footer-colophon {
+  font-size: 11px;
+  line-height: 1.9;
+}
+.narrative .resume-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  background: transparent;
+  cursor: pointer;
+}
+.narrative .resume-trigger:hover {
+  background: var(--panel);
+  border-color: var(--muted);
+}
+.resume-menu {
+  width: min(19rem, calc(100vw - 24px));
+  background: #1d2821;
+  color: #eeeee4;
+  border: 1px solid #566452;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 0 16px 48px #0005;
+}
+.resume-menu-label {
+  margin: 6px 10px 10px;
+  color: #b4bfb2;
+  font-size: 12px;
+}
+.resume-menu .resume-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 64px;
+  padding: 12px 10px;
+  color: #eeeee4;
+  gap: 16px;
+}
+.resume-option strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+.resume-option small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #b4bfb2;
+}
+.resume-menu .resume-option[data-highlighted] {
+  background: #d6f268;
+  color: #20271d;
+  outline: none;
+}
+.resume-menu .resume-option[data-highlighted] small {
+  color: #35412b;
+}
+@media (min-width: 600px) {
+  .narrative .proof-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+}
+@media (max-width: 899px) {
+  body:has(.narrative) .global-controls {
+    top: 18px;
+    right: 24px;
+  }
+  .scene-nav .scene-label-wide {
+    display: none;
+  }
+  .scene-nav .scene-label-short {
+    display: inline;
+  }
+  .narrative .mission summary {
+    grid-template-columns: 32px minmax(0, 1fr) 28px;
+    gap: 12px;
+  }
+  .narrative .mission-main {
+    padding-left: 44px;
+  }
+  .narrative .mission-heading h3 {
+    font-size: 21px;
+  }
+  .narrative .portfolio-footer {
+    min-height: 100svh;
+  }
+  .narrative .inline-links {
+    gap: 12px 20px;
+  }
+  .narrative .hero-composition h1 {
+    font-size: clamp(42px, 10.5vw, 68px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cube-hit-layer g rect,
+  .cube-hit-layer g text {
+    transition: none;
+  }
+}
+
+@media (max-width: 899px) {
+  .narrative
+    :is(
+      .mission summary,
+      .topology button,
+      .text-link,
+      .resume-trigger,
+      .solid-link,
+      .proof-item
+    ) {
+    scroll-margin-block: 240px 88px;
+  }
+}
+@media (max-width: 359px) {
+  .scene-nav a {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+@media (max-width: 899px) {
+  .scene-nav a + a {
+    border-left: 1px solid var(--line);
   }
 }
