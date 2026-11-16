@@ -51,7 +51,8 @@ try {
       y => window.scrollTo({ top: y, behavior: 'instant' }),
       y
     )
-    await new Promise(r => setTimeout(r, 160))
+    // Allow the illustration's 85 ms damping to settle before comparing poses.
+    await new Promise(r => setTimeout(r, 650))
   }
   const rustY = await page.$eval(
     '#rust',

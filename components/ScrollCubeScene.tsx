@@ -17,9 +17,9 @@ const normals = [
 ]
 const poses = [
   { x: 0.74, size: 0.39, rotation: [0.18, 2.78, -0.06] },
-  { x: 0.24, size: 0.49, rotation: [-1.25, 0.22, -0.08] },
+  { x: 0.24, size: 0.43, rotation: [-1.25, 0.22, -0.08] },
   { x: 0.76, size: 0.43, rotation: [0.22, -1.22, 0.08] },
-  { x: 0.24, size: 0.47, rotation: [0.18, 1.24, -0.08] },
+  { x: 0.24, size: 0.43, rotation: [0.18, 1.24, -0.08] },
   { x: 0.76, size: 0.4, rotation: [0.22, 0.28, 0.08] },
   { x: 0.25, size: 0.37, rotation: [1.25, 0.22, -0.06] }
 ]
@@ -81,6 +81,8 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
     let previous = '',
       lastTime = 0,
       phase = 0
+    let lastRaster = 0
+    let displayed: { x: number; size: number; rotation: number[] } | undefined
     const media = matchMedia('(prefers-reduced-motion: reduce)')
     const nodes = sections.map(id => document.getElementById(id)!)
     const surface = document.querySelector<HTMLElement>('.narrative')!
@@ -101,8 +103,8 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
     const update = (time: number) => {
       if (disposed) return
       frame = requestAnimationFrame(update)
-      if (document.hidden || time - lastTime < 33) return
-      const dt = Math.min((time - lastTime) / 1000, 0.05)
+      if (document.hidden) return
+      const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 1 / 60
       lastTime = time
       const reduced = media.matches
       if (reduced && !dirty) return
@@ -145,41 +147,48 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       }
       const a = poses[from],
         b = poses[to]
+      // Damp only the illustration, never scrollY. Time-based damping keeps
+      // wheel, touch, keyboard and reverse traversal independent of refresh rate.
+      const target = {
+        x: mix(a.x, b.x, p),
+        size: mix(a.size, b.size, p),
+        rotation: a.rotation.map((n, i) => mix(n, b.rotation[i], p))
+      }
+      const follow = reduced || !displayed ? 1 : 1 - Math.exp(-dt / 0.085)
+      const prior = displayed || target
+      displayed = {
+        x: mix(prior.x, target.x, follow),
+        size: mix(prior.size, target.size, follow),
+        rotation: prior.rotation.map((n, i) =>
+          mix(n, target.rotation[i], follow)
+        )
+      }
       const size = mobile
         ? Math.min(240, vw * 0.6)
-        : Math.min(760, vw * mix(a.size, b.size, p))
+        : Math.min(760, vw * displayed.size)
       const landscape = mobile && vh < 550 && vw >= 650
       const x = landscape
         ? vw * 0.2
         : mobile
           ? vw * 0.5 + Math.sin(p * Math.PI) * 12
-          : vw * mix(a.x, b.x, p)
+          : vw * displayed.x
       const cy = landscape ? vh * 0.44 : mobile ? 142 : vh * 0.49
       stage.current!.style.width = `${size}px`
       stage.current!.style.height = `${size}px`
       stage.current!.style.transform = `translate3d(${x - size / 2}px, ${cy - size / 2}px, 0)`
       if (!reduced && !paused.current && !hovered.current) phase += dt * 0.55
       const drift = reduced ? 0 : Math.sin(phase) * 0.035
-      const angles = a.rotation.map(
-        (n, i) => mix(n, b.rotation[i], p) + (i < 2 ? drift : 0)
-      )
-      stage.current!.dataset.rotation = angles.map(n => n.toFixed(4)).join(',')
+      const angles = displayed.rotation.map((n, i) => n + (i < 2 ? drift : 0))
       stage.current!.dataset.active = id
       root.current!.dataset.motion = reduced ? 'reduced' : 'full'
-      // Keep all HTML in native document order. Fade only the entry/exit edges;
-      // tall content remains fully readable throughout its native scroll interval.
-      nodes.forEach(node => {
-        const rect = node.getBoundingClientRect()
-        const entry = clamp((vh * 0.9 - rect.top) / (vh * 0.45))
-        const exit = clamp((rect.bottom - vh * 0.12) / (vh * 0.3))
-        node.style.setProperty(
-          '--scene-opacity',
-          String(reduced ? 1 : Math.min(entry, exit))
-        )
-      })
+      // Content stays fully opaque: the object moves, the reading surface does not.
       if (!cube || !memory || !canvas.current) return
-      if (reduced && !dirty) return
+      // Transform follows every display frame; raster and exact hit geometry stay
+      // together at 30 fps to avoid doubling the WASM/canvas workload.
+      if (!dirty && time - lastRaster < 33) return
+      lastRaster = time
       dirty = false
+      stage.current!.dataset.rotation = angles.map(n => n.toFixed(4)).join(',')
       cube.set_rotation(...(angles as [number, number, number]))
       cube.set_rotation_speed(0, 0, 0)
       cube.next_frame()
@@ -189,16 +198,16 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       ctx.clearRect(0, 0, 960, 960)
       ctx.font = 'bold 16px monospace'
       ctx.textBaseline = 'top'
-      const ink = getComputedStyle(surface).getPropertyValue('--ink').trim()
+      const palette = getComputedStyle(surface)
+      const ink = palette.getPropertyValue('--cube-ink').trim()
+      const accent = palette.getPropertyValue('--cube-accent').trim()
       for (let row = 0; row < 60; row++)
         for (let col = 0; col < 120; col++) {
           const n = row * 120 + col,
             ch = chars[n]
           if (ch === 32) continue
-          ctx.fillStyle =
-            colors[n] === 0x123456
-              ? ink
-              : `#${colors[n].toString(16).padStart(6, '0')}`
+          // Material glyphs remain Rust-owned; color belongs to the active theme.
+          ctx.fillStyle = colors[n] === 0x123456 ? ink : accent
           ctx.fillText(
             ch === 255 ? '█' : ch === 254 ? '▒' : String.fromCharCode(ch),
             col * 8,
@@ -268,7 +277,6 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       window.removeEventListener('resize', invalidate)
       media.removeEventListener('change', invalidate)
       delete surface.dataset.scene
-      nodes.forEach(node => node.style.removeProperty('--scene-opacity'))
     }
   }, [])
 

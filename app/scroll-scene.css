@@ -45,7 +45,7 @@
   stroke: var(--ink);
 }
 .cube-hit-layer g:hover text {
-  fill: #222820;
+  fill: var(--on-accent);
 }
 .cube-hit-layer rect {
   fill: var(--paper);
@@ -98,7 +98,7 @@
 .scene-nav a[aria-current],
 .scene-nav a:hover {
   background: var(--acid);
-  color: #222820;
+  color: var(--on-accent);
 }
 .scene-nav button {
   border-left: 1px solid var(--line);
@@ -110,7 +110,7 @@
   display: none;
 }
 .cube-hit-layer g[data-current='true'] text {
-  fill: #222820;
+  fill: var(--on-accent);
   font-weight: 800;
 }
 /* Use a single palette everywhere, including the actual cube and terminal. */
@@ -156,10 +156,10 @@
 }
 .narrative .facet-section {
   box-sizing: border-box;
-  min-height: 135vh;
+  min-height: 115vh;
   width: 49%;
   margin-left: 48%;
-  padding: 17vh 4vw 32vh 2vw;
+  padding: 17vh 4vw 22vh 2vw;
   border: 0;
 }
 .narrative .facet-section:nth-child(even) {
@@ -225,10 +225,7 @@
 .narrative .footer-colophon {
   margin-top: 60px;
 }
-.narrative[data-scene='ready']
-  :is(.portfolio-hero, .facet-section, .portfolio-footer) {
-  opacity: var(--scene-opacity, 1);
-}
+
 @media (max-width: 899px) {
   .scene-mobile-mask {
     display: block;
@@ -302,8 +299,8 @@
   .narrative .facet-section:nth-child(even) {
     width: 100%;
     margin: 0;
-    padding: 34vh 24px 25vh;
-    min-height: 125vh;
+    padding: 34vh 24px 16vh;
+    min-height: 110vh;
   }
   .narrative .facet-section h2 {
     font-size: clamp(40px, 8vw, 60px);
@@ -354,9 +351,5 @@
   }
   .cube-hit-layer polygon {
     transition: none;
-  }
-  .narrative[data-scene='ready']
-    :is(.portfolio-hero, .facet-section, .portfolio-footer) {
-    opacity: 1;
   }
 }

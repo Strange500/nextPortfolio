@@ -6,6 +6,11 @@
   --line: #cdd0c2;
   --acid: #d6f268;
   --panel: #e9ebdf;
+  --accent-ink: #526719;
+  --on-accent: #222820;
+  --accent-hover: #c3e653;
+  --cube-ink: #38452f;
+  --cube-accent: #526719;
   position: relative;
   z-index: 1;
   background: var(--paper);
@@ -21,6 +26,9 @@
   --muted: #b4bcad;
   --line: #414c3c;
   --panel: #222c22;
+  --accent-ink: #d6f268;
+  --cube-ink: #b4bcad;
+  --cube-accent: #d6f268;
 }
 .narrative *,
 .narrative *::before,
@@ -34,7 +42,7 @@
   font: inherit;
 }
 .narrative :is(a, button):focus-visible {
-  outline: 3px solid #738a16;
+  outline: 3px solid var(--accent-ink);
   outline-offset: 6px;
 }
 .narrative section,
@@ -98,7 +106,7 @@
   letter-spacing: -2px;
 }
 .wordmark > span:first-child {
-  color: #748a37;
+  color: var(--accent-ink);
 }
 .wordmark-name {
   font-family: var(--font-inter), sans-serif;
@@ -114,7 +122,7 @@
   font-size: 12px;
 }
 .portfolio-nav nav a:hover {
-  color: #738a16;
+  color: var(--accent-ink);
 }
 .portfolio-hero {
   max-width: 1440px;
@@ -131,7 +139,7 @@
 }
 .status-dot {
   display: inline-block;
-  background: #759644;
+  background: var(--accent-ink);
   border-radius: 50%;
   width: 6px;
   height: 6px;
@@ -172,7 +180,7 @@
     transform 0.2s;
 }
 .solid-link:hover {
-  background: #c3e653;
+  background: var(--accent-hover);
   transform: translateY(-2px);
 }
 .hero-object {
@@ -392,7 +400,7 @@
   line-height: 1.7;
 }
 .text-link:hover {
-  color: #738a16;
+  color: var(--accent-ink);
 }
 .infrastructure {
   border: 1px solid var(--line);
@@ -415,7 +423,7 @@
   stroke-dasharray: 1 1;
 }
 .topology line.selected-edge {
-  stroke: #809b36;
+  stroke: var(--accent-ink);
   stroke-width: 0.5;
   stroke-dasharray: none;
 }
@@ -681,7 +689,7 @@
   letter-spacing: -0.06em;
 }
 .portfolio-footer h2 em {
-  color: #809b36;
+  color: var(--accent-ink);
 }
 .footer-colophon {
   align-self: end;
