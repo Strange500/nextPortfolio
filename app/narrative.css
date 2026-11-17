@@ -1,11 +1,16 @@
 /* The portfolio is an isolated editorial surface; blog styles stay unchanged. */
 .narrative {
-  --paper: #f3f2ec;
-  --ink: #222820;
-  --muted: #60665a;
-  --line: #cdd0c2;
+  --paper: #141c18;
+  --ink: #eeeee4;
+  --muted: #b4bfb2;
+  --line: #3c4a3f;
   --acid: #d6f268;
-  --panel: #e9ebdf;
+  --panel: #1d2821;
+  --accent-ink: #d6f268;
+  --on-accent: #20271d;
+  --accent-hover: #e3ff80;
+  --cube-ink: #e0e9db;
+  --cube-accent: #d6f268;
   position: relative;
   z-index: 1;
   background: var(--paper);
@@ -15,13 +20,7 @@
   line-height: 1.6;
   scroll-behavior: auto;
 }
-.dark .narrative {
-  --paper: #171d18;
-  --ink: #e9ecdf;
-  --muted: #b4bcad;
-  --line: #414c3c;
-  --panel: #222c22;
-}
+
 .narrative *,
 .narrative *::before,
 .narrative *::after {
@@ -34,7 +33,7 @@
   font: inherit;
 }
 .narrative :is(a, button):focus-visible {
-  outline: 3px solid #738a16;
+  outline: 3px solid var(--accent-ink);
   outline-offset: 6px;
 }
 .narrative section,
@@ -98,7 +97,7 @@
   letter-spacing: -2px;
 }
 .wordmark > span:first-child {
-  color: #748a37;
+  color: var(--accent-ink);
 }
 .wordmark-name {
   font-family: var(--font-inter), sans-serif;
@@ -114,7 +113,7 @@
   font-size: 12px;
 }
 .portfolio-nav nav a:hover {
-  color: #738a16;
+  color: var(--accent-ink);
 }
 .portfolio-hero {
   max-width: 1440px;
@@ -131,7 +130,7 @@
 }
 .status-dot {
   display: inline-block;
-  background: #759644;
+  background: var(--accent-ink);
   border-radius: 50%;
   width: 6px;
   height: 6px;
@@ -172,7 +171,7 @@
     transform 0.2s;
 }
 .solid-link:hover {
-  background: #c3e653;
+  background: var(--accent-hover);
   transform: translateY(-2px);
 }
 .hero-object {
@@ -392,7 +391,7 @@
   line-height: 1.7;
 }
 .text-link:hover {
-  color: #738a16;
+  color: var(--accent-ink);
 }
 .infrastructure {
   border: 1px solid var(--line);
@@ -415,7 +414,7 @@
   stroke-dasharray: 1 1;
 }
 .topology line.selected-edge {
-  stroke: #809b36;
+  stroke: var(--accent-ink);
   stroke-width: 0.5;
   stroke-dasharray: none;
 }
@@ -681,7 +680,7 @@
   letter-spacing: -0.06em;
 }
 .portfolio-footer h2 em {
-  color: #809b36;
+  color: var(--accent-ink);
 }
 .footer-colophon {
   align-self: end;
@@ -712,14 +711,6 @@
     to {
       transform: translateY(0);
     }
-  }
-}
-@media (min-width: 1500px) {
-  .narrative {
-    border-left: 1px solid var(--line);
-    border-right: 1px solid var(--line);
-    max-width: 1600px;
-    margin: auto;
   }
 }
 @media (max-width: 1100px) {

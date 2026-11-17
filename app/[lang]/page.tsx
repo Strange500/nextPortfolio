@@ -12,7 +12,10 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lang } = await params
   return {
-    title: 'Benjamin Roget — Software, systems & evidence',
+    title:
+      lang === 'fr'
+        ? 'Benjamin Roget — Ingénieur logiciel & systèmes'
+        : 'Benjamin Roget — Software & Systems Engineer',
     description:
       lang === 'fr'
         ? 'Quatre facettes d’une même exigence : Rust/WASM, NixOS, automatisation des tests et Bitcoin. Projets, architecture et résultats contextualisés.'

@@ -1,17 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import AsciiCube from './AsciiCube'
+import ScrollCubeScene from './ScrollCubeScene'
+import StepNavigation from './StepNavigation'
+import '../app/scroll-scene.css'
 import { ResumeDropdown } from './ResumeDropdown'
 
 type Language = 'en' | 'fr'
-const facets = ['rust', 'nix', 'testing', 'bitcoin'] as const
-const cube = `    +-------+
-   /       /|
-  +-------+ |
-  |       | +
-  |       |/
-  +-------+`
+
 const machines = [
   {
     name: 'Server',
@@ -92,62 +88,13 @@ const machines = [
   }
 ]
 
-function Counter({
-  value,
-  end,
-  suffix = '',
-  reduced
-}: {
-  value: string
-  end: number
-  suffix?: string
-  reduced: boolean
-}) {
-  const ref = useRef<HTMLSpanElement>(null)
-  const [progress, setProgress] = useState<number | null>(null)
-  useEffect(() => {
-    const node = ref.current
-    if (!node || reduced) return
-    let frame = 0
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return
-        observer.disconnect()
-        const start = performance.now()
-        const tick = (now: number) => {
-          const p = Math.min((now - start) / 1000, 1)
-          setProgress(p)
-          if (p < 1) frame = requestAnimationFrame(tick)
-        }
-        frame = requestAnimationFrame(tick)
-      },
-      { threshold: 0.5 }
-    )
-    observer.observe(node)
-    return () => {
-      observer.disconnect()
-      cancelAnimationFrame(frame)
-    }
-  }, [reduced])
-  const complete = reduced || progress === 1
-  return (
-    <span ref={ref} data-counter data-complete={complete} aria-label={value}>
-      <span aria-hidden='true'>
-        {progress === null || complete
-          ? value
-          : `${Math.round(end * progress)}${suffix}`}
-      </span>
-    </span>
-  )
-}
-
 export default function PortfolioNarrative({ lang }: { lang: Language }) {
   const fr = lang === 'fr'
   const t = (en: string, french: string) => (fr ? french : en)
-  const [active, setActive] = useState('rust')
+
   const [selected, setSelected] = useState(0)
   const [reduced, setReduced] = useState(false)
-  const [paused, setPaused] = useState(false)
+
   const root = useRef<HTMLElement>(null)
   const machine = machines[selected]
   const blog = (slug: string) => `/${lang}/blog/${slug}`
@@ -156,23 +103,8 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
     const update = () => setReduced(preference.matches)
     update()
     preference.addEventListener('change', update)
-    let frame = 0
-    const trackFacet = () => {
-      cancelAnimationFrame(frame)
-      frame = requestAnimationFrame(() => {
-        const sections = [...(root.current?.querySelectorAll('[data-facet]') || [])]
-        const current = sections.filter(el => el.getBoundingClientRect().top <= innerHeight * 0.4).at(-1)
-        setActive(current?.id || 'rust')
-      })
-    }
-    window.addEventListener('scroll', trackFacet, { passive: true })
-    window.addEventListener('resize', trackFacet)
-    trackFacet()
     return () => {
       preference.removeEventListener('change', update)
-      window.removeEventListener('scroll', trackFacet)
-      window.removeEventListener('resize', trackFacet)
-      cancelAnimationFrame(frame)
     }
   }, [])
 
@@ -180,6 +112,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
     <main
       ref={root}
       className='narrative'
+      lang={lang}
       data-motion={reduced ? 'reduced' : 'full'}
     >
       <a className='skip-link' href='#rust'>
@@ -203,21 +136,30 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
         </nav>
       </header>
 
-      <section className='portfolio-hero' aria-labelledby='hero-title'>
+      <StepNavigation lang={lang} />
+      <ScrollCubeScene lang={lang} />
+      <section
+        id='intro'
+        className='portfolio-hero'
+        aria-labelledby='hero-title'
+      >
         <div className='hero-topline mono'>
           <span>
             <i className='status-dot' />{' '}
             {t(
-              'SOFTWARE ENGINEER · SYSTEMS THINKER',
-              'INGÉNIEUR LOGICIEL · ESPRIT SYSTÈME'
+              'SOFTWARE, SYSTEMS & EXPERIMENTS',
+              'LOGICIEL, SYSTÈMES & EXPÉRIMENTATIONS'
             )}
           </span>
-          <span>FR / {t('OPEN TO THE WORLD', 'OUVERT SUR LE MONDE')}</span>
+          <span>RUST / WASM · NIXOS · {t('TESTING', 'TESTS')} · BITCOIN</span>
         </div>
         <div className='hero-composition'>
-          <div>
+          <div className='hero-copy'>
             <p className='eyebrow'>
-              01 / {t('BEYOND THE SURFACE', 'AU-DELÀ DE LA SURFACE')}
+              {t(
+                'BENJAMIN ROGET · SOFTWARE ENGINEER',
+                'BENJAMIN ROGET · INGÉNIEUR LOGICIEL'
+              )}
             </p>
             <h1 id='hero-title'>
               {t('Small details.', 'Le détail.')}
@@ -233,50 +175,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
               )}
             </p>
             <a className='solid-link' href='#rust'>
-              {t('Explore the four facets', 'Explorer les quatre facettes')}{' '}
-              <span>↓</span>
-            </a>
-          </div>
-          <div
-            className='hero-object'
-            aria-label={t(
-              'An ASCII cube, four facets of one engineering practice',
-              'Un cube ASCII, quatre facettes d’une même pratique'
-            )}
-          >
-            <span className='object-coordinate mono'>
-              FIG. 001 —{' '}
-              {t(
-                'ONE OBJECT. MANY PERSPECTIVES.',
-                'UN OBJET. PLUSIEURS PERSPECTIVES.'
-              )}
-            </span>
-            <pre
-              className='hero-ascii'
-              aria-hidden='true'
-            >{`          .----------------.
-         /                /|
-        /   R U S T      / |
-       /                /  |
-      .----------------.   |
-      |                |   |
-      |   B U I L D    | N |
-      |                | I |
-      |   T R U S T    | X /
-      |                |  /
-      |    0 1 0 1     | /
-      '----------------'`}</pre>
-            <div className='object-axis mono'>
-              <span>+ logic</span>
-              <span>+ infrastructure</span>
-              <span>+ confidence</span>
-            </div>
-            <a className='object-caption' href='#rust'>
-              {t(
-                'Not a decoration. A starting point.',
-                'Pas un décor. Un point de départ.'
-              )}{' '}
-              <span>↘</span>
+              {t('Explore my work', 'Découvrir mon travail')} <span>↓</span>
             </a>
           </div>
         </div>
@@ -287,42 +186,6 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
       </section>
 
       <div className='narrative-body'>
-        <aside
-          className='facet-rail'
-          aria-label={t('The four facets', 'Les quatre facettes')}
-        >
-          <pre aria-hidden='true'>{cube}</pre>
-          <span className='eyebrow'>
-            {t('ONE MINDSET', 'UNE MÊME EXIGENCE')}
-          </span>
-          <nav>
-            {facets.map((id, index) => (
-              <a
-                key={id}
-                href={`#${id}`}
-                data-facet-link={id}
-                aria-current={active === id ? 'step' : undefined}
-              >
-                <span>0{index + 1}</span>
-                {
-                  [
-                    'Rust / WASM',
-                    'NixOS',
-                    t('Test automation', 'Automatisation'),
-                    'Bitcoin'
-                  ][index]
-                }
-                <span className='rail-arrow'>↗</span>
-              </a>
-            ))}
-          </nav>
-          <p>
-            {t(
-              'Make it work. Make it repeatable. Show the evidence.',
-              'Le faire fonctionner. Le rendre reproductible. En apporter la preuve.'
-            )}
-          </p>
-        </aside>
         <div className='facet-content'>
           <section
             id='rust'
@@ -345,64 +208,51 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
                 'Un cube en rotation, dessiné caractère par caractère. Une expérience en Rust pour explorer une question : jusqu’où peut aller une idée simple ?'
               )}
             </p>
-            <div className='terminal-window'>
-              <div className='window-bar'>
-                <span>● ● ●</span>
-                <span>ascii-cube-rs / src → browser</span>
-                <span>RUST</span>
-              </div>
-              <pre>
-                <code>{`$ cargo run --release
-  Compiling ascii-cube …
-
-${cube}
-
-$ wasm-pack build --target web
-  Rust → WebAssembly → your browser`}</code>
-              </pre>
-              <span className='terminal-note'>
+            <details className='chapter-details'>
+              <summary>
                 {t(
-                  'The build path, illustrated. The cube below is live.',
-                  'Le parcours de compilation, illustré. Le cube ci-dessous est réel.'
+                  'From Rust to the browser · build and implementation',
+                  'De Rust au navigateur · compilation et implémentation'
                 )}
-              </span>
-            </div>
-            <div className='arc-arrow mono'>
-              ↓ {t('SAME ENGINE. NEW CANVAS.', 'MÊME MOTEUR. NOUVEAU TERRAIN.')}{' '}
-              ↓
-            </div>
-            <div className='live-cube'>
-              <div className='window-bar'>
-                <span>
-                  <i className='status-dot' />{' '}
-                  {t('LIVE / WEBASSEMBLY', 'EN DIRECT / WEBASSEMBLY')}
+              </summary>
+              <div className='terminal-window'>
+                <div className='window-bar'>
+                  <span>● ● ●</span>
+                  <span>ascii-cube-rs / src → browser</span>
+                  <span>RUST</span>
+                </div>
+                <pre>
+                  <code>{`$ wasm-pack build --target web --mode no-install --release
+  Rust → wasm-bindgen → WebAssembly
+
+$ npm run build
+  Next.js → browser
+
+frame buffers → canvas → visible faces`}</code>
+                </pre>
+                <span className='terminal-note'>
+                  {t(
+                    'The build path, illustrated. The same cube stays with you throughout the page.',
+                    'Le parcours de compilation, illustré. Le même cube vous accompagne dans toute la page.'
+                  )}
                 </span>
-                <button
-                  onClick={() => setPaused(!paused)}
-                  aria-pressed={paused}
-                >
-                  {paused
-                    ? t('Resume', 'Reprendre')
-                    : t('Pause motion', 'Mettre en pause')}
-                </button>
               </div>
-              <AsciiCube paused={paused} />
-              <p>
-                {t(
-                  'Drag to rotate · Rust computes the frame, the browser draws the characters.',
-                  'Glisser pour tourner · Rust calcule l’image, le navigateur dessine les caractères.'
-                )}
-              </p>
-            </div>
-            <div className='mission-result'>
-              <span>↳</span>
-              <p>
-                {t(
-                  'The point isn’t the cube. It’s owning the path from memory and rasterization to an interactive browser experience.',
-                  'Le sujet, ce n’est pas le cube. C’est maîtriser le chemin de la mémoire et de la rastérisation jusqu’à une expérience interactive dans le navigateur.'
-                )}
-              </p>
-            </div>
+              <div className='arc-arrow mono'>
+                ↓{' '}
+                {t('SAME ENGINE. NEW CANVAS.', 'MÊME MOTEUR. NOUVEAU TERRAIN.')}{' '}
+                ↓
+              </div>
+
+              <div className='mission-result'>
+                <span>↳</span>
+                <p>
+                  {t(
+                    'The point isn’t the cube. It’s owning the path from memory and rasterization to an interactive browser experience.',
+                    'Le sujet, ce n’est pas le cube. C’est maîtriser le chemin de la mémoire et de la rastérisation jusqu’à une expérience interactive dans le navigateur.'
+                  )}
+                </p>
+              </div>
+            </details>
             <a
               className='text-link'
               href='https://github.com/Strange500/ascii-cube-rs'
@@ -439,85 +289,93 @@ $ wasm-pack build --target web
                 'Un programme fiable a besoin d’un environnement fiable. Mon flake NixOS transforme des machines disparates en système versionné et composable, pas en sept configurations artisanales.'
               )}
             </p>
-            <p className='source-note'>
-              {t(
-                'Select a target to explore its role and configuration.',
-                'Sélectionnez une cible pour explorer son rôle et sa configuration.'
-              )}
-            </p>
-            <div className='infrastructure'>
-              <div className='window-bar'>
-                <span>flake.nix / topology</span>
-                <span>7 {t('TARGETS', 'CIBLES')} · 1 FLAKE</span>
-              </div>
-              <div className='topology'>
-                <svg
-                  viewBox='0 0 100 100'
-                  preserveAspectRatio='none'
-                  aria-hidden='true'
-                >
-                  {machines.map((m, i) => (
-                    <line
-                      key={m.name}
-                      x1='50'
-                      y1='50'
-                      x2={m.x}
-                      y2={m.y}
-                      className={selected === i ? 'selected-edge' : ''}
-                    />
-                  ))}
-                </svg>
-                <a
-                  className='flake-hub mono'
-                  href='https://github.com/Strange500/nixos-config/blob/main/flake.nix'
-                >
-                  {`{ flake }`}
-                  <small>nixosConfigurations</small>
-                </a>
-                {machines.map((m, i) => (
-                  <button
-                    key={m.name}
-                    data-machine={m.name}
-                    aria-pressed={selected === i}
-                    aria-controls='machine-detail'
-                    onClick={() => setSelected(i)}
-                    style={{ left: `${m.x}%`, top: `${m.y}%` }}
-                  >
-                    <span>▣</span>
-                    {m.name}
-                  </button>
-                ))}
-              </div>
-              <div
-                id='machine-detail'
-                className='machine-detail'
-                aria-live='polite'
-              >
-                <div>
-                  <p className='eyebrow'>{machine.role[fr ? 1 : 0]}</p>
-                  <h4>{machine.name}</h4>
-                  <span className='mono machine-profile'>
-                    {machine.profile}
-                  </span>
+            <details className='chapter-details'>
+              <summary>
+                {t(
+                  '7 targets · explore the infrastructure',
+                  '7 cibles · explorer l’infrastructure'
+                )}
+              </summary>
+              <p className='source-note'>
+                {t(
+                  'Select a target to explore its role and configuration.',
+                  'Sélectionnez une cible pour explorer son rôle et sa configuration.'
+                )}
+              </p>
+              <div className='infrastructure'>
+                <div className='window-bar'>
+                  <span>flake.nix / topology</span>
+                  <span>7 {t('TARGETS', 'CIBLES')} · 1 FLAKE</span>
                 </div>
-                <div>
-                  <p>{machine.detail[fr ? 1 : 0]}</p>
+                <div className='topology'>
+                  <svg
+                    viewBox='0 0 100 100'
+                    preserveAspectRatio='none'
+                    aria-hidden='true'
+                  >
+                    {machines.map((m, i) => (
+                      <line
+                        key={m.name}
+                        x1='50'
+                        y1='50'
+                        x2={m.x}
+                        y2={m.y}
+                        className={selected === i ? 'selected-edge' : ''}
+                      />
+                    ))}
+                  </svg>
                   <a
-                    className='text-link'
-                    href={`https://github.com/Strange500/nixos-config/tree/main/hosts/${machine.name}`}
+                    className='flake-hub mono'
+                    href='https://github.com/Strange500/nixos-config/blob/main/flake.nix'
                   >
-                    {t('Inspect host configuration', 'Lire la configuration')}{' '}
-                    ↗
+                    {`{ flake }`}
+                    <small>nixosConfigurations</small>
                   </a>
+                  {machines.map((m, i) => (
+                    <button
+                      key={m.name}
+                      data-machine={m.name}
+                      aria-pressed={selected === i}
+                      aria-controls='machine-detail'
+                      onClick={() => setSelected(i)}
+                      style={{ left: `${m.x}%`, top: `${m.y}%` }}
+                    >
+                      <span>▣</span>
+                      {m.name}
+                    </button>
+                  ))}
+                </div>
+                <div
+                  id='machine-detail'
+                  className='machine-detail'
+                  aria-live='polite'
+                >
+                  <div>
+                    <p className='eyebrow'>{machine.role[fr ? 1 : 0]}</p>
+                    <h4>{machine.name}</h4>
+                    <span className='mono machine-profile'>
+                      {machine.profile}
+                    </span>
+                  </div>
+                  <div>
+                    <p>{machine.detail[fr ? 1 : 0]}</p>
+                    <a
+                      className='text-link'
+                      href={`https://github.com/Strange500/nixos-config/tree/main/hosts/${machine.name}`}
+                    >
+                      {t('Inspect host configuration', 'Lire la configuration')}{' '}
+                      ↗
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-            <p className='source-note'>
-              {t(
-                'Architecture map, not live telemetry. Seven declared targets include six host configurations and the installer ISO.',
-                'Carte d’architecture, pas une télémétrie en direct. Les sept cibles déclarées incluent six hôtes et l’ISO d’installation.'
-              )}
-            </p>
+              <p className='source-note'>
+                {t(
+                  'Architecture map, not live telemetry. Seven declared targets include six host configurations and the installer ISO.',
+                  'Carte d’architecture, pas une télémétrie en direct. Les sept cibles déclarées incluent six hôtes et l’ISO d’installation.'
+                )}
+              </p>
+            </details>
             <a className='text-link' href={blog('nixos-2026-reproducible')}>
               {t(
                 'Field notes: flakes, impermanence & reproducibility',
@@ -547,97 +405,102 @@ $ wasm-pack build --target web
                 'Chez Numih, un test qui échoue pour la mauvaise raison coûte du temps. J’ai travaillé sur le moteur et l’architecture derrière le signal, pas seulement sur le nombre de tests.'
               )}
             </p>
-            <div id='proof' className='proof-console'>
-              <div className='window-bar'>
-                <span>~/experience/numih</span>
-                <span>{t('EVIDENCE LOG', 'JOURNAL DE PREUVES')}</span>
-              </div>
-              <p className='console-command mono'>
-                $ evidence --context --no-hype
-              </p>
-              <div className='proof-grid'>
-                {[
-                  {
-                    value: '50–70',
-                    end: 70,
-                    label: t('integration tests', 'tests d’intégration'),
-                    context: t(
-                      'One Spring Boot / Selenium engine. The same execution path through Maven CI or an asynchronous REST API.',
-                      'Un moteur Spring Boot / Selenium. La même exécution via Maven en CI ou une API REST asynchrone.'
-                    )
-                  },
-                  {
-                    value: '≈70%',
-                    end: 70,
-                    suffix: '%',
-                    label: t(
-                      'fewer false positives',
-                      'de faux positifs en moins'
-                    ),
-                    context: t(
-                      'After refactoring the test architecture: fewer misleading failures to investigate.',
-                      'Après refonte de l’architecture de test : moins d’échecs trompeurs à analyser.'
-                    )
-                  },
-                  {
-                    value: '4h → <10m',
-                    end: 10,
-                    suffix: 'm',
-                    label: t(
-                      'environment / version migration',
-                      'migration d’environnement / version'
-                    ),
-                    context: t(
-                      'A previously manual, hours-long migration brought down to minutes by the same refactoring.',
-                      'Une migration manuelle de plusieurs heures ramenée à quelques minutes par cette même refonte.'
-                    )
-                  },
-                  {
-                    value: '≈40',
-                    end: 40,
-                    label: t(
-                      'developers supported',
-                      'développeurs accompagnés'
-                    ),
-                    context: t(
-                      'A separate production Spring Boot tool distributes daily product-support duties across the team.',
-                      'Un outil Spring Boot distinct, en production, répartit le support produit quotidien dans l’équipe.'
-                    )
-                  }
-                ].map(p => (
-                  <a
-                    key={p.value}
-                    className='proof-item'
-                    href={blog('automated-testing-framework')}
-                  >
-                    <strong>
-                      <Counter {...p} reduced={reduced} />
-                    </strong>
-                    <h3>{p.label}</h3>
-                    <p>{p.context}</p>
-                    <span className='proof-link'>
-                      {t('Read the context', 'Lire le contexte')} ↗
-                    </span>
-                  </a>
-                ))}
-              </div>
-              <p className='source-note'>
+            <details className='chapter-details'>
+              <summary>
                 {t(
-                  'Source: reported Numih work experience (résumé). Approximate before/after figures, not live benchmarks. Employer code is private; the case study explains the architecture. The support tool is a separate delivery.',
-                  'Source : expérience Numih déclarée dans le CV. Ordres de grandeur avant/après, pas des mesures en direct. Code employeur privé ; l’étude détaille l’architecture. L’outil de support est une réalisation distincte.'
+                  '50–70 tests · ≈70% fewer false positives · results and context',
+                  '50–70 tests · ≈70 % de faux positifs en moins · résultats et contexte'
                 )}
-              </p>
-              <a
-                className='text-link'
-                href={blog('automated-testing-framework')}
-              >
-                {t(
-                  'Case study / rebuilding trust in E2E tests',
-                  'Étude / restaurer la confiance dans les tests E2E'
-                )}{' '}
-                ↗
-              </a>
-            </div>
+              </summary>
+              <div id='proof' className='proof-console'>
+                <div className='window-bar'>
+                  <span>~/experience/numih</span>
+                  <span>{t('EVIDENCE LOG', 'JOURNAL DE PREUVES')}</span>
+                </div>
+                <div className='proof-grid'>
+                  {[
+                    {
+                      value: '50–70',
+
+                      label: t('integration tests', 'tests d’intégration'),
+                      context: t(
+                        'One Spring Boot / Selenium engine. The same execution path through Maven CI or an asynchronous REST API.',
+                        'Un moteur Spring Boot / Selenium. La même exécution via Maven en CI ou une API REST asynchrone.'
+                      )
+                    },
+                    {
+                      value: '≈70%',
+
+                      label: t(
+                        'fewer false positives',
+                        'de faux positifs en moins'
+                      ),
+                      context: t(
+                        'After refactoring the test architecture: fewer misleading failures to investigate.',
+                        'Après refonte de l’architecture de test : moins d’échecs trompeurs à analyser.'
+                      )
+                    },
+                    {
+                      value: '4h → <10m',
+
+                      label: t(
+                        'environment / version migration',
+                        'migration d’environnement / version'
+                      ),
+                      context: t(
+                        'A previously manual, hours-long migration brought down to minutes by the same refactoring.',
+                        'Une migration manuelle de plusieurs heures ramenée à quelques minutes par cette même refonte.'
+                      )
+                    },
+                    {
+                      value: '≈40',
+
+                      label: t(
+                        'developers supported',
+                        'développeurs accompagnés'
+                      ),
+                      context: t(
+                        'A separate production Spring Boot tool distributes daily product-support duties across the team.',
+                        'Un outil Spring Boot distinct, en production, répartit le support produit quotidien dans l’équipe.'
+                      )
+                    }
+                  ].map(p => (
+                    <a
+                      key={p.value}
+                      className='proof-item'
+                      href={blog('automated-testing-framework')}
+                    >
+                      <strong>
+                        <span data-counter data-complete='true'>
+                          {p.value}
+                        </span>
+                      </strong>
+                      <h3>{p.label}</h3>
+                      <p>{p.context}</p>
+                      <span className='proof-link'>
+                        {t('Read the context', 'Lire le contexte')} ↗
+                      </span>
+                    </a>
+                  ))}
+                </div>
+                <p className='source-note'>
+                  {t(
+                    'Source: reported Numih work experience (résumé). Approximate before/after figures, not live benchmarks. Employer code is private; the case study explains the architecture. The support tool is a separate delivery.',
+                    'Source : expérience Numih déclarée dans le CV. Ordres de grandeur avant/après, pas des mesures en direct. Code employeur privé ; l’étude détaille l’architecture. L’outil de support est une réalisation distincte.'
+                  )}
+                </p>
+                <a
+                  className='text-link'
+                  href={blog('automated-testing-framework')}
+                >
+                  {t(
+                    'Case study / rebuilding trust in E2E tests',
+                    'Étude / restaurer la confiance dans les tests E2E'
+                  )}{' '}
+                  ↗
+                </a>
+              </div>
+            </details>
           </section>
 
           <section
@@ -719,8 +582,8 @@ $ wasm-pack build --target web
           </div>
           <p>
             {t(
-              'Different surfaces. The same thread: understand the problem, choose deliberately, make the result inspectable.',
-              'Des terrains différents. Un fil commun : comprendre le problème, choisir avec intention, rendre le résultat vérifiable.'
+              'Four case studies. Open a mission to inspect the problem, the decisions and the outcome.',
+              'Quatre études de cas. Ouvrez une mission pour découvrir le problème, les choix et le résultat.'
             )}
           </p>
         </div>
@@ -741,8 +604,8 @@ $ wasm-pack build --target web
               'Garder le moteur Rust et exposer ses buffers via WebAssembly.'
             ),
             result: t(
-              'The draggable, textured ASCII cube you just used. One engine across two environments.',
-              'Le cube ASCII texturé que vous venez de manipuler. Un moteur, deux environnements.'
+              'The interactive ASCII cube accompanying this page. One engine across two environments.',
+              'Le cube ASCII interactif qui accompagne cette page. Un moteur, deux environnements.'
             )
           },
           {
@@ -806,16 +669,18 @@ $ wasm-pack build --target web
             )
           }
         ].map((m, i) => (
-          <article className='mission' key={m.tag}>
-            <div className='mission-number mono'>
-              0{i + 1}
-              <span>↗</span>
-            </div>
+          <details className='mission' name='portfolio-missions' key={m.tag}>
+            <summary>
+              <div className='mission-number mono'>0{i + 1}</div>
+              <div className='mission-heading'>
+                <p className='eyebrow'>{m.tag}</p>
+                <h3>{m.title}</h3>
+              </div>
+              <span className='mission-toggle' aria-hidden='true'>
+                <span>+</span>
+              </span>
+            </summary>
             <div className='mission-main'>
-              <p className='eyebrow'>{m.tag}</p>
-              <h3>
-                <a href={m.href}>{m.title}</a>
-              </h3>
               <dl>
                 <div>
                   <dt>{t('Problem', 'Problème')}</dt>
@@ -834,11 +699,10 @@ $ wasm-pack build --target web
                 {t('Inspect the mission', 'Explorer la mission')} ↗
               </a>
             </div>
-          </article>
+          </details>
         ))}
       </section>
       <footer id='contact' className='portfolio-footer'>
-        <pre aria-hidden='true'>{cube}</pre>
         <div>
           <p className='eyebrow'>
             {t(
@@ -850,6 +714,12 @@ $ wasm-pack build --target web
             {t('Let’s connect', 'Faisons le lien')}
             <em>_</em>
           </h2>
+          <p className='contact-intro'>
+            {t(
+              'A project to build, a system to improve? Let’s talk.',
+              'Un projet à construire, un système à faire évoluer ? Parlons-en.'
+            )}
+          </p>
           <div className='inline-links'>
             <a className='solid-link' href='mailto:benjamin.rogetpro@gmail.com'>
               {t('Say hello', 'Écrivez-moi')} ↗

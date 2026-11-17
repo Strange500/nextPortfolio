@@ -8,7 +8,7 @@
       url = "github:numtide/flake-utils";
       inputs.systems.follows = "systems";
     };
-    ascii-cube-rs.url = "github:Strange500/ascii-cube-rs";
+    ascii-cube-rs.url = "github:Strange500/ascii-cube-rs/e1945f26a858c86c2281bfde7a9706e1dbf36fe3";
   };
 
   outputs = {
@@ -33,10 +33,8 @@
     in {
       devShells.default = pkgs.mkShell {
         inherit buildInputs;
-        shellHook = ''
-          #!/usr/bin/env bash
-          ln -sfn ${ascii-cube-rs.packages.${system}.default} ./wasm-cube
-        '';
+        inputsFrom = [ascii-cube-rs.devShells.${system}.default];
+        # Tracked WASM artifacts allow npm ci without mutating the checkout.
       };
 
       # Self-contained Next.js standalone production server (`next build` with
@@ -47,7 +45,7 @@
         inherit pname version buildInputs npmDepsHash nativeBuildInputs;
         src = ./.;
         prePatch = ''
-          ln -sfn ${ascii-cube-rs.packages.${system}.default} ./wasm-cube
+          cp -r --no-preserve=mode ${ascii-cube-rs.packages.${system}.default}/. ./wasm-cube/
         '';
         installPhase = ''
           runHook preInstall

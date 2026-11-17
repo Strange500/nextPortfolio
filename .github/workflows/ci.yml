@@ -18,7 +18,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install dependencies
@@ -32,10 +32,59 @@ jobs:
 
       - name: Lint
         # Non-blocking: `next lint` was removed in Next 15+, so use eslint directly.
-        # 5 pre-existing errors in legacy/wasm-glue files (not introduced by this PR).
+        # 6 pre-existing errors in blog, Mermaid, résumé and Tailwind files.
         # Clean the debt in a follow-up, then flip continue-on-error to false.
         continue-on-error: true
         run: npm run lint
 
       - name: Build (standalone server)
         run: npm run build
+      - name: Package standalone test server
+        run: |
+          cp -r public .next/standalone/
+          mkdir -p .next/standalone/.next
+          cp -r .next/static .next/standalone/.next/
+          tar -czf portfolio-test-node22.tar.gz -C .next/standalone .
+
+      - name: Ultrawide viewport and contact regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          HOSTNAME=127.0.0.1 PORT=3100 node .next/standalone/server.js &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          curl --fail --silent --retry 20 --retry-connrefused --retry-delay 1 http://127.0.0.1:3100/en -o /dev/null
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium)"
+          export PORTFOLIO_URL=http://127.0.0.1:3100
+          export REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide"
+          node scripts/test-ultrawide.mjs
+          REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/steps" node scripts/test-step-navigation.mjs
+          REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/intro-timing" node scripts/test-intro-timing.mjs
+
+      - name: Upload ultrawide review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-ultrawide-review
+          path: ${{ runner.temp }}/portfolio-ultrawide
+          retention-days: 7
+
+      - name: Upload test server for manual review
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-test-node22
+          path: portfolio-test-node22.tar.gz
+          retention-days: 7
+
+  nix-package:
+    name: Reproducible portfolio package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: cachix/install-nix-action@v27
+        with:
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+      - name: Build the portfolio package without activating a service
+        run: nix build .#packages.x86_64-linux.default --no-link --print-build-logs

@@ -1,0 +1,279 @@
+{
+  "result": "PASS",
+  "recording": {
+    "fps": 15,
+    "scale": 0.75
+  },
+  "evidence": [
+    {
+      "fullMotionFrameIntervalsMs": {
+        "median": 18.199999999720603,
+        "p95": 19.399999999906868
+      }
+    },
+    {
+      "name": "intro",
+      "scrollY": 0,
+      "x": 748.7999877929688,
+      "width": 633.5938110351562,
+      "backing": 634,
+      "dpr": 1,
+      "introOpacity": "1",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "approach",
+      "scrollY": 231,
+      "x": 377.14276123046875,
+      "width": 941.7969360351562,
+      "backing": 942,
+      "dpr": 1,
+      "introOpacity": "0.260797",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "close-up",
+      "scrollY": 463,
+      "x": 160,
+      "width": 1120,
+      "backing": 1120,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "retreat",
+      "scrollY": 752,
+      "x": 111.90965270996094,
+      "width": 957.890625,
+      "backing": 958,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "rust-entry",
+      "scrollY": 983,
+      "x": 33.94865798950195,
+      "width": 680.703125,
+      "backing": 681,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "rust",
+      "scrollY": 1157,
+      "x": 28.799999237060547,
+      "width": 662.390625,
+      "backing": 663,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "nix-transition",
+      "scrollY": 1982,
+      "x": 604.44140625,
+      "width": 597.21875,
+      "backing": 598,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "nix",
+      "scrollY": 2161,
+      "x": 792,
+      "width": 576,
+      "backing": 577,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "testing-transition",
+      "scrollY": 3204,
+      "x": 752.4767456054688,
+      "width": 626.2969360351562,
+      "backing": 627,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "testing",
+      "scrollY": 3579,
+      "x": 712.8001098632812,
+      "width": 676.7968139648438,
+      "backing": 677,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "bitcoin-transition",
+      "scrollY": 4778,
+      "x": 395.8811950683594,
+      "width": 619.171875,
+      "backing": 620,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "bitcoin",
+      "scrollY": 5153,
+      "x": 79.19999694824219,
+      "width": 561.59375,
+      "backing": 562,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "contact-transition",
+      "scrollY": 7911,
+      "x": 86.4094467163086,
+      "width": 547.171875,
+      "backing": 548,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "contact",
+      "scrollY": 8286,
+      "x": 93.5999984741211,
+      "width": 532.796875,
+      "backing": 533,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "missions",
+      "scrollY": 6153,
+      "x": 79.19999694824219,
+      "width": 561.59375,
+      "backing": 562,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "manualInterruption": {
+        "interruptedY": 183,
+        "settledY": 183,
+        "target": 8285.671875
+      }
+    },
+    {
+      "name": "wide-intro",
+      "scrollY": 0,
+      "x": 998.4000244140625,
+      "width": 844.796875,
+      "backing": 845,
+      "dpr": 1,
+      "introOpacity": "1",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "mobile-intro",
+      "scrollY": 0,
+      "x": 70.19999694824219,
+      "width": 249.59376525878906,
+      "backing": 500,
+      "dpr": 2,
+      "introOpacity": "1",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "mobile-rust",
+      "scrollY": 953,
+      "x": 70.20124816894531,
+      "width": 249.60935974121094,
+      "backing": 500,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "mobile-nix",
+      "scrollY": 2193,
+      "x": 70.19999694824219,
+      "width": 249.59376525878906,
+      "backing": 500,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "mobile-testing",
+      "scrollY": 3664,
+      "x": 70.20062255859375,
+      "width": 249.59375,
+      "backing": 500,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "mobile-bitcoin",
+      "scrollY": 5434,
+      "x": 70.20249938964844,
+      "width": 249.60939025878906,
+      "backing": 500,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "mobile-contact",
+      "scrollY": 8750,
+      "x": 70.19999694824219,
+      "width": 249.59376525878906,
+      "backing": 500,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "mobileFaceTap": {
+        "x": 204.24804181233048,
+        "y": 165.53587786495686,
+        "visible": true
+      }
+    },
+    {
+      "name": "mobile-reduced-rust",
+      "scrollY": 953,
+      "x": 70.19999694824219,
+      "width": 249.59376525878906,
+      "backing": 500,
+      "dpr": 2,
+      "introOpacity": "1",
+      "rustOpacity": "1"
+    },
+    {
+      "reducedMotionFrameIntervalsMs": {
+        "median": 16.699999999720603,
+        "p95": 17.399999999906868
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "wasm": [
+    {
+      "status": 200,
+      "url": "http://localhost:3100/_next/static/media/cube_bg.cf574694.wasm",
+      "type": "application/wasm"
+    },
+    {
+      "status": 200,
+      "url": "http://localhost:3100/_next/static/media/cube_bg.cf574694.wasm",
+      "type": "application/wasm"
+    }
+  ]
+}

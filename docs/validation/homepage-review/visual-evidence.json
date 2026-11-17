@@ -1,0 +1,279 @@
+{
+  "result": "PASS",
+  "recording": {
+    "fps": 15,
+    "scale": 0.75
+  },
+  "evidence": [
+    {
+      "fullMotionFrameIntervalsMs": {
+        "median": 17.600000000558794,
+        "p95": 21.200000000186265
+      }
+    },
+    {
+      "name": "intro",
+      "scrollY": 0,
+      "x": 777.5999755859375,
+      "width": 576,
+      "backing": 576,
+      "dpr": 1,
+      "introOpacity": "1",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "approach",
+      "scrollY": 231,
+      "x": 387.8131408691406,
+      "width": 920.453125,
+      "backing": 921,
+      "dpr": 1,
+      "introOpacity": "0.260797",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "close-up",
+      "scrollY": 463,
+      "x": 160,
+      "width": 1120,
+      "backing": 1120,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "retreat",
+      "scrollY": 752,
+      "x": 127.40643310546875,
+      "width": 926.9063110351562,
+      "backing": 927,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "rust-entry",
+      "scrollY": 983,
+      "x": 75.43244171142578,
+      "width": 597.734375,
+      "backing": 598,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "rust",
+      "scrollY": 1157,
+      "x": 72,
+      "width": 576,
+      "backing": 576,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "nix-transition",
+      "scrollY": 1982,
+      "x": 557.1788940429688,
+      "width": 547.7344360351562,
+      "backing": 548,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "nix",
+      "scrollY": 2228,
+      "x": 813.5999755859375,
+      "width": 532.796875,
+      "backing": 533,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "testing-transition",
+      "scrollY": 3294,
+      "x": 788.3826904296875,
+      "width": 554.40625,
+      "backing": 555,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "testing",
+      "scrollY": 3669,
+      "x": 763.2000122070312,
+      "width": 575.9999389648438,
+      "backing": 576,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "bitcoin-transition",
+      "scrollY": 4657,
+      "x": 432.2276916503906,
+      "width": 547.21875,
+      "backing": 548,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "bitcoin",
+      "scrollY": 5032,
+      "x": 100.80010223388672,
+      "width": 518.390625,
+      "backing": 519,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "contact-transition",
+      "scrollY": 6603,
+      "x": 107.98919677734375,
+      "width": 504.015625,
+      "backing": 505,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "contact",
+      "scrollY": 6978,
+      "x": 115.19998931884766,
+      "width": 489.5937805175781,
+      "backing": 490,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "missions",
+      "scrollY": 6032,
+      "x": 100.80000305175781,
+      "width": 518.390625,
+      "backing": 519,
+      "dpr": 1,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "manualInterruption": {
+        "interruptedY": 94,
+        "settledY": 94,
+        "target": 6978.375
+      }
+    },
+    {
+      "name": "wide-intro",
+      "scrollY": 0,
+      "x": 1036.800048828125,
+      "width": 768,
+      "backing": 768,
+      "dpr": 1,
+      "introOpacity": "1",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "mobile-intro",
+      "scrollY": 0,
+      "x": 105.30000305175781,
+      "width": 179.39060974121094,
+      "backing": 359,
+      "dpr": 2,
+      "introOpacity": "1",
+      "rustOpacity": "0"
+    },
+    {
+      "name": "mobile-rust",
+      "scrollY": 967,
+      "x": 105.30294036865234,
+      "width": 179.40625,
+      "backing": 359,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "mobile-nix",
+      "scrollY": 2214,
+      "x": 105.30000305175781,
+      "width": 179.39060974121094,
+      "backing": 359,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "mobile-testing",
+      "scrollY": 3684,
+      "x": 105.30000305175781,
+      "width": 179.39060974121094,
+      "backing": 359,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "mobile-bitcoin",
+      "scrollY": 5595,
+      "x": 105.31047821044922,
+      "width": 179.421875,
+      "backing": 359,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "name": "mobile-contact",
+      "scrollY": 7674,
+      "x": 105.30000305175781,
+      "width": 179.39060974121094,
+      "backing": 359,
+      "dpr": 2,
+      "introOpacity": "0",
+      "rustOpacity": "1"
+    },
+    {
+      "mobileFaceTap": {
+        "x": 201.6491475559771,
+        "y": 124.00835812255741,
+        "visible": true
+      }
+    },
+    {
+      "name": "mobile-reduced-rust",
+      "scrollY": 967,
+      "x": 105.30000305175781,
+      "width": 179.39060974121094,
+      "backing": 359,
+      "dpr": 2,
+      "introOpacity": "1",
+      "rustOpacity": "1"
+    },
+    {
+      "reducedMotionFrameIntervalsMs": {
+        "median": 16.600000000558794,
+        "p95": 17.100000000558794
+      }
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "wasm": [
+    {
+      "status": 200,
+      "url": "http://localhost:3100/_next/static/media/cube_bg.cf574694.wasm",
+      "type": "application/wasm"
+    },
+    {
+      "status": 200,
+      "url": "http://localhost:3100/_next/static/media/cube_bg.cf574694.wasm",
+      "type": "application/wasm"
+    }
+  ]
+}
