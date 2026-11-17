@@ -38,6 +38,30 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
       const start = scrollY,
         end = top(next),
         started = performance.now()
+      const firstJourney =
+        innerWidth >= 900 &&
+        ((next === 1 && Math.abs(start - top(0)) < 2) ||
+          (next === 0 && Math.abs(start - top(1)) < 2))
+      // Re-time the existing scroll path, rather than giving the cube another clock.
+      const introEnd =
+        Number(
+          document.querySelector<HTMLElement>('.scroll-scene')?.dataset.introEnd
+        ) || innerHeight * 0.3
+      const introRatio = introEnd / Math.max(1, top(1) - top(0))
+      const firstProgress = (p: number) => {
+        const stops = [
+          [0, 0],
+          [800 / 2800, introRatio * 0.34],
+          [1450 / 2800, introRatio * 0.48],
+          [2350 / 2800, introRatio * 0.9],
+          [1, 1]
+        ]
+        const i = stops.findIndex(stop => p <= stop[0])
+        if (i <= 0) return p
+        const [a, b] = [stops[i - 1], stops[i]]
+        const t = (p - a[0]) / (b[0] - a[0])
+        return a[1] + (b[1] - a[1]) * t * t * (3 - 2 * t)
+      }
       index = next
       setActive(next)
       total = 0
@@ -46,10 +70,15 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
       surface.dataset.step = ids[index]
       surface.dataset.transitioning = 'true'
       history.replaceState(null, '', `#${ids[index]}`)
-      const duration = !animate || media.matches ? 0 : 1100
+      const duration =
+        !animate || media.matches ? 0 : firstJourney ? 2800 : 1100
       const tick = (now: number) => {
         const p = duration ? Math.min(1, (now - started) / duration) : 1
-        const eased = p * p * (3 - 2 * p)
+        const eased = firstJourney
+          ? next === 0
+            ? 1 - firstProgress(1 - p)
+            : firstProgress(p)
+          : p * p * (3 - 2 * p)
         scrollTo({ top: start + (end - start) * eased, behavior: 'instant' })
         if (p < 1) frame = requestAnimationFrame(tick)
         else {

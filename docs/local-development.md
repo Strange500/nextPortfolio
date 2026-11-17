@@ -149,3 +149,11 @@ CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
 The old comfort suite's native-wheel-distance assertion describes the previous
 continuous-scroll design and is intentionally superseded. Use the step suite
 for current input behavior, plus the ultrawide and raster suites for geometry.
+
+First-transition pacing (real frame samples, forward/reverse close-up hold,
+ordinary transition duration and reduced motion):
+
+```sh
+CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
+  REVIEW_DIR=/tmp/portfolio-intro-timing node scripts/test-intro-timing.mjs
+```

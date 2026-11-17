@@ -5,7 +5,11 @@
 The homepage now advances through seven viewport-sized chapters: intro, Rust,
 NixOS, testing, Bitcoin, missions, contact. `StepNavigation` accumulates 100px
 of vertical wheel intent, then animates the window to the next or previous
-chapter over 1100ms. Wheel input is consumed during transit; a 180ms quiet gap
+chapter over 1100ms. The desktop intro ↔ Rust transition has a dedicated
+2800ms pace: 800ms approach, 650ms close-up, 900ms retreat, then 450ms
+to settle the reading screen. This re-times the same window progression,
+including in reverse; the renderer has no independent animation clock.
+Wheel input is consumed during transit; a 180ms quiet gap
 re-arms the next gesture so trackpad inertia cannot skip chapters. Keyboard,
 swipe, previous/next buttons, text links and cube faces use the same controller.
 Reduced motion changes chapters immediately. Resize preserves the selected
