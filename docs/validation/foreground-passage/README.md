@@ -1,3 +1,6 @@
+> Historical full-screen prototype. Superseded by ../subtle-transition/,
+> which retains a bounded, fully visible cube and understated content fades.
+
 # Continuous opening foreground passage
 
 The desktop intro → Rust transition is a continuous 2400ms passage. The same

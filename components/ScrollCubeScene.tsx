@@ -215,7 +215,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       stage.current!.dataset.flyby = String(flyby)
       surface.dataset.introOccluded = String(flyby && p >= 0.5)
       document.body.style.setProperty('--intro-shift', `${flyby ? y : 0}px`)
-      // Keep the two compositions in the viewport; swap behind the opaque cube.
+      // Keep the compositions stationary; fade between them around the moving cube.
       rustShift = flyby ? y - anchors[1] : 0
       nodes[0].dataset.sceneShift = String(flyby ? y : 0)
       nodes[1].dataset.sceneShift = String(rustShift)
@@ -223,20 +223,18 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       nodes[1].style.transform = flyby ? `translateY(${rustShift}px)` : ''
       nodes[0].style.visibility = flyby && p >= 0.5 ? 'hidden' : ''
       nodes[1].style.visibility = flyby && p < 0.5 ? 'hidden' : ''
+      nodes[1].style.opacity = String(flyby ? smooth((p - 0.84) / 0.16) : 1)
 
       if (flyby) {
         // Translate and rotate throughout the zoom reversal: never park at the peak.
         displayed.x = mix(a.x, b.x, p)
       }
       // Scroll is the pose clock: no delayed interpolation after it stops.
-      const firstProgress = clamp(y / introEnd)
-      surface.style.setProperty(
-        '--intro-opacity',
-        String(
-          reduced || mobile || surface.dataset.stepped
-            ? 1
-            : 1 - smooth(firstProgress / 0.3)
-        )
+      const introOpacity = flyby ? 1 - smooth((p - 0.08) / 0.32) : 1
+      surface.style.setProperty('--intro-opacity', String(introOpacity))
+      document.body.style.setProperty(
+        '--intro-ui-opacity',
+        String(introOpacity)
       )
       const compositionWidth = Math.min(vw, compositionMax)
       const compositionLeft = (vw - compositionWidth) / 2
@@ -259,9 +257,13 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
             compositionWidth * displayed.size
           ) *
           (1 - traversal * 0.65)
-      // Only this deliberate foreground passage may exceed viewport bounds.
+      // A restrained lift in scale; the entire cube stays inside the scene.
       const size = flyby
-        ? mix(readingSize, Math.hypot(vw, vh) * 2, Math.sin(Math.PI * p) ** 2)
+        ? mix(
+            readingSize,
+            Math.min(640, safeBottom - safeTop, compositionWidth * 0.4),
+            Math.sin(Math.PI * p) ** 2
+          )
         : readingSize
       const landscape = mobile && vh < 550 && vw >= 650
       const targetX = landscape
@@ -269,21 +271,15 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         : mobile
           ? vw * 0.5 + Math.sin(p * Math.PI) * 12
           : compositionLeft + compositionWidth * displayed.x
-      const x = flyby
-        ? targetX
-        : Math.max(size / 2 + 16, Math.min(vw - size / 2 - 16, targetX))
+      const x = Math.max(size / 2 + 16, Math.min(vw - size / 2 - 16, targetX))
       const targetY = landscape
         ? vh * 0.44
         : mobile
           ? mix(156, 100, clamp(y / 160))
           : vh * (0.49 - traversal * 0.25)
-      const cy =
-        mobile || flyby
-          ? targetY
-          : Math.max(
-              safeTop + size / 2,
-              Math.min(safeBottom - size / 2, targetY)
-            )
+      const cy = mobile
+        ? targetY
+        : Math.max(safeTop + size / 2, Math.min(safeBottom - size / 2, targetY))
       stage.current!.style.width = `${size}px`
       stage.current!.style.height = `${size}px`
       stage.current!.style.transform = `translate3d(${x - size / 2}px, ${cy - size / 2}px, 0)`
@@ -485,6 +481,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       delete surface.dataset.scene
       delete surface.dataset.introOccluded
       document.body.style.removeProperty('--intro-shift')
+      document.body.style.removeProperty('--intro-ui-opacity')
     }
   }, [])
 

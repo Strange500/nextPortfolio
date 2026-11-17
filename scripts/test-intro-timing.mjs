@@ -83,8 +83,8 @@ try {
     )
     assert.equal(coverage?.length, 15)
     assert.ok(
-      coverage.every(alpha => alpha === 255),
-      'Actual cube faces occlude the entire viewport, including gaps between glyphs'
+      coverage.filter(alpha => alpha === 255).length < 10,
+      'The transition leaves the surrounding scene visible'
     )
     for (const t of [650, 900, 1150, 1400, 1650]) {
       const chunk = samples.filter(s => s.time >= t && s.time < t + 250)
@@ -94,6 +94,10 @@ try {
         `No parked close-up in ${t}ms window`
       )
     }
+    assert.ok(
+      Math.max(...samples.map(s => s.width)) <= 641,
+      'Zoom stays modest and never fills the screen'
+    )
     return {
       duration,
       coverage,

@@ -1085,7 +1085,7 @@ html:has(.narrative[data-stepped]) {
   }
 }
 
-/* The opening cube crosses in front of the complete scene, then uncovers Rust. */
+/* The opening cube glides within the composition as the content fades between chapters. */
 .scroll-scene:has(.scene-cube[data-flyby='true']) {
   z-index: 100;
 }
@@ -1120,4 +1120,10 @@ body:has(.narrative[data-stepped]) .global-controls {
 .narrative[data-intro-occluded='true'] .portfolio-nav,
 body:has(.narrative[data-intro-occluded='true']) .global-controls {
   visibility: hidden;
+}
+.narrative[data-stepped] .portfolio-nav {
+  opacity: var(--intro-opacity, 1);
+}
+body:has(.narrative[data-stepped]) .global-controls {
+  opacity: var(--intro-ui-opacity, 1);
 }

@@ -109,17 +109,14 @@ try {
         false,
         `${width}/${name}: horizontal overflow`
       )
-      assert.equal(
-        state.rustOpacity,
-        '1',
-        'Rust HTML remains readable, including full-page captures'
-      )
+      if (!state.flyby)
+        assert.equal(state.rustOpacity, '1', 'Reading content is fully opaque')
       assert.equal(
         state.rasterBounds,
         true,
         `${width}/${name}: projected face is cut by the raster`
       )
-      if (width >= 900 && !state.flyby) {
+      if (width >= 900) {
         assert.ok(
           state.cube.x >= 15 &&
             state.cube.right <= width - 15 &&
@@ -135,7 +132,11 @@ try {
           state.contact.width >= 450,
           `${width}: contact column collapses: ${state.contact.width}`
         )
-        if (state.rustTitle.y < height && state.rustTitle.bottom > 0)
+        if (
+          Number(state.rustOpacity) > 0.2 &&
+          state.rustTitle.y < height &&
+          state.rustTitle.bottom > 0
+        )
           assert.equal(
             overlaps(state.cube, state.rustTitle),
             false,

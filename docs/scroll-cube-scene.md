@@ -6,12 +6,12 @@ The homepage now advances through seven viewport-sized chapters: intro, Rust,
 NixOS, testing, Bitcoin, missions, contact. `StepNavigation` accumulates 100px
 of vertical wheel intent, then animates the window to the next or previous
 chapter over 1100ms. The desktop intro ↔ Rust transition has a dedicated
-2400ms continuous foreground passage, without an interior pause. The cube
-keeps translating and rotating while its scale reverses at the peak. Its opaque
-projected faces cover the viewport; the outgoing and incoming compositions stay
-pinned and swap behind it halfway through. Receding reveals the Rust composition.
-The same window progression drives the cube in reverse too. The opening passage
-is the only deliberate exception to normal viewport-safe cube bounds.
+2400ms continuous transition, without an interior pause. The cube translates
+and rotates through a modest scale lift (stage capped at 640px and viewport
+safe margins), keeping its entire silhouette visible. The outgoing composition
+fades before the cube crosses; Rust fades in during its retreat. Both remain
+pinned to their reading position. The same progression works in reverse.
+There is no full-screen zoom or viewport-wide masking phase.
 Wheel input is consumed during transit; a 180ms quiet gap
 re-arms the next gesture so trackpad inertia cannot skip chapters. Keyboard,
 swipe, previous/next buttons, text links and cube faces use the same controller.
@@ -47,9 +47,9 @@ secondary text and citron for interactive/active elements. It has the same
 palette under both global theme settings; blog themes remain independent. There
 is no 1600px outer panel or blue margin for the viewport-fixed cube to cross.
 
-Native `scrollY` is the scene clock. Intro → Rust crosses the foreground,
-occludes the old composition and recedes left to reveal Rust on the right.
-There is no parked close-up and no intro crossfade in the staged scene. Both directions use the same
+Native `scrollY` is the scene clock. Intro → Rust glides toward the center
+with a restrained scale lift, then recedes left as Rust appears on the right.
+There is no parked close-up; the content fades are subtle and do not move the text. Both directions use the same
 piecewise smoothstep curve, with no delayed pose interpolation after scroll
 ends. Later chapters vary scale and orientation; Nix → Testing stays on the
 right, and Bitcoin → Contact stays on the left. Large traversals are deliberate
@@ -126,7 +126,7 @@ the background remains full-bleed. The footer explicitly spans the viewport; its
 horizontal padding is derived from that composition rather than mixing a 1440px
 max-width with viewport-relative padding. The canvas stage stays inside vertical
 safe margins and is capped at 1000px in reading states, even on super-ultrawide
-screens. Only the opening foreground passage intentionally exceeds these bounds.
+screens. The opening transition is also bounded; its stage stays below 640px.
 
 The 240×120 raster includes projection clearance around the rotated silhouette.
 At zoom 3300, the earlier 200×100 buffer touched an outer row or column in 469
@@ -134,8 +134,8 @@ of 720 sampled orientations. The new regression checks all four raster borders,
 in addition to holes and texture mapping; the larger buffer has zero affected
 frames. The Rust engine and projection zoom are unchanged.
 
-The desktop opening passage covers the viewport while the HTML compositions
-swap in place; the receding cube reveals Rust. Mobile intro text scrolls naturally. `test-ultrawide.mjs` covers 2560×1080, 3440×1440,
+The desktop opening keeps the full cube silhouette inside the viewport while
+the pinned HTML compositions fade out and in. Mobile intro text scrolls naturally. `test-ultrawide.mjs` covers 2560×1080, 3440×1440,
 3840×1080 and 5120×1440 as well as desktop/mobile baselines, checking frame
 bounds, contact width, text overlap, projected corners and reverse traversal.
 Cross-column moves toward NixOS and Bitcoin briefly recede and rise before
