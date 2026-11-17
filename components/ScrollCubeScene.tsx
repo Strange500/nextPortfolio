@@ -261,7 +261,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           (1 - traversal * 0.65)
       // Only this deliberate foreground passage may exceed viewport bounds.
       const size = flyby
-        ? mix(readingSize, Math.hypot(vw, vh) * 3, Math.sin(Math.PI * p) ** 2)
+        ? mix(readingSize, Math.hypot(vw, vh) * 2, Math.sin(Math.PI * p) ** 2)
         : readingSize
       const landscape = mobile && vh < 550 && vw >= 650
       const targetX = landscape

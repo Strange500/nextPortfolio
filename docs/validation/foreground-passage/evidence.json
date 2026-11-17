@@ -2,7 +2,7 @@
   "result": "PASS",
   "reports": [
     {
-      "duration": 2412.10000000149,
+      "duration": 2413.7999999970198,
       "coverage": [
         255,
         255,
@@ -20,10 +20,10 @@
         255,
         255
       ],
-      "maximumStage": 5259.078125
+      "maximumStage": 3506.203125
     },
     {
-      "duration": 2408,
+      "duration": 2410.300000000745,
       "coverage": [
         255,
         255,
@@ -41,10 +41,10 @@
         255,
         255
       ],
-      "maximumStage": 5258.3125
+      "maximumStage": 3505.578125
     }
   ],
-  "ordinary": 1115.1000000014901,
-  "reduced": 36.69999999925494,
+  "ordinary": 1116.1000000014901,
+  "reduced": 27.299999997019768,
   "errors": []
 }

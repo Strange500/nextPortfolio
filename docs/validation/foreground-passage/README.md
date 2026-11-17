@@ -2,14 +2,14 @@
 
 The desktop intro → Rust transition is a continuous 2400ms passage. The same
 Rust/WASM cube translates, rotates and grows beyond the viewport, occludes the
-old composition, then recedes to its Rust reading position while revealing the
+old composition with a restrained overscan, then recedes to its Rust reading position while revealing the
 new composition. Both HTML compositions stay in place during the passage; they
 swap under the opaque projected cube. There is no parked close-up or intro fade.
 Reverse travel follows the same path. Later chapter transitions retain 1100ms;
 reduced motion remains instant and mobile retains its compact transition.
 
 `foreground-passage.webm` records the actual optimized standalone page in
-Chromium (1440×1000, 15fps, 75% scale). PNGs retain full viewport resolution.
+Chromium (1440×1000, 30fps, 75% scale). PNGs retain full viewport resolution.
 `evidence.json` records actual frame timing, full opacity at 15 viewport sample
 points during occlusion and continuous center movement through the close-up,
 in both directions. The timing test replaces the previous hold assertion.
