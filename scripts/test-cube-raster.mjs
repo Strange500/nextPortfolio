@@ -90,16 +90,26 @@ assert.equal(
 
 // The persistent scene uses a larger, uncropped grid and a higher projection zoom.
 // Raising zoom past the upstream sampler's useful density creates interior holes.
-const sceneCube = new Cube(200, 100)
+const sceneCube = new Cube(240, 120)
 sceneCube.set_zoom(3300)
 sceneCube.set_rotation_speed(0, 0, 0)
-let sceneHoles = 0
+let sceneHoles = 0,
+  clippedFrames = 0
 for (let frame = 0; frame < 720; frame++) {
   sceneCube.set_rotation(frame * 0.037, frame * 0.053, frame * 0.019)
   sceneCube.next_frame()
-  const chars = new Uint8Array(memory.buffer, sceneCube.chars_ptr(), 200 * 100)
-  for (let y = 0; y < 100; y++) {
-    const row = chars.subarray(y * 200, (y + 1) * 200)
+  const chars = new Uint8Array(memory.buffer, sceneCube.chars_ptr(), 240 * 120)
+  if (
+    chars.subarray(0, 240).some(c => c !== 32) ||
+    chars.subarray(-240).some(c => c !== 32) ||
+    Array.from(
+      { length: 120 },
+      (_, row) => chars[row * 240] !== 32 || chars[row * 240 + 239] !== 32
+    ).some(Boolean)
+  )
+    clippedFrames++
+  for (let y = 0; y < 120; y++) {
+    const row = chars.subarray(y * 240, (y + 1) * 240)
     const first = row.findIndex(c => c !== 32)
     const last = row.findLastIndex(c => c !== 32)
     for (let x = first; x < last; x++) if (row[x] === 32) sceneHoles++
@@ -115,25 +125,25 @@ for (let y = 0; y < 100; y++)
   }
 sceneCube.update_face_fast(5, texture, colors)
 sceneCube.next_frame()
-const sceneChars = new Uint8Array(memory.buffer, sceneCube.chars_ptr(), 20000)
+const sceneChars = new Uint8Array(memory.buffer, sceneCube.chars_ptr(), 28800)
 const sceneColors = new Uint32Array(
   memory.buffer,
   sceneCube.colors_ptr(),
   20000
 )
 for (const [q, x, y] of [
-  [0, 80, 40],
-  [1, 120, 40],
-  [2, 80, 60],
-  [3, 120, 60]
+  [0, 100, 50],
+  [1, 140, 50],
+  [2, 100, 70],
+  [3, 140, 70]
 ]) {
   assert.equal(
-    sceneChars[y * 200 + x],
+    sceneChars[y * 240 + x],
     65 + q,
     'High-resolution texture quadrant'
   )
   assert.equal(
-    sceneColors[y * 200 + x],
+    sceneColors[y * 240 + x],
     palette[q],
     'High-resolution texture color'
   )
@@ -142,6 +152,11 @@ sceneCube.free()
 assert.equal(
   sceneHoles,
   0,
-  'Scene projection must stay watertight at 200×100 / zoom 3300'
+  'Scene projection must stay watertight at 240×120 / zoom 3300'
 )
-console.log(JSON.stringify({ sceneFrames: 720, sceneHoles }))
+assert.equal(
+  clippedFrames,
+  0,
+  'Silhouette must not touch any raster border at any tested orientation'
+)
+console.log(JSON.stringify({ sceneFrames: 720, sceneHoles, clippedFrames }))

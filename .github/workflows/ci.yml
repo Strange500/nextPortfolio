@@ -46,6 +46,27 @@ jobs:
           cp -r .next/static .next/standalone/.next/
           tar -czf portfolio-test-node22.tar.gz -C .next/standalone .
 
+      - name: Ultrawide viewport and contact regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          HOSTNAME=127.0.0.1 PORT=3100 node .next/standalone/server.js &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+          curl --fail --silent --retry 20 --retry-connrefused --retry-delay 1 http://127.0.0.1:3100/en -o /dev/null
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium)"
+          export PORTFOLIO_URL=http://127.0.0.1:3100
+          export REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide"
+          node scripts/test-ultrawide.mjs
+
+      - name: Upload ultrawide review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-ultrawide-review
+          path: ${{ runner.temp }}/portfolio-ultrawide
+          retention-days: 7
+
       - name: Upload test server for manual review
         uses: actions/upload-artifact@v4
         with:

@@ -51,7 +51,7 @@ try {
       y => window.scrollTo({ top: y, behavior: 'instant' }),
       y
     )
-    // Allow the illustration's 85 ms damping to settle before comparing poses.
+    // Wait for native scroll and the raster/geometry pair to paint.
     await new Promise(r => setTimeout(r, 650))
   }
   const rustY = await page.$eval(
@@ -59,8 +59,13 @@ try {
     e => e.getBoundingClientRect().top + scrollY
   )
   const initial = await state()
-  await scroll(rustY * 0.45)
-  const mid = await state()
+  const approach = []
+  for (const fraction of [0.1, 0.15, 0.2, 0.25]) {
+    await scroll(rustY * fraction)
+    approach.push({ y: rustY * fraction, pose: await state() })
+  }
+  const peak = approach.reduce((a, b) => (a.pose.width > b.pose.width ? a : b))
+  const mid = peak.pose
   await scroll(rustY)
   const rust = await state()
   assert.ok(
@@ -72,7 +77,7 @@ try {
     'Central close-up is followed by a smaller reading pose'
   )
   assert.equal(rust.active, '#rust')
-  await scroll(rustY * 0.45)
+  await scroll(peak.y)
   const reverse = await state()
   assert.ok(
     Math.abs(reverse.x - mid.x) < 2,

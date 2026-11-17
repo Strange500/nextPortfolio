@@ -81,6 +81,9 @@ try {
     )
     await page.screenshot({ path: `${output}/${name}.png` })
   }
+  const introEnd = await page.$eval('.scroll-scene', e =>
+    Number(e.dataset.introEnd)
+  )
   for (const [name, p] of [
     ['intro', 0],
     ['approach', 0.2],
@@ -89,11 +92,11 @@ try {
     ['rust-entry', 0.85],
     ['rust', 1]
   ]) {
-    await scroll(anchors.rust * p)
+    await scroll(name === 'rust' ? anchors.rust : introEnd * p)
     await capture(name)
   }
   assert.equal(evidence.find(e => e.name === 'close-up').introOpacity, '0')
-  assert.equal(evidence.find(e => e.name === 'close-up').rustOpacity, '0')
+  assert.equal(evidence.find(e => e.name === 'close-up').rustOpacity, '1')
   for (const id of ['nix', 'testing', 'bitcoin', 'contact']) {
     const index = Object.keys(anchors).indexOf(id)
     const previous = Object.values(anchors)[index - 1]

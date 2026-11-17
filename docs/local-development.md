@@ -51,7 +51,7 @@ with rustup already available:
 select that toolchain, wasm-pack 0.13.1 and wasm-bindgen-cli 0.2.121. Do not
 update Cargo.lock during the rebuild.
 
-The 200×100 scene grid uses the adaptive Rust sampler. `update_face_fast`
+The 240×120 scene grid uses the adaptive Rust sampler. `update_face_fast`
 retains its 100×100 texture-upload contract. The tracked binary was rebuilt
 locally; its generated JS and declarations are unchanged. The frontend imports
 this file package as `ascii-cube`; webpack emits the WASM asset and serves it as
@@ -127,3 +127,14 @@ later Home Manager deployment until the pin PR merges.
 
 This environment has no SSH credential or mTLS client certificate for that host.
 A pushed pin / successful local build is **not** a verified remote deployment.
+
+Ultrawide regression (against the standalone server above):
+
+```sh
+CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
+  REVIEW_DIR=/tmp/portfolio-ultrawide node scripts/test-ultrawide.mjs
+```
+
+This checks 232 viewport states across eight screen sizes, including
+2560×720 and 5120×1440. CI runs it against the packaged standalone server
+and uploads viewport screenshots and geometry evidence.

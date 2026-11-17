@@ -33,7 +33,7 @@ and navigation available with a fallback message.
 
 ## Material and interaction
 
-The stable 200×100 ASCII buffer avoids density changes during zoom. Projection
+The stable 240×120 ASCII buffer avoids density changes during zoom. Projection
 uses camera distance 100, zoom 3300 and 8×16 logical cells. Rust surface
 sampling adapts to the buffer width, capped at 256; legacy clients keep their
 historical grid, and texture uploads retain 100×100 row-major coordinates. The
@@ -83,3 +83,26 @@ route is declared. Only the `portfolio-test` consumer pin may change;
 production's independent `portfolio` input must stay unchanged. Deployment
 requires host access, which is absent in this environment; a prepared deployment
 pin is not an activated or verified service.
+
+## Ultrawide and silhouette bounds
+
+A shared CSS composition width caps content and cube positions at 1600px while
+the background remains full-bleed. The footer explicitly spans the viewport; its
+horizontal padding is derived from that composition rather than mixing a 1440px
+max-width with viewport-relative padding. The canvas stage stays inside vertical
+safe margins and is capped at 1000px even on super-ultrawide screens.
+
+The 240×120 raster includes projection clearance around the rotated silhouette.
+At zoom 3300, the earlier 200×100 buffer touched an outer row or column in 469
+of 720 sampled orientations. The new regression checks all four raster borders,
+in addition to holes and texture mapping; the larger buffer has zero affected
+frames. The Rust engine and projection zoom are unchanged.
+
+The desktop approach/close-up/retreat now finishes before Rust reading content
+enters the cube's vertical range. Rust HTML stays opaque throughout; mobile
+intro text scrolls naturally. `test-ultrawide.mjs` covers 2560×1080, 3440×1440,
+3840×1080 and 5120×1440 as well as desktop/mobile baselines, checking frame
+bounds, contact width, text overlap, projected corners and reverse traversal.
+Cross-column moves toward NixOS and Bitcoin briefly recede and rise before
+returning to their reading pose; captions are hidden during these traversals so
+they do not mask incoming headings.

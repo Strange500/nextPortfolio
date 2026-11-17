@@ -35,7 +35,7 @@
 }
 .cube-hit-layer text {
   font:
-    600 30px var(--font-fira-code),
+    600 36px var(--font-fira-code),
     monospace;
   fill: var(--ink);
   pointer-events: none;
@@ -256,7 +256,7 @@
     display: inline;
   }
   .cube-hit-layer text {
-    font-size: 76px;
+    font-size: 92px;
   }
   .scene-nav {
     bottom: max(8px, env(safe-area-inset-bottom));
@@ -770,4 +770,59 @@ body:has(.narrative) [data-language-switch]:focus-visible {
   .scene-nav a + a {
     border-left: 1px solid var(--line);
   }
+}
+
+/* One bounded composition on a full-bleed surface, including ultrawide screens. */
+.narrative,
+body:has(.narrative) {
+  --composition-max: 1600px;
+  --composition-width: min(100vw, var(--composition-max));
+  --composition-offset: max(0px, calc((100vw - var(--composition-max)) / 2));
+}
+@media (min-width: 900px) {
+  .narrative .portfolio-nav,
+  .narrative .portfolio-hero {
+    width: 100%;
+    max-width: var(--composition-max);
+    margin-inline: auto;
+    padding-inline: min(6vw, 96px);
+  }
+  body:has(.narrative) .global-controls {
+    right: calc(var(--composition-offset) + min(6vw, 96px));
+  }
+  .narrative .facet-section,
+  .narrative #bitcoin,
+  .narrative .missions-section {
+    width: calc(var(--composition-width) * 0.49);
+    margin-left: calc(
+      var(--composition-offset) + var(--composition-width) * 0.48
+    );
+    margin-right: 0;
+    padding-left: min(2vw, 32px);
+    padding-right: min(4vw, 64px);
+  }
+  .narrative .facet-section:nth-child(even),
+  .narrative #nix,
+  .narrative #testing {
+    margin-left: calc(
+      var(--composition-offset) + var(--composition-width) * 0.02
+    );
+    padding-left: min(4vw, 64px);
+    padding-right: min(2vw, 32px);
+  }
+  .narrative .portfolio-footer {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-left: calc(
+      var(--composition-offset) + var(--composition-width) * 0.49
+    );
+    padding-right: calc(
+      var(--composition-offset) + var(--composition-width) * 0.05
+    );
+  }
+}
+
+.scene-cube[data-travelling='true'] .cube-caption {
+  visibility: hidden;
 }

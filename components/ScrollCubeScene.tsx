@@ -18,17 +18,17 @@ const normals = [
 ]
 // A stable material grid avoids density popping during scroll. The pinned Rust
 // sampler adapts to this resolution (see raster and texture regression).
-const columns = 200,
-  rows = 100,
+const columns = 240,
+  rows = 120,
   zoom = 3300
-const logicalSize = 1600
+const logicalSize = columns * 8
 const poses = [
-  { x: 0.74, size: 0.4, rotation: [0.32, 2.6, -0.08] },
-  { x: 0.25, size: 0.4, rotation: [-1.08, 0.38, -0.12] },
-  { x: 0.75, size: 0.37, rotation: [0.32, -1.08, 0.12] },
-  { x: 0.73, size: 0.4, rotation: [0.38, 1.12, -0.12] },
-  { x: 0.25, size: 0.36, rotation: [0.3, 0.4, 0.12] },
-  { x: 0.25, size: 0.34, rotation: [1.25, 0.22, -0.06] }
+  { x: 0.74, size: 0.32, rotation: [0.32, 2.6, -0.08] },
+  { x: 0.25, size: 0.34, rotation: [-1.08, 0.38, -0.12] },
+  { x: 0.75, size: 0.31, rotation: [0.32, -1.08, 0.12] },
+  { x: 0.73, size: 0.34, rotation: [0.38, 1.12, -0.12] },
+  { x: 0.25, size: 0.3, rotation: [0.3, 0.4, 0.12] },
+  { x: 0.25, size: 0.29, rotation: [1.25, 0.22, -0.06] }
 ]
 const smooth = (p: number) => {
   const t = clamp(p)
@@ -97,6 +97,10 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
     const media = matchMedia('(prefers-reduced-motion: reduce)')
     const nodes = sections.map(id => document.getElementById(id)!)
     const surface = document.querySelector<HTMLElement>('.narrative')!
+    const compositionMax =
+      parseFloat(
+        getComputedStyle(surface).getPropertyValue('--composition-max')
+      ) || 1600
     let dirty = true
     const invalidate = () => {
       dirty = true
@@ -153,8 +157,11 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       const anchors = nodes.map((node, i) =>
         i === 0 ? 0 : node.getBoundingClientRect().top + y
       )
-      let index = 0
-      for (let i = 1; i < anchors.length; i++)
+      // Finish the first move before the Rust title enters the reading area.
+      const introEnd = mobile ? anchors[1] : Math.max(1, anchors[1] - vh * 0.7)
+      root.current!.dataset.introEnd = String(introEnd)
+      let index = y >= introEnd * 0.9 ? 1 : 0
+      for (let i = 2; i < anchors.length; i++)
         if (y >= anchors[i] - vh * 0.15) index = i
       const id = sections[index]
       if (previous !== id) {
@@ -179,7 +186,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
                 anchors[i] - 1,
                 Math.max(anchors[i - 1] + vh * 0.45, anchors[i] - vh * 0.75)
               )
-        p = clamp((y - start) / (anchors[i] - start))
+        p = clamp((y - start) / ((i === 1 ? introEnd : anchors[i]) - start))
         break
       }
       if (reduced) {
@@ -192,7 +199,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         progress = smooth(p)
       if (from === 0 && to === 1 && !reduced) {
         // Approach, a brief close-up, then retreat to the reading composition.
-        const close = { x: 0.5, size: 0.78, rotation: [-0.42, 2.16, 0.14] }
+        const close = { x: 0.5, size: 0.7, rotation: [-0.42, 2.16, 0.14] }
         if (p < 0.34) {
           b = close
           progress = smooth(p / 0.34)
@@ -211,29 +218,49 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         rotation: a.rotation.map((n, i) => mix(n, b.rotation[i], progress))
       }
       // Scroll is the pose clock: no delayed interpolation after it stops.
-      const firstProgress = clamp(y / anchors[1])
+      const firstProgress = clamp(y / introEnd)
       surface.style.setProperty(
         '--intro-opacity',
-        String(reduced ? 1 : 1 - smooth(firstProgress / 0.3))
+        String(reduced || mobile ? 1 : 1 - smooth(firstProgress / 0.3))
       )
-      nodes[1].style.opacity = String(
-        reduced ? 1 : smooth((firstProgress - 0.67) / 0.17)
-      )
+      const compositionWidth = Math.min(vw, compositionMax)
+      const compositionLeft = (vw - compositionWidth) / 2
+      const safeTop = Math.min(96, vh * 0.15)
+      const safeBottom = vh - Math.min(128, vh * 0.2)
+      const traversal =
+        !mobile &&
+        from > 0 &&
+        from !== to &&
+        Math.abs(poses[from].x - poses[to].x) > 0.2
+          ? Math.sin(Math.PI * p)
+          : 0
+      stage.current!.dataset.travelling = String(traversal > 0.02)
       const size = mobile
         ? Math.min(190, vw * 0.46) *
           (reduced ? 1 : 1 + Math.sin(p * Math.PI) * 0.08)
-        : Math.min(vh * 1.12, vw * displayed.size)
+        : Math.min(
+            1000,
+            safeBottom - safeTop,
+            compositionWidth * displayed.size
+          ) *
+          (1 - traversal * 0.65)
       const landscape = mobile && vh < 550 && vw >= 650
-      const x = landscape
+      const targetX = landscape
         ? vw * 0.2
         : mobile
           ? vw * 0.5 + Math.sin(p * Math.PI) * 12
-          : vw * displayed.x
-      const cy = landscape
+          : compositionLeft + compositionWidth * displayed.x
+      const x = Math.max(size / 2 + 16, Math.min(vw - size / 2 - 16, targetX))
+      const targetY = landscape
         ? vh * 0.44
         : mobile
           ? mix(156, 100, clamp(y / 160))
-          : vh * (from === 0 && to === 1 ? mix(0.47, 0.49, p) : 0.49)
+          : vh *
+            ((from === 0 && to === 1 ? mix(0.47, 0.49, p) : 0.49) -
+              traversal * 0.25)
+      const cy = mobile
+        ? targetY
+        : Math.max(safeTop + size / 2, Math.min(safeBottom - size / 2, targetY))
       stage.current!.style.width = `${size}px`
       stage.current!.style.height = `${size}px`
       stage.current!.style.transform = `translate3d(${x - size / 2}px, ${cy - size / 2}px, 0)`
@@ -337,8 +364,8 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         text.setAttribute('x', String(cx))
         text.setAttribute('y', String(cy))
         const plate = group.querySelector('rect')!
-        const labelWidth = mobile ? 620 : 300
-        const labelHeight = mobile ? 150 : 72
+        const labelWidth = mobile ? 744 : 360
+        const labelHeight = mobile ? 180 : 86
         plate.setAttribute('width', String(labelWidth))
         plate.setAttribute('height', String(labelHeight))
         plate.setAttribute('x', String(cx - labelWidth / 2))
@@ -424,7 +451,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           role='img'
         />
         <svg
-          viewBox='0 0 1600 1600'
+          viewBox={`0 0 ${logicalSize} ${logicalSize}`}
           className='cube-hit-layer'
           aria-hidden='true'
           onPointerLeave={() => enter('')}
