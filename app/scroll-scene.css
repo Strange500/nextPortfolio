@@ -1,5 +1,5 @@
 /* Persistent scene. The editorial HTML remains in normal document flow;
-   only the one WASM object is viewport-pinned. No wheel interception. */
+   only the one WASM object is viewport-pinned. Staged input is enhanced below. */
 .scroll-scene {
   position: relative;
   z-index: 20;
@@ -825,4 +825,262 @@ body:has(.narrative) {
 
 .scene-cube[data-travelling='true'] .cube-caption {
   visibility: hidden;
+}
+
+/* Progressive enhancement: each chapter occupies exactly one screen. */
+html:has(.narrative[data-stepped]) {
+  overflow: hidden;
+  scroll-behavior: auto;
+}
+.narrative[data-stepped] .portfolio-nav {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+}
+.narrative[data-stepped]
+  :is(.portfolio-hero, .facet-section, .missions-section, .portfolio-footer) {
+  box-sizing: border-box;
+  height: 100dvh;
+  min-height: 0;
+  padding-top: clamp(72px, 9vh, 110px);
+  padding-bottom: 96px;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+.narrative[data-stepped] .portfolio-hero {
+  padding-top: 100px;
+}
+.narrative[data-stepped] .hero-composition {
+  padding-top: 4vh;
+}
+.narrative[data-stepped] .hero-bottom {
+  margin-top: 24px;
+}
+.narrative[data-stepped] .facet-section h2 {
+  font-size: clamp(32px, 4vh, 52px);
+}
+.narrative[data-stepped] .section-intro {
+  margin-block: 16px;
+}
+.narrative[data-stepped] .proof-item:nth-child(n) {
+  padding-block: 14px;
+}
+.narrative[data-stepped] .proof-item strong {
+  font-size: clamp(28px, 4vh, 42px);
+}
+.narrative[data-stepped] .machine-detail {
+  gap: 8px;
+  padding-block: 14px;
+}
+.narrative[data-stepped] .footer-colophon {
+  margin-top: 32px;
+}
+.narrative[data-stepped] .missions-section .section-heading > p {
+  margin-top: 12px;
+}
+@media (max-width: 899px) {
+  .narrative[data-stepped]
+    :is(.portfolio-hero, .facet-section, .missions-section, .portfolio-footer) {
+    padding-top: 220px;
+    padding-bottom: 84px;
+  }
+  .narrative[data-stepped] .portfolio-hero {
+    padding-top: 250px;
+  }
+  .narrative[data-stepped] .hero-composition {
+    padding-top: 12px;
+  }
+  .narrative[data-stepped] .hero-composition h1 {
+    font-size: 42px;
+  }
+  .narrative[data-stepped] .hero-bottom {
+    display: none;
+  }
+}
+@media (max-height: 600px) and (min-width: 900px) {
+  .narrative[data-stepped]
+    :is(.portfolio-hero, .facet-section, .missions-section, .portfolio-footer) {
+    padding-top: 40px;
+    padding-bottom: 80px;
+  }
+}
+.narrative .chapter-details {
+  margin-block: 24px;
+  border-block: 1px solid var(--line);
+}
+.narrative .chapter-details > summary {
+  padding: 20px 8px;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.6;
+  cursor: pointer;
+}
+.narrative .chapter-details > summary::marker {
+  color: var(--acid);
+}
+.narrative .chapter-details > summary:focus-visible {
+  outline: 2px solid var(--acid);
+}
+.narrative .chapter-details[open] > summary {
+  color: var(--acid);
+}
+.narrative[data-stepped] .missions-section .mission summary {
+  padding-block: 14px;
+}
+.narrative[data-stepped] .missions-section .section-heading {
+  margin-bottom: 20px;
+}
+@media (max-width: 899px) {
+  .narrative[data-stepped] .hero-composition h1 {
+    font-size: clamp(30px, 7vw, 40px);
+  }
+  .narrative[data-stepped] .hero-copy > p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .narrative[data-stepped] .portfolio-footer h2 {
+    font-size: 36px;
+  }
+}
+.step-controls {
+  position: fixed;
+  z-index: 35;
+  right: 16px;
+  top: 40%;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.step-controls button {
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 20px;
+}
+.step-controls button:hover,
+.step-controls button:focus-visible {
+  color: var(--acid);
+  border-color: var(--acid);
+}
+.step-controls button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+@media (max-width: 899px) {
+  .step-controls {
+    top: 12px;
+    right: 8px;
+    gap: 4px;
+  }
+}
+@media (max-width: 899px) {
+  .narrative[data-stepped] .missions-section .section-heading h2 {
+    font-size: 32px;
+    line-height: 1.1;
+  }
+  .narrative[data-stepped] .missions-section .section-heading > p {
+    margin-block: 10px;
+    font-size: 14px;
+  }
+  .narrative[data-stepped] .missions-section .mission summary {
+    padding-block: 10px;
+    gap: 8px;
+    grid-template-columns: 28px minmax(0, 1fr) 32px;
+  }
+  .narrative[data-stepped] .missions-section .mission-heading h3 {
+    font-size: 17px;
+    line-height: 1.25;
+  }
+  .narrative[data-stepped] .missions-section .mission-heading .eyebrow {
+    margin-bottom: 4px;
+    font-size: 9px;
+  }
+  .narrative[data-stepped] .missions-section .mission-number {
+    font-size: 16px;
+  }
+  .narrative[data-stepped] .protocol-path {
+    margin-block: 16px;
+    padding-block: 12px;
+  }
+  .narrative[data-stepped] .bitcoin-note {
+    padding-block: 12px;
+  }
+  .narrative[data-stepped] .bitcoin-note p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+}
+@media (max-height: 800px) and (min-width: 900px) {
+  .narrative[data-stepped] .portfolio-hero {
+    padding-top: 80px;
+  }
+  .narrative[data-stepped] .hero-composition {
+    padding-top: 0;
+  }
+  .narrative[data-stepped] .hero-bottom {
+    display: none;
+  }
+}
+.narrative[data-stepped] .hero-composition {
+  padding-bottom: 0;
+}
+@media (max-height: 800px) and (min-width: 900px) {
+  .narrative[data-stepped] .hero-composition h1 {
+    font-size: 56px;
+  }
+  .narrative[data-stepped] .missions-section .section-heading h2 {
+    font-size: 36px;
+    line-height: 1.1;
+  }
+  .narrative[data-stepped] .missions-section .section-heading > p {
+    margin-block: 8px;
+    font-size: 14px;
+  }
+  .narrative[data-stepped] .missions-section .mission summary {
+    padding-block: 10px;
+  }
+  .narrative[data-stepped] .missions-section .mission-heading h3 {
+    font-size: 20px;
+  }
+  .narrative[data-stepped] .missions-section .mission-heading .eyebrow {
+    margin-bottom: 4px;
+  }
+}
+@media (max-width: 899px) {
+  .step-controls {
+    top: 86px;
+  }
+}
+@media (min-width: 650px) and (max-width: 899px) and (max-height: 600px) {
+  .narrative[data-stepped]
+    :is(.portfolio-hero, .facet-section, .missions-section, .portfolio-footer) {
+    padding-top: 32px;
+    padding-left: 44%;
+    padding-bottom: 80px;
+  }
+  .narrative[data-stepped] .hero-composition h1 {
+    font-size: 28px;
+  }
+}
+@media (max-width: 899px) {
+  .narrative[data-stepped] #bitcoin .section-intro {
+    margin-block: 10px;
+  }
+  .narrative[data-stepped] #bitcoin .eyebrow {
+    margin-bottom: 16px;
+  }
+}
+@media (min-width: 900px) {
+  .narrative[data-stepped] .portfolio-hero {
+    padding-top: 128px;
+  }
 }

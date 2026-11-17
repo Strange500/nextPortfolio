@@ -182,10 +182,12 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         const start =
           i === 1
             ? 0
-            : Math.min(
-                anchors[i] - 1,
-                Math.max(anchors[i - 1] + vh * 0.45, anchors[i] - vh * 0.75)
-              )
+            : surface.dataset.stepped
+              ? anchors[i] - vh
+              : Math.min(
+                  anchors[i] - 1,
+                  Math.max(anchors[i - 1] + vh * 0.45, anchors[i] - vh * 0.75)
+                )
         p = clamp((y - start) / ((i === 1 ? introEnd : anchors[i]) - start))
         break
       }
@@ -420,6 +422,10 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
     setHover(section)
   }
   function navigate(id: string) {
+    if (document.querySelector('.narrative[data-stepped]')) {
+      window.dispatchEvent(new CustomEvent('portfolio-step', { detail: id }))
+      return
+    }
     const node = document.getElementById(id)
     if (!node) return
     const top = id === 'intro' ? 0 : node.getBoundingClientRect().top + scrollY

@@ -138,3 +138,14 @@ CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
 This checks 232 viewport states across eight screen sizes, including
 2560×720 and 5120×1440. CI runs it against the packaged standalone server
 and uploads viewport screenshots and geometry evidence.
+
+Staged navigation regression (current interaction contract):
+
+```sh
+CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
+  REVIEW_DIR=/tmp/portfolio-steps node scripts/test-step-navigation.mjs
+```
+
+The old comfort suite's native-wheel-distance assertion describes the previous
+continuous-scroll design and is intentionally superseded. Use the step suite
+for current input behavior, plus the ultrawide and raster suites for geometry.

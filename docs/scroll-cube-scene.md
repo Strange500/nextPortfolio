@@ -1,4 +1,32 @@
-# One scroll-driven Rust/WASM scene
+# One staged Rust/WASM scene
+
+## Current navigation contract
+
+The homepage now advances through seven viewport-sized chapters: intro, Rust,
+NixOS, testing, Bitcoin, missions, contact. `StepNavigation` accumulates 100px
+of vertical wheel intent, then animates the window to the next or previous
+chapter over 1100ms. Wheel input is consumed during transit; a 180ms quiet gap
+re-arms the next gesture so trackpad inertia cannot skip chapters. Keyboard,
+swipe, previous/next buttons, text links and cube faces use the same controller.
+Reduced motion changes chapters immediately. Resize preserves the selected
+chapter. Hash links restore it on entry. Tab focus can enter another chapter.
+
+The one persistent WASM cube still reads the actual window position, including
+transit. No second scene or independent click timeline is created. Chapter
+containers are exactly 100dvh. Technical details use native disclosures, keeping
+the initial reading state short; expanded details and unusually short or zoomed
+viewports may scroll inside the chapter without moving the outer viewport.
+At an internal boundary, vertical input can advance or return. Without JavaScript,
+the document remains readable in normal flow.
+
+`scripts/test-step-navigation.mjs` verifies screen heights, wheel threshold,
+reverse navigation, stable stops, keyboard, clicks, gesture inertia, expanded
+content, swipe, resize, reduced motion, direct links and a single live cube.
+The earlier native-wheel-distance comfort contract below and historical videos
+are superseded by this explicitly requested staged interaction. The ultrawide
+geometry/raster regression remains applicable and runs alongside the new suite.
+
+## Renderer and previous choreography reference
 
 The homepage keeps one `ScrollCubeScene`, one Rust `Cube` allocation and one
 visible canvas from intro through contact. The renderer is the upstream engine

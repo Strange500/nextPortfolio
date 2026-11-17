@@ -58,6 +58,7 @@ jobs:
           export PORTFOLIO_URL=http://127.0.0.1:3100
           export REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide"
           node scripts/test-ultrawide.mjs
+          REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/steps" node scripts/test-step-navigation.mjs
 
       - name: Upload ultrawide review evidence
         if: always()
