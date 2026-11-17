@@ -18,6 +18,14 @@ for (const lang of ['en', 'fr']) {
   assert.doesNotMatch(highlights.join(' '), /70\s*%/);
   assert.match(highlights.join(' '), /Java/);
   assert.match(highlights.join(' '), /Angular/);
+  assert.match(highlights[0], /Spring Boot API|API Spring Boot/);
+  assert.match(highlights[0], /launch, schedule and monitor|lancer, planifier et superviser/);
+  assert.match(highlights[0], /asynchronous|asynchrone/);
+  assert.match(highlights[0], /real-time|temps réel/);
+  assert.match(highlights[0], /WebSockets/);
+  assert.match(highlights[1], /Selenium\/Java/);
+  assert.match(highlights[1], /Maven\/Jenkins/);
+  assert.match(highlights[2], /test-data lifecycle|cycle de vie des données de test/);
   assert.match(data.basics.summary, /2027/);
   assert.match(data.basics.summary, /3.month|3 mois/);
   assert.doesNotMatch(data.basics.summary, /fin d'études/);

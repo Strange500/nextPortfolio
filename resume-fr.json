@@ -36,9 +36,9 @@
       "endDate": "",
       "url": "https://portfolio.qgroget.com/fr/blog/automated-testing-framework",
       "highlights": [
-        "Refactoring et structuration d'un framework de tests Selenium/Java existant : séparation du code du framework et des scénarios, introduction d'abstractions réutilisables pour factoriser le code et améliorer sa lisibilité.",
-        "Migration de la plateforme de tests vers Spring Boot et développement d'une interface Angular pour lancer et superviser les exécutions ; les tests s'exécutent à l'identique via Maven en CI (Jenkins) ou via une API REST asynchrone, sur un ensemble d'environ 50 à 70 tests automatisés selon le périmètre.",
-        "Amélioration de la fiabilité des tests via le refactoring du framework et la gestion du cycle de vie des données de test (création, mise à jour, suppression) dans des environnements partagés où d'autres utilisateurs modifient aussi les données.",
+        "Développement d'une API Spring Boot et d'une interface Angular pour lancer, planifier et superviser les tests automatisés, avec exécution asynchrone et suivi des statuts en temps réel via WebSockets.",
+        "Refactoring d'un framework Selenium/Java existant en abstractions réutilisables, séparant le framework des scénarios ; exécution des mêmes tests via Maven/Jenkins ou l'API.",
+        "Fiabilisation d'environ 50 à 70 tests automatisés grâce à la gestion du cycle de vie des données de test (création, mise à jour, suppression) en environnements partagés.",
         "Réduction du temps d'adaptation des tests après un changement d'environnement ou une version majeure de l'application, d'environ quatre heures à moins de dix minutes.",
         "Développement et déploiement d'un outil interne Spring Boot répartissant chaque jour les tâches de support produit entre environ 40 développeurs, et maintenance de fonctionnalités métier en Java et Angular.",
         "Responsabilité de l'évaluation technique des candidats stagiaires et alternants : conception d'un exercice Java sur ordinateur et de QCM Java, Hibernate et pratiques Agile, entretiens techniques ; formation d'un stagiaire et d'un alternant au framework de tests."
