@@ -1,3 +1,6 @@
+> Historical paused close-up; superseded by the continuous foreground passage
+> documented in ../foreground-passage/. This recording is not the current animation.
+
 # First transition pacing
 
 The desktop intro ↔ Rust transition now lasts 2800ms rather than 1100ms.

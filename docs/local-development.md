@@ -150,7 +150,7 @@ The old comfort suite's native-wheel-distance assertion describes the previous
 continuous-scroll design and is intentionally superseded. Use the step suite
 for current input behavior, plus the ultrawide and raster suites for geometry.
 
-First-transition pacing (real frame samples, forward/reverse close-up hold,
+First-transition pacing (real frame samples, forward/reverse coverage and absence of a parked close-up,
 ordinary transition duration and reduced motion):
 
 ```sh

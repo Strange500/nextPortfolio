@@ -8,8 +8,8 @@ const browser = await puppeteer.launch({
   args: ['--no-sandbox', '--disable-dev-shm-usage']
 })
 try {
-  const page = await browser.newPage()
-  const errors = []
+  const page = await browser.newPage(),
+    errors = []
   page.on('pageerror', e => errors.push(e.message))
   await page.setViewport({ width: 1440, height: 1000 })
   await page.goto(
@@ -17,21 +17,36 @@ try {
     { waitUntil: 'networkidle0' }
   )
   await page.waitForSelector('[data-wasm="ready"]')
-  const run = async (id, captures = false) => {
+  const run = async (id, capture = false) => {
     await page.evaluate(id => {
       const start = performance.now()
       window.introSamples = []
+      window.introCoverage = null
       window.dispatchEvent(new CustomEvent('portfolio-step', { detail: id }))
       const sample = () => {
-        const r = document
-          .querySelector('[data-persistent-cube]')
-          .getBoundingClientRect()
+        const cube = document.querySelector('[data-persistent-cube]'),
+          r = cube.getBoundingClientRect(),
+          time = performance.now() - start
         window.introSamples.push({
-          time: performance.now() - start,
+          time,
           width: r.width,
-          x: r.x,
-          y: r.y
+          center: r.x + r.width / 2
         })
+        if (time > 1150 && time < 1350 && !window.introCoverage) {
+          const canvas = cube.querySelector('canvas'),
+            ctx = canvas.getContext('2d')
+          window.introCoverage = [0.01, 0.25, 0.5, 0.75, 0.99].flatMap(x =>
+            [0.01, 0.5, 0.99].map(
+              y =>
+                ctx.getImageData(
+                  Math.floor(x * canvas.width),
+                  Math.floor(y * canvas.height),
+                  1,
+                  1
+                ).data[3]
+            )
+          )
+        }
         if (
           document.querySelector('.narrative').dataset.transitioning === 'true'
         )
@@ -39,58 +54,67 @@ try {
       }
       requestAnimationFrame(sample)
     }, id)
-    if (captures) {
+    if (capture)
       for (const [name, delay] of [
-        ['approach', 500],
-        ['close-up', 550],
-        ['retreat', 900],
-        ['reading', 1000]
+        ['approach', 450],
+        ['crossing', 650],
+        ['reveal', 650],
+        ['reading', 950]
       ]) {
         await new Promise(r => setTimeout(r, delay))
         await page.screenshot({ path: `${output}/${name}.png` })
       }
-    }
     await page.waitForFunction(
       () =>
         document.querySelector('.narrative').dataset.transitioning === 'false'
     )
-    return page.evaluate(() => window.introSamples)
+    return page.evaluate(() => ({
+      samples: window.introSamples,
+      coverage: window.introCoverage
+    }))
   }
-  const forward = await run('rust', true)
-  const reverse = await run('intro')
-  const reports = [forward, reverse].map(samples => {
-    const max = Math.max(...samples.map(s => s.width))
-    const peak = samples.filter(
-      s => s.width >= max * 0.995 && Math.abs(s.x + s.width / 2 - 720) < 3
-    )
+  const forward = await run('rust', true),
+    reverse = await run('intro')
+  const reports = [forward, reverse].map(({ samples, coverage }) => {
     const duration = samples.at(-1).time
-    const hold = peak.at(-1).time - peak[0].time
     assert.ok(
-      duration >= 2500 && duration < 5500,
-      `First transition duration: ${duration}`
+      duration >= 2200 && duration < 4500,
+      `Continuous passage duration: ${duration}`
     )
-    assert.ok(hold >= 500, `Close-up is readable for at least 500ms: ${hold}`)
-    assert.ok(max > Math.min(samples[0].width, samples.at(-1).width) * 1.5)
-    return { duration, hold, max }
+    assert.equal(coverage?.length, 15)
+    assert.ok(
+      coverage.every(alpha => alpha === 255),
+      'Actual cube faces occlude the entire viewport, including gaps between glyphs'
+    )
+    for (const t of [650, 900, 1150, 1400, 1650]) {
+      const chunk = samples.filter(s => s.time >= t && s.time < t + 250)
+      const centers = chunk.map(s => s.center)
+      assert.ok(
+        Math.max(...centers) - Math.min(...centers) > 10,
+        `No parked close-up in ${t}ms window`
+      )
+    }
+    return {
+      duration,
+      coverage,
+      maximumStage: Math.max(...samples.map(s => s.width))
+    }
   })
   await run('rust')
   const ordinary = await run('nix')
-  assert.ok(
-    ordinary.at(-1).time < 2000,
-    'Later transitions retain their shorter rhythm'
-  )
+  assert.ok(ordinary.samples.at(-1).time < 2000)
   await run('rust')
   await page.emulateMediaFeatures([
     { name: 'prefers-reduced-motion', value: 'reduce' }
   ])
   const reduced = await run('intro')
-  assert.ok(reduced.at(-1).time < 300, 'Reduced motion skips the animation')
+  assert.ok(reduced.samples.at(-1).time < 300)
   assert.deepEqual(errors, [])
   const result = {
     result: 'PASS',
     reports,
-    ordinary: ordinary.at(-1).time,
-    reduced: reduced.at(-1).time,
+    ordinary: ordinary.samples.at(-1).time,
+    reduced: reduced.samples.at(-1).time,
     errors
   }
   await writeFile(`${output}/evidence.json`, JSON.stringify(result, null, 2))

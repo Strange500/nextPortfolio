@@ -60,6 +60,7 @@ try {
               p.y < svg.viewBox.baseVal.height
           )
         ),
+        flyby: cube.dataset.flyby === 'true',
         painted,
         visibleFaces: faces.length,
         horizontalOverflow: document.documentElement.scrollWidth > innerWidth,
@@ -118,7 +119,7 @@ try {
         true,
         `${width}/${name}: projected face is cut by the raster`
       )
-      if (width >= 900) {
+      if (width >= 900 && !state.flyby) {
         assert.ok(
           state.cube.x >= 15 &&
             state.cube.right <= width - 15 &&

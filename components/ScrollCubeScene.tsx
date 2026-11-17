@@ -94,6 +94,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       lastTime = 0,
       phase = 0
     let lastRaster = 0
+    let rustShift = 0
     const media = matchMedia('(prefers-reduced-motion: reduce)')
     const nodes = sections.map(id => document.getElementById(id)!)
     const surface = document.querySelector<HTMLElement>('.narrative')!
@@ -155,10 +156,15 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         vh = innerHeight,
         vw = innerWidth
       const anchors = nodes.map((node, i) =>
-        i === 0 ? 0 : node.getBoundingClientRect().top + y
+        i === 0
+          ? 0
+          : node.getBoundingClientRect().top + y - (i === 1 ? rustShift : 0)
       )
       // Finish the first move before the Rust title enters the reading area.
-      const introEnd = mobile ? anchors[1] : Math.max(1, anchors[1] - vh * 0.7)
+      const introEnd =
+        surface.dataset.stepped || mobile
+          ? anchors[1]
+          : Math.max(1, anchors[1] - vh * 0.7)
       root.current!.dataset.introEnd = String(introEnd)
       let index = y >= introEnd * 0.9 ? 1 : 0
       for (let i = 2; i < anchors.length; i++)
@@ -196,34 +202,41 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         to = index
         p = 0
       }
-      let a = poses[from],
+      const a = poses[from],
         b = poses[to],
         progress = smooth(p)
-      if (from === 0 && to === 1 && !reduced) {
-        // Approach, a brief close-up, then retreat to the reading composition.
-        const close = { x: 0.5, size: 0.7, rotation: [-0.42, 2.16, 0.14] }
-        if (p < 0.34) {
-          b = close
-          progress = smooth(p / 0.34)
-        } else if (p < 0.48) {
-          a = close
-          b = close
-          progress = 0
-        } else {
-          a = close
-          progress = smooth((p - 0.48) / 0.42)
-        }
-      }
+      const flyby =
+        !mobile && !reduced && from === 0 && to === 1 && p > 0 && p < 1
       const displayed = {
         x: mix(a.x, b.x, progress),
         size: mix(a.size, b.size, progress),
         rotation: a.rotation.map((n, i) => mix(n, b.rotation[i], progress))
       }
+      stage.current!.dataset.flyby = String(flyby)
+      surface.dataset.introOccluded = String(flyby && p >= 0.5)
+      document.body.style.setProperty('--intro-shift', `${flyby ? y : 0}px`)
+      // Keep the two compositions in the viewport; swap behind the opaque cube.
+      rustShift = flyby ? y - anchors[1] : 0
+      nodes[0].dataset.sceneShift = String(flyby ? y : 0)
+      nodes[1].dataset.sceneShift = String(rustShift)
+      nodes[0].style.transform = flyby ? `translateY(${y}px)` : ''
+      nodes[1].style.transform = flyby ? `translateY(${rustShift}px)` : ''
+      nodes[0].style.visibility = flyby && p >= 0.5 ? 'hidden' : ''
+      nodes[1].style.visibility = flyby && p < 0.5 ? 'hidden' : ''
+
+      if (flyby) {
+        // Translate and rotate throughout the zoom reversal: never park at the peak.
+        displayed.x = mix(a.x, b.x, p)
+      }
       // Scroll is the pose clock: no delayed interpolation after it stops.
       const firstProgress = clamp(y / introEnd)
       surface.style.setProperty(
         '--intro-opacity',
-        String(reduced || mobile ? 1 : 1 - smooth(firstProgress / 0.3))
+        String(
+          reduced || mobile || surface.dataset.stepped
+            ? 1
+            : 1 - smooth(firstProgress / 0.3)
+        )
       )
       const compositionWidth = Math.min(vw, compositionMax)
       const compositionLeft = (vw - compositionWidth) / 2
@@ -237,7 +250,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           ? Math.sin(Math.PI * p)
           : 0
       stage.current!.dataset.travelling = String(traversal > 0.02)
-      const size = mobile
+      const readingSize = mobile
         ? Math.min(190, vw * 0.46) *
           (reduced ? 1 : 1 + Math.sin(p * Math.PI) * 0.08)
         : Math.min(
@@ -246,23 +259,31 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
             compositionWidth * displayed.size
           ) *
           (1 - traversal * 0.65)
+      // Only this deliberate foreground passage may exceed viewport bounds.
+      const size = flyby
+        ? mix(readingSize, Math.hypot(vw, vh) * 3, Math.sin(Math.PI * p) ** 2)
+        : readingSize
       const landscape = mobile && vh < 550 && vw >= 650
       const targetX = landscape
         ? vw * 0.2
         : mobile
           ? vw * 0.5 + Math.sin(p * Math.PI) * 12
           : compositionLeft + compositionWidth * displayed.x
-      const x = Math.max(size / 2 + 16, Math.min(vw - size / 2 - 16, targetX))
+      const x = flyby
+        ? targetX
+        : Math.max(size / 2 + 16, Math.min(vw - size / 2 - 16, targetX))
       const targetY = landscape
         ? vh * 0.44
         : mobile
           ? mix(156, 100, clamp(y / 160))
-          : vh *
-            ((from === 0 && to === 1 ? mix(0.47, 0.49, p) : 0.49) -
-              traversal * 0.25)
-      const cy = mobile
-        ? targetY
-        : Math.max(safeTop + size / 2, Math.min(safeBottom - size / 2, targetY))
+          : vh * (0.49 - traversal * 0.25)
+      const cy =
+        mobile || flyby
+          ? targetY
+          : Math.max(
+              safeTop + size / 2,
+              Math.min(safeBottom - size / 2, targetY)
+            )
       stage.current!.style.width = `${size}px`
       stage.current!.style.height = `${size}px`
       stage.current!.style.transform = `translate3d(${x - size / 2}px, ${cy - size / 2}px, 0)`
@@ -294,13 +315,62 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       const ctx = canvas.current.getContext('2d')!
       // Backing pixels follow the actual CSS size and DPR, independent of the
       // stable ASCII grid. Glyph advances fit their cells without horizontal bleed.
-      const backing = Math.ceil(size * Math.min(devicePixelRatio || 1, 2))
-      if (canvas.current.width !== backing) {
-        canvas.current.width = backing
-        canvas.current.height = backing
+      // Rasterize the visible viewport, even when the cube flies far beyond it.
+      // This keeps macro glyphs sharp without allocating a giant offscreen canvas.
+      const pixelRatio = Math.min(
+        devicePixelRatio || 1,
+        2,
+        4096 / vw,
+        2160 / vh
+      )
+      const backingWidth = Math.ceil(vw * pixelRatio)
+      const backingHeight = Math.ceil(vh * pixelRatio)
+      if (
+        canvas.current.width !== backingWidth ||
+        canvas.current.height !== backingHeight
+      ) {
+        canvas.current.width = backingWidth
+        canvas.current.height = backingHeight
       }
-      ctx.setTransform(backing / logicalSize, 0, 0, backing / logicalSize, 0, 0)
-      ctx.clearRect(0, 0, logicalSize, logicalSize)
+      Object.assign(canvas.current.style, {
+        width: `${vw}px`,
+        height: `${vh}px`,
+        left: `${size / 2 - x}px`,
+        top: `${size / 2 - cy}px`
+      })
+      ctx.resetTransform()
+      ctx.clearRect(0, 0, backingWidth, backingHeight)
+      ctx.setTransform(
+        (pixelRatio * size) / logicalSize,
+        0,
+        0,
+        (pixelRatio * size) / logicalSize,
+        pixelRatio * (x - size / 2),
+        pixelRatio * (cy - size / 2)
+      )
+      const projectedFaces = normals.map((normal, face) => ({
+        visible: rotate(normal, angles)[2] < -0.015,
+        points: corners(face).map(v => {
+          const [x, y, z] = rotate(v, angles)
+          return [
+            (columns / 2 + (zoom / (z + 100)) * x * 2) * 8,
+            (rows / 2 + (zoom / (z + 100)) * y) * 16
+          ]
+        })
+      }))
+      // A cube is opaque between glyphs too. Its actual projected silhouette
+      // occludes the outgoing HTML, rather than crossfading or masking the viewport.
+      ctx.fillStyle = getComputedStyle(surface)
+        .getPropertyValue('--paper')
+        .trim()
+      ctx.beginPath()
+      for (const { visible, points } of projectedFaces) {
+        if (!visible) continue
+        points.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)))
+        ctx.closePath()
+      }
+      ctx.fill()
+
       // Fit the native monospace advance to the projected 8px cell exactly.
       // Plain monospace avoids programming ligatures joining ASCII materials.
       ctx.font = '13px monospace'
@@ -346,17 +416,10 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         const group = root.current!.querySelector<SVGGElement>(
           `[data-cube-face="${face}"]`
         )!
-        const visible = rotate(normals[face], angles)[2] < -0.015
+        const { visible, points } = projectedFaces[face]
         group.toggleAttribute('hidden', !visible)
         group.style.display = visible ? '' : 'none'
         if (!visible) return
-        const points = corners(face).map(v => {
-          const [x, y, z] = rotate(v, angles)
-          return [
-            (columns / 2 + (zoom / (z + 100)) * x * 2) * 8,
-            (rows / 2 + (zoom / (z + 100)) * y) * 16
-          ]
-        })
         group
           .querySelector('polygon')!
           .setAttribute('points', points.map(p => p.join(',')).join(' '))
@@ -413,7 +476,15 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       media.removeEventListener('change', invalidate)
       surface.style.removeProperty('--intro-opacity')
       nodes[1].style.removeProperty('opacity')
+      for (const node of nodes.slice(0, 2)) {
+        node.style.removeProperty('transform')
+        node.style.removeProperty('visibility')
+        delete node.dataset.sceneShift
+      }
+
       delete surface.dataset.scene
+      delete surface.dataset.introOccluded
+      document.body.style.removeProperty('--intro-shift')
     }
   }, [])
 
@@ -438,68 +509,70 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
   return (
     <div className='scroll-scene' ref={root}>
       <div className='scene-mobile-mask' aria-hidden='true' />
-      <div
-        ref={stage}
-        className='scene-cube'
-        data-persistent-cube
-        data-wasm={status}
-        data-hover={hover}
-      >
-        <canvas
-          ref={canvas}
-          width={960}
-          height={960}
-          aria-label={
-            fr
-              ? 'Cube ASCII calculé en Rust / WASM'
-              : 'ASCII cube computed in Rust / WASM'
-          }
-          role='img'
-        />
-        <svg
-          viewBox={`0 0 ${logicalSize} ${logicalSize}`}
-          className='cube-hit-layer'
-          aria-hidden='true'
-          onPointerLeave={() => enter('')}
+      <div className='scene-viewport'>
+        <div
+          ref={stage}
+          className='scene-cube'
+          data-persistent-cube
+          data-wasm={status}
+          data-hover={hover}
         >
-          {faceSections.map((id, face) => (
-            <g
-              key={id}
-              style={{ display: 'none' }}
-              data-cube-face={face}
-              data-section={id}
-              onPointerEnter={() => enter(id)}
-              onClick={() => navigate(id)}
-            >
-              <polygon />
-              <rect width='230' height='52' rx='4' />
-              <text textAnchor='middle' dominantBaseline='middle'>
-                {labels[sections.indexOf(id)]}
-              </text>
-            </g>
-          ))}
-        </svg>
-        <p className='cube-caption mono' aria-live='polite'>
-          {status === 'failed' ? (
-            fr ? (
-              'WASM indisponible · navigation ci-dessous'
+          <canvas
+            ref={canvas}
+            width={960}
+            height={960}
+            aria-label={
+              fr
+                ? 'Cube ASCII calculé en Rust / WASM'
+                : 'ASCII cube computed in Rust / WASM'
+            }
+            role='img'
+          />
+          <svg
+            viewBox={`0 0 ${logicalSize} ${logicalSize}`}
+            className='cube-hit-layer'
+            aria-hidden='true'
+            onPointerLeave={() => enter('')}
+          >
+            {faceSections.map((id, face) => (
+              <g
+                key={id}
+                style={{ display: 'none' }}
+                data-cube-face={face}
+                data-section={id}
+                onPointerEnter={() => enter(id)}
+                onClick={() => navigate(id)}
+              >
+                <polygon />
+                <rect width='230' height='52' rx='4' />
+                <text textAnchor='middle' dominantBaseline='middle'>
+                  {labels[sections.indexOf(id)]}
+                </text>
+              </g>
+            ))}
+          </svg>
+          <p className='cube-caption mono' aria-live='polite'>
+            {status === 'failed' ? (
+              fr ? (
+                'WASM indisponible · navigation ci-dessous'
+              ) : (
+                'WASM unavailable · use navigation below'
+              )
+            ) : hover ? (
+              `↗ ${labels[sections.indexOf(hover)]}`
             ) : (
-              'WASM unavailable · use navigation below'
-            )
-          ) : hover ? (
-            `↗ ${labels[sections.indexOf(hover)]}`
-          ) : (
-            <>
-              {labels[sections.indexOf(current)]} ·{' '}
-              <span className='cube-desktop-hint'>
-                {fr ? 'survoler une face' : 'hover a face'}
-              </span>
-              <span className='cube-touch-hint'>
-                {fr ? 'toucher une face' : 'tap a face'}
-              </span>
-            </>
-          )}
-        </p>
+              <>
+                {labels[sections.indexOf(current)]} ·{' '}
+                <span className='cube-desktop-hint'>
+                  {fr ? 'survoler une face' : 'hover a face'}
+                </span>
+                <span className='cube-touch-hint'>
+                  {fr ? 'toucher une face' : 'tap a face'}
+                </span>
+              </>
+            )}
+          </p>
+        </div>
       </div>
       <nav
         className='scene-nav mono'

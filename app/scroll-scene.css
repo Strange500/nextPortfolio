@@ -1084,3 +1084,40 @@ html:has(.narrative[data-stepped]) {
     padding-top: 128px;
   }
 }
+
+/* The opening cube crosses in front of the complete scene, then uncovers Rust. */
+.scroll-scene:has(.scene-cube[data-flyby='true']) {
+  z-index: 100;
+}
+.scene-cube[data-flyby='true'] {
+  z-index: 40;
+}
+.scene-cube[data-flyby='true'] :is(rect, text, .cube-caption) {
+  visibility: hidden;
+}
+.scene-cube[data-flyby='true'] .cube-hit-layer {
+  pointer-events: none;
+}
+.scene-cube[data-flyby='true'] .cube-hit-layer g {
+  pointer-events: none;
+}
+.scene-viewport {
+  position: fixed;
+  inset: 0;
+  overflow: clip;
+  pointer-events: none;
+  z-index: 40;
+}
+.narrative[data-stepped] .narrative-body {
+  border: 0;
+}
+.narrative[data-stepped] .portfolio-nav {
+  transform: translate(-50%, var(--intro-shift, 0px));
+}
+body:has(.narrative[data-stepped]) .global-controls {
+  transform: translateY(var(--intro-shift, 0px));
+}
+.narrative[data-intro-occluded='true'] .portfolio-nav,
+body:has(.narrative[data-intro-occluded='true']) .global-controls {
+  visibility: hidden;
+}
