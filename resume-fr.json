@@ -7,7 +7,7 @@
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com/fr",
     "image": "file:///opt/data/nextPortfolio/public/img/cv-profile.jpg",
-    "summary": "Apprenti ingénieur logiciel à l'IMT Nord Europe (alternance), spécialisé en développement backend et outillage système. Je conçois des systèmes fiables et maintenables en combinant tests automatisés rigoureux (Spring Boot, Selenium, JUnit 5) et environnements déclaratifs (NixOS, Docker). À la recherche d'un stage de fin d'études de 3 mois, à partir de juin 2027.",
+    "summary": "À la recherche d'un stage d'ingénieur de 3 mois à partir de juin 2027. Apprenti ingénieur à l'IMT Nord Europe, spécialisé en backend Java/Spring Boot, tests automatisés et outillage système (Rust, NixOS, Docker).",
     "location": {
       "address": "12 bis rue Jules Ferry",
       "postalCode": "59491",
@@ -30,62 +30,64 @@
   },
   "work": [
     {
-      "name": "Numih France (DOGRH)",
+      "name": "Numih France",
       "position": "Ingénieur Logiciel (Alternance)",
       "startDate": "2025-09-01",
       "endDate": "",
       "url": "https://portfolio.qgroget.com/fr/blog/automated-testing-framework",
       "highlights": [
-        "Architecture et maintien d'un moteur de tests E2E unifié (Spring Boot, Selenium) pilotant 50 à 70 tests d'intégration, exécutable à l'identique via Maven en CI ou via API REST asynchrone.",
-        "Refactoring de l'architecture de test ayant réduit le taux de faux positifs de ~70 % et ramené les migrations (version/environnement) de ~4 h à moins de 10 min.",
-        "Conception d'outils développeur et d'abstractions d'isolation de données (Jenkins) pour interagir facilement avec les applications internes et éliminer les collisions concurrentes.",
-        "Développement et déploiement en production d'un outil Spring Boot répartissant chaque jour le support produit auprès d'environ 40 développeurs."
+        "Refactoring et structuration d'un framework de tests Selenium/Java existant : séparation du code du framework et des scénarios, introduction d'abstractions réutilisables pour factoriser le code et améliorer sa lisibilité.",
+        "Migration de la plateforme de tests vers Spring Boot et développement d'une interface Angular pour lancer et superviser les exécutions ; les tests s'exécutent à l'identique via Maven en CI (Jenkins) ou via une API REST asynchrone, sur un ensemble d'environ 50 à 70 tests automatisés selon le périmètre.",
+        "Amélioration de la fiabilité des tests via le refactoring du framework et la gestion du cycle de vie des données de test (création, mise à jour, suppression) dans des environnements partagés où d'autres utilisateurs modifient aussi les données.",
+        "Réduction du temps d'adaptation des tests après un changement d'environnement ou une version majeure de l'application, d'environ quatre heures à moins de dix minutes.",
+        "Développement et déploiement d'un outil interne Spring Boot répartissant chaque jour les tâches de support produit entre environ 40 développeurs, et maintenance de fonctionnalités métier en Java et Angular.",
+        "Responsabilité de l'évaluation technique des candidats stagiaires et alternants : conception d'un exercice Java sur ordinateur et de QCM Java, Hibernate et pratiques Agile, entretiens techniques ; formation d'un stagiaire et d'un alternant au framework de tests."
       ]
     },
     {
       "name": "Ekeep-IT",
-      "position": "Ingénieur Fullstack (Stage)",
+      "position": "Stagiaire Développeur Full-Stack",
       "startDate": "2025-04-01",
       "endDate": "2025-06-30",
       "highlights": [
-        "Développement des services backend (Java Spring Boot, base relationnelle) de My-UUU, plateforme de référencement et d'avis sur les structures équestres.",
-        "Réalisation d'interfaces responsive Next.js (React) et livraison de user stories en équipe Agile/Scrum pour un produit en production."
-      ]
-    },
-    {
-      "name": "Flint Group",
-      "position": "Assistant Logistique",
-      "startDate": "2023-06-01",
-      "endDate": "2024-08-31",
-      "summary": "Emploi saisonnier — étés 2023 et 2024.",
-      "highlights": [
-        "Gestion des stocks avec SAP, inventaires hebdomadaires et suivi des flux de produits finis."
+        "Développement d'API REST en Java et Spring Boot pour My-UUU, plateforme d'annuaire et d'avis sur les établissements équestres.",
+        "Réalisation d'interfaces responsive en Next.js et livraison de fonctionnalités au sein d'une équipe Agile/Scrum."
       ]
     }
   ],
   "education": [
     {
       "institution": "IMT Nord Europe, Institut Mines-Télécom",
-      "area": "Ingénierie Logicielle",
-      "studyType": "Diplôme d'Ingénieur (Grade de Master)",
+      "area": "Informatique, télécommunications et réseaux",
+      "studyType": "Diplôme d'ingénieur, diplôme prévu en 2028 (apprentissage)",
       "startDate": "2025-09-01",
       "endDate": ""
     },
     {
       "institution": "IUT de Lille",
-      "area": "Informatique",
-      "studyType": "BUT Informatique",
+      "area": "",
+      "studyType": "DUT Informatique (Diplôme Universitaire de Technologie)",
       "startDate": "2023-09-01",
       "endDate": "2025-06-01",
-      "score": "Major de promotion"
+      "score": "Premier de promotion chacune des deux années."
     }
   ],
   "skills": [
     {
+      "name": "Backend",
+      "keywords": [
+        "Java",
+        "Spring Boot",
+        "Java EE",
+        "API REST",
+        "SQL",
+        "Maven"
+      ]
+    },
+    {
       "name": "Langages & Systèmes",
       "keywords": [
         "Rust",
-        "Java",
         "C",
         "Python",
         "TypeScript",
@@ -94,35 +96,29 @@
       ]
     },
     {
-      "name": "Backend & Web",
+      "name": "Web",
       "keywords": [
-        "Spring Boot",
-        "Java EE",
+        "Angular",
         "React",
-        "Next.js",
-        "Node.js",
-        "Angular"
+        "Next.js"
       ]
     },
     {
-      "name": "DevOps & Infrastructure",
+      "name": "Tests & Outillage",
       "keywords": [
-        "NixOS",
-        "Linux",
-        "Docker",
-        "Podman",
+        "Selenium",
+        "JUnit 5",
         "Jenkins",
-        "Traefik",
         "Git"
       ]
     },
     {
-      "name": "Architecture & Qualité",
+      "name": "Infrastructure",
       "keywords": [
-        "Selenium",
-        "JUnit 5",
-        "Design Patterns",
-        "Agile"
+        "NixOS",
+        "Linux",
+        "Docker",
+        "Podman"
       ]
     }
   ],
@@ -133,7 +129,7 @@
     },
     {
       "language": "Anglais",
-      "fluency": "Courant — TOEIC 980/990"
+      "fluency": "Courant (TOEIC 980/990)"
     },
     {
       "language": "Espagnol",
@@ -159,7 +155,7 @@
   "projects": [
     {
       "name": "min-btc-node",
-      "description": "Outil Rust suivant le solde et l'historique de transactions d'une adresse Bitcoin : implémentation manuelle du protocole P2P, récupération des en-têtes de blocs auprès de plusieurs pairs en parallèle, sans validation complète de la chaîne.",
+      "description": "Prototype de client léger Bitcoin en Rust : réseau P2P asynchrone multi-pairs, synchronisation des en-têtes de blocs et filtres compacts BIP157/158 pour récupérer les blocs pertinents et suivre les UTXO du portefeuille.",
       "keywords": [
         "Rust",
         "Bitcoin",
@@ -168,8 +164,18 @@
       "url": "https://github.com/Strange500/min-btc-node"
     },
     {
+      "name": "QGChat",
+      "description": "Application de chat MVC en Java EE : API REST pour les canaux et les messages, persistance PostgreSQL, invitations par jetons JWT temporaires et déploiement Docker Compose.",
+      "keywords": [
+        "Java EE",
+        "PostgreSQL",
+        "Docker"
+      ],
+      "url": "https://github.com/Strange500/QGChat"
+    },
+    {
       "name": "nixos-config",
-      "description": "Configurations NixOS déclaratives (6 machines) et dotfiles via Nix flakes + Home Manager — serveur auto-hébergé exposant mes services, Raspberry Pi de sauvegarde, PC fixes, portable et console « Steam-OS like » — le tout versionné et 100 % reproductible (IaC).",
+      "description": "Gestion de six machines via des configurations NixOS déclaratives (Nix flakes, Home Manager), avec réglages système et dotfiles versionnés.",
       "keywords": [
         "Nix",
         "NixOS",
@@ -178,49 +184,6 @@
       ],
       "url": "https://github.com/Strange500/nixos-config",
       "blog": "https://portfolio.qgroget.com/fr/blog/nixos-2026-reproducible"
-    },
-    {
-      "name": "pico-ledger",
-      "description": "Prototype de portefeuille Bitcoin embarqué en Rust : cœur portable testé sur hôte, génération de phrases BIP39, chiffrement de l’entropie et verrouillage du portefeuille.",
-      "keywords": [
-        "Rust",
-        "Bitcoin",
-        "Embedded"
-      ],
-      "url": "https://github.com/Strange500/pico-ledger"
-    },
-    {
-      "name": "RayTracer-Rust",
-      "description": "Moteur de ray tracing CPU en Rust avec partitionnement spatial BVH pour des intersections en O(log N), ombrage de Phong et réflexions récursives.",
-      "keywords": [
-        "Rust",
-        "Graphisme",
-        "Ray Tracing",
-        "BVH"
-      ],
-      "url": "https://github.com/Strange500/RayTracer-Rust"
-    },
-    {
-      "name": "QGChat",
-      "description": "Application de messagerie instantanée en Java EE avec déploiement Docker Compose, persistance SQL et interface JavaScript.",
-      "keywords": [
-        "Java",
-        "Java EE",
-        "Docker",
-        "WebSocket",
-        "SQL"
-      ],
-      "url": "https://github.com/Strange500/QGChat"
-    },
-    {
-      "name": "ascii-cube-rs",
-      "description": "Moteur de rendu 3D d'un cube ASCII en temps réel compilé en WebAssembly via un flake Nix — anime le widget hero de ce portfolio.",
-      "keywords": [
-        "Rust",
-        "WebAssembly",
-        "Nix"
-      ],
-      "url": "https://github.com/Strange500/ascii-cube-rs"
     }
   ],
   "meta": {

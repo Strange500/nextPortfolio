@@ -112,13 +112,38 @@ référence pour la pagination ; l'HTML navigateur n'est pas une preuve de pagin
 
 Après `npm run resume`, avec **PyMuPDF** installé dans l'environnement Python
 de validation (`python -m pip install PyMuPDF`), générer les PNGs et vérifier les
-deux PDFs :
+deux PDFs contre le contenu courant (à utiliser après une modification de fond) :
+
+```sh
+node scripts/test-resume-content.mjs
+python scripts/test-resume-preview.py
+python scripts/test-resume-pdf.py --output "$TMPDIR/resume-preview"
+```
+
+Le contrôle PDF impose une page A4 par langue, des textes et liens dans la page,
+aucun mot superposé, les diplômes DUT/ingénieur sans équivalence inventée,
+les trois projets sélectionnés, la disponibilité en juin 2027, les cibles URI
+issues des JSON, des alias identiques, aucune image et aucune police sous 7 pt.
+Il exporte les PNGs pleine page, le texte extrait et les liens ; inspecter les PNGs
+visuellement reste obligatoire. Les liens sont vérifiés dans le PDF, pas par HTTP.
+Le CV utilise un flux mono-colonne sans tableaux de mise en page pour faciliter
+l'extraction ATS. Le CV français se concentre désormais, comme l'anglais,
+sur les deux expériences de développement logiciel.
+
+Les deux PDF ouvrent sur le profil puis la **formation**, avant l'expérience.
+Le TOEIC n'apparaît plus dans un badge isolé sous le nom : il figure une seule
+fois, dans la section **Langues** en fin de document, avec l'année du score.
+Les compétences sont regroupées par domaine (backend en premier, sans doublon
+avec les projets), et les descriptions de projets restent adossées aux README
+des dépôts concernés.
+
+Pour une modification **uniquement graphique**, sans changement de contenu :
 
 ```sh
 python scripts/check-resume-layout.py --baseline origin/main
 ```
 
-Ce contrôle impose une page A4 par langue, toutes les coordonnées dans la page,
+Ce contrôle historique impose une page A4 par langue, toutes les coordonnées dans la page,
 des textes et cibles URI inchangés, des alias identiques, aucune image et aucune
 police sous 7 pt. Il compare aussi les trois JSON factuels au ref Git choisi.
 Les PNGs pleine page sont écrits dans `docs/resume-preview/` ; ils doivent encore
