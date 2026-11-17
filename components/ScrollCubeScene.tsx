@@ -3,6 +3,11 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Cube } from 'ascii-cube'
 import { Pause, Play } from 'lucide-react'
+import {
+  loadCubeTechnologies,
+  faceTechnology,
+  type CubeTechnology
+} from '@/lib/cube-technologies'
 
 const sections = ['intro', 'rust', 'nix', 'testing', 'bitcoin', 'contact']
 // Face indices and projection match ascii-cube-rs at the flake.lock revision:
@@ -84,6 +89,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
   const [status, setStatus] = useState('loading')
   const [current, setCurrent] = useState('intro')
   const [hover, setHover] = useState('')
+  const [faceNames, setFaceNames] = useState<string[]>([])
 
   useEffect(() => {
     let disposed = false,
@@ -95,6 +101,25 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       phase = 0
     let lastRaster = 0
     let rustShift = 0
+    let introTime = 0,
+      lastSwap = 0,
+      nextTechnology = 6,
+      textured = false
+    let logos: CubeTechnology[] = []
+    const assigned = [0, 1, 2, 3, 4, 5]
+    const seen = Array(6).fill(false)
+    const publishFace = (face: number) => {
+      const logo = logos[assigned[face]]
+      const texture = faceTechnology(logo, face)
+      cube!.update_face_fast(face, texture.characters, texture.colors)
+      const group = root.current?.querySelector<SVGGElement>(
+        `[data-cube-face="${face}"]`
+      )
+      if (group) group.dataset.technology = logo.name
+    }
+    const publishNames = () =>
+      setFaceNames(assigned.map(index => logos[index].name))
+
     const media = matchMedia('(prefers-reduced-motion: reduce)')
     const nodes = sections.map(id => document.getElementById(id)!)
     const surface = document.querySelector<HTMLElement>('.narrative')!
@@ -284,8 +309,26 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       stage.current!.style.height = `${size}px`
       stage.current!.style.transform = `translate3d(${x - size / 2}px, ${cy - size / 2}px, 0)`
       if (!reduced && !paused.current && !hovered.current) phase += dt * 0.55
+      const introIdle = y < 2 && surface.dataset.transitioning !== 'true'
+      if (introIdle && !reduced && !paused.current && !hovered.current)
+        introTime += dt
+      const spin = reduced
+        ? [0, 0, 0]
+        : [
+            Math.sin(introTime * 0.31) * 0.65,
+            introTime * 0.42,
+            Math.sin(introTime * 0.23) * 0.28
+          ]
       const drift = reduced ? 0 : Math.sin(phase) * 0.035
-      const angles = displayed.rotation.map((n, i) => n + (i < 2 ? drift : 0))
+      const angles = displayed.rotation.map((n, i) => {
+        if (from === 0) {
+          const delta = a.rotation[i] + spin[i] - b.rotation[i]
+          const nearest =
+            b.rotation[i] + Math.atan2(Math.sin(delta), Math.cos(delta))
+          return mix(nearest, b.rotation[i], progress) + (i < 2 ? drift : 0)
+        }
+        return n + (i < 2 ? drift : 0)
+      })
       stage.current!.dataset.active = id
       root.current!.dataset.motion = reduced ? 'reduced' : 'full'
       if (!cube || !memory || !canvas.current) return
@@ -295,6 +338,43 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       lastRaster = time
       dirty = false
       stage.current!.dataset.rotation = angles.map(n => n.toFixed(4)).join(',')
+      const logoWeight = from === 0 && logos.length ? 1 - smooth(p / 0.3) : 0
+      if (logoWeight > 0 && !textured) {
+        assigned.forEach((_, face) => publishFace(face))
+        textured = true
+      } else if (logoWeight === 0 && textured) {
+        for (let face = 0; face < 6; face++)
+          cube.set_face_color(face, `#${(0x100001 + face).toString(16)}`)
+        textured = false
+      }
+      stage.current!.dataset.technologyMode = String(logoWeight > 0)
+      stage.current!.dataset.technologyCount = String(logos.length)
+      if (
+        introIdle &&
+        textured &&
+        !reduced &&
+        !paused.current &&
+        !hovered.current
+      ) {
+        for (let face = 0; face < 6; face++) {
+          const depth = rotate(normals[face], angles)[2]
+          if (depth < -0.1) seen[face] = true
+          if (
+            depth > 0.18 &&
+            seen[face] &&
+            introTime - lastSwap > 0.8 &&
+            logos.length > 6
+          ) {
+            while (assigned.includes(nextTechnology % logos.length))
+              nextTechnology++
+            assigned[face] = nextTechnology++ % logos.length
+            publishFace(face)
+            publishNames()
+            seen[face] = false
+            lastSwap = introTime
+          }
+        }
+      }
       cube.set_rotation(...(angles as [number, number, number]))
       cube.set_rotation_speed(0, 0, 0)
       cube.next_frame()
@@ -380,6 +460,21 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         const n = rotate(normal, angles)
         return 0.53 + Math.max(0, -n[0] * 0.32 - n[1] * 0.5 - n[2] * 0.8) * 0.47
       })
+      if (textured && logoWeight > 0) {
+        ctx.strokeStyle = ink
+        ctx.globalAlpha = 0.16 * logoWeight
+        ctx.lineWidth = (logicalSize / size) * 0.7
+        for (const { visible, points } of projectedFaces) {
+          if (!visible) continue
+          ctx.beginPath()
+          points.forEach(([x, y], i) =>
+            i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)
+          )
+          ctx.closePath()
+          ctx.stroke()
+        }
+        ctx.globalAlpha = 1
+      }
       // Batch contiguous material runs rather than shaping thousands of glyphs
       // individually. The Rust buffers remain the complete source of each row.
       for (let row = 0; row < rows; row++) {
@@ -401,7 +496,19 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
             const ch = chars[row * columns + col++]
             run += ch === 255 ? '█' : ch === 254 ? '▒' : String.fromCharCode(ch)
           }
-          ctx.globalAlpha = faceLight[color - 0x100001] ?? 1
+          const material = color - 0x100001,
+            face = material & 255
+          const light = faceLight[face] ?? 1
+          if (textured) {
+            ctx.globalAlpha = light * (1 - logoWeight)
+            ctx.fillText(
+              ['@', '$', '~', '#', ';', '+'][face].repeat(run.length),
+              start * 8,
+              row * 16
+            )
+          }
+          ctx.globalAlpha =
+            light * (textured ? logoWeight * (material & 0x100 ? 0.18 : 1) : 1)
           ctx.fillText(run, start * 8, row * 16)
         }
       }
@@ -442,12 +549,31 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         if (disposed) return
         await document.fonts.ready
         if (disposed) return
+        logos = await loadCubeTechnologies()
+        if (disposed) return
         memory = instance.memory
         cube = new wasm.Cube(columns, rows)
         cube.set_zoom(zoom)
         for (let face = 0; face < 6; face++)
           cube.set_face_color(face, `#${(0x100001 + face).toString(16)}`)
         cube.set_rotation_speed(0, 0, 0)
+        if (logos.length) {
+          const preferred = [
+            'Rust',
+            'Git',
+            'NixOS',
+            'Spring Boot',
+            'React',
+            'TypeScript'
+          ]
+          assigned.forEach((_, face) => {
+            assigned[face] = Math.max(
+              0,
+              logos.findIndex(logo => logo.name === preferred[face])
+            )
+          })
+          publishNames()
+        }
         // Rust still supplies every material glyph and depth sample.
         dirty = true
         setStatus('ready')
@@ -518,6 +644,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
             ref={canvas}
             width={960}
             height={960}
+            aria-describedby='portfolio-technologies'
             aria-label={
               fr
                 ? 'Cube ASCII calculé en Rust / WASM'
@@ -556,10 +683,15 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
                 'WASM unavailable · use navigation below'
               )
             ) : hover ? (
-              `↗ ${labels[sections.indexOf(hover)]}`
+              `${current === 'intro' && faceNames.length ? `${faceNames[faceSections.indexOf(hover)]} · ` : ''}↗ ${fr ? 'Aller à' : 'Go to'} ${labels[sections.indexOf(hover)]}`
             ) : (
               <>
-                {labels[sections.indexOf(current)]} ·{' '}
+                {current === 'intro' && faceNames.length
+                  ? fr
+                    ? 'Technologies'
+                    : 'Technology stack'
+                  : labels[sections.indexOf(current)]}{' '}
+                ·{' '}
                 <span className='cube-desktop-hint'>
                   {fr ? 'survoler une face' : 'hover a face'}
                 </span>

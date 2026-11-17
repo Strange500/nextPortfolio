@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import ScrollCubeScene from './ScrollCubeScene'
 import StepNavigation from './StepNavigation'
+import { technologies } from '@/data/technologies'
 import '../app/scroll-scene.css'
 import { ResumeDropdown } from './ResumeDropdown'
 
@@ -173,6 +174,13 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
                 'I’m Benjamin. I turn complex systems into things you can understand, reproduce, and trust.',
                 'Moi, c’est Benjamin. Je transforme les systèmes complexes en outils compréhensibles, reproductibles et fiables.'
               )}
+            </p>
+            <p
+              id='portfolio-technologies'
+              className='intro-tech-accessible sr-only'
+            >
+              {t('Technologies: ', 'Technologies : ')}
+              {technologies.map(technology => technology.name).join(' · ')}
             </p>
             <a className='solid-link' href='#rust'>
               {t('Explore my work', 'Découvrir mon travail')} <span>↓</span>

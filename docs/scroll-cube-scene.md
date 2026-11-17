@@ -40,6 +40,38 @@ visible canvas from intro through contact. The renderer is the upstream engine
 pinned in `flake.lock`, with a rebuilt generated artifact in `wasm-cube/`. See
 [local development](local-development.md) for setup and deployment commands.
 
+## Intro technology prototype
+
+The same persistent cube showcases the 17 existing assets from
+`data/technologies.ts` on the intro. `lib/cube-technologies.ts` decodes and caches
+100×100 monochrome textures once, preserving logo aspect ratio and padding.
+Face UV orientation makes text-bearing logos readable from their outward side.
+Rust receives these textures through its existing `update_face_fast` method.
+
+A stronger yaw plus gentle pitch/roll runs only while the intro is at rest.
+Hover, pause, reduced motion and a hidden document stop this clock. A face may
+receive a new technology only after it has been seen and is safely behind the
+cube (transformed normal Z > 0.18); its six active logos remain distinct.
+
+At scroll departure, the frozen intro orientation blends along the shortest
+angular path into the existing scene. Textures blend back into the ordinary
+face materials early in the transition. No cube instance or timeline is added.
+On return to the intro, cached face assignments return and rotation resumes.
+Destination labels appear on hover, with technology and actual destination
+spelled out in the caption. Text navigation stays available on mobile/keyboard.
+
+The intro includes an HTML technology list referenced by the canvas description.
+It becomes visible under reduced motion, while the cube is static. The browser
+regression `test-intro-technologies.mjs` checks all assets, hidden-only cycling,
+hover pause, actual projected-face clicking, section motion, a single cube,
+return navigation, reduced motion and mobile layout. CI uploads its viewport
+captures alongside the other scene regressions.
+
+The scene has a very light static monochrome grain, tiled from the local
+`public/textures/grain.svg` at low-opacity soft-light blend. It overlays the
+surface and cube without intercepting input, changing layout or generating
+random pixels every frame. Higher-contrast preference disables this texture.
+
 ## Composition and motion
 
 The homepage uses a full-width charcoal-green surface with off-white text, sage

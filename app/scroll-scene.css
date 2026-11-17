@@ -1127,3 +1127,43 @@ body:has(.narrative[data-intro-occluded='true']) .global-controls {
 body:has(.narrative[data-stepped]) .global-controls {
   opacity: var(--intro-ui-opacity, 1);
 }
+/* The intro showcases the stack; destination labels appear on deliberate hover. */
+.scene-cube[data-technology-mode='true']
+  .cube-hit-layer
+  g:not(:hover)
+  :is(rect, text) {
+  visibility: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .narrative .intro-tech-accessible {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 16px 0;
+    padding: 0;
+    clip: auto;
+    overflow: visible;
+    white-space: normal;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+}
+/* Static monochrome grain: cached SVG tile, no per-frame noise generation. */
+body:has(.narrative)::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  user-select: none;
+  background: url('/textures/grain.svg') repeat;
+  background-size: 192px 192px;
+  mix-blend-mode: soft-light;
+  opacity: 0.16;
+}
+@media (prefers-contrast: more) {
+  body:has(.narrative)::after {
+    display: none;
+  }
+}

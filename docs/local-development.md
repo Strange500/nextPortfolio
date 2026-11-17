@@ -157,3 +157,10 @@ ordinary transition duration and reduced motion):
 CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
   REVIEW_DIR=/tmp/portfolio-intro-timing node scripts/test-intro-timing.mjs
 ```
+
+Intro logo showcase (17 local legacy assets, hidden-face cycling and navigation):
+
+```sh
+CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
+  REVIEW_DIR=/tmp/portfolio-technologies node scripts/test-intro-technologies.mjs
+```
