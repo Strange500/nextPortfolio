@@ -365,8 +365,8 @@
 
 /* Viewport and reading columns share a single continuous surface. */
 body:has(.narrative) {
-  background: #141c18;
-  color: #eeeee4;
+  background: var(--portfolio-paper);
+  color: var(--portfolio-ink);
 }
 .narrative {
   width: 100%;
@@ -532,15 +532,15 @@ body:has(.narrative) [data-theme-toggle] {
 body:has(.narrative) [data-language-switch] {
   min-width: 44px;
   min-height: 44px;
-  color: #eeeee4;
-  border: 1px solid #3c4a3f;
+  color: var(--portfolio-ink);
+  border: 1px solid var(--portfolio-line);
   border-radius: 0;
 }
 body:has(.narrative) [data-language-switch]:hover {
-  background: #1d2821;
+  background: var(--portfolio-panel);
 }
 body:has(.narrative) [data-language-switch]:focus-visible {
-  outline: 2px solid #d6f268;
+  outline: 2px solid var(--portfolio-acid);
   outline-offset: 4px;
 }
 .cube-hit-layer g rect,
@@ -663,16 +663,16 @@ body:has(.narrative) [data-language-switch]:focus-visible {
 }
 .resume-menu {
   width: min(19rem, calc(100vw - 24px));
-  background: #1d2821;
-  color: #eeeee4;
-  border: 1px solid #566452;
+  background: var(--portfolio-panel);
+  color: var(--portfolio-ink);
+  border: 1px solid var(--portfolio-line);
   padding: 8px;
   border-radius: 4px;
   box-shadow: 0 16px 48px #0005;
 }
 .resume-menu-label {
   margin: 6px 10px 10px;
-  color: #b4bfb2;
+  color: var(--portfolio-muted);
   font-size: 12px;
 }
 .resume-menu .resume-option {
@@ -681,7 +681,7 @@ body:has(.narrative) [data-language-switch]:focus-visible {
   align-items: center;
   min-height: 64px;
   padding: 12px 10px;
-  color: #eeeee4;
+  color: var(--portfolio-ink);
   gap: 16px;
 }
 .resume-option strong {
@@ -693,15 +693,15 @@ body:has(.narrative) [data-language-switch]:focus-visible {
   display: block;
   margin-top: 4px;
   font-size: 12px;
-  color: #b4bfb2;
+  color: var(--portfolio-muted);
 }
 .resume-menu .resume-option[data-highlighted] {
-  background: #d6f268;
-  color: #20271d;
+  background: var(--portfolio-acid);
+  color: var(--portfolio-on-accent);
   outline: none;
 }
 .resume-menu .resume-option[data-highlighted] small {
-  color: #35412b;
+  color: var(--portfolio-on-accent);
 }
 @media (min-width: 600px) {
   .narrative .proof-grid {

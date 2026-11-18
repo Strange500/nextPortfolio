@@ -1,0 +1,39 @@
+{
+  "result": "PASS",
+  "evidence": [
+    {
+      "scheme": "light",
+      "paper": "rgb(241, 238, 231)",
+      "ink": "rgb(32, 36, 43)",
+      "accent": "rgb(47, 83, 215)",
+      "muted": "rgb(94, 101, 111)",
+      "onAccent": "rgb(255, 255, 255)",
+      "cubeInk": "rgb(32, 36, 43)",
+      "canvasInk": "#20242b",
+      "persistent": true
+    },
+    {
+      "scheme": "dark",
+      "paper": "rgb(12, 20, 32)",
+      "ink": "rgb(234, 240, 245)",
+      "accent": "rgb(120, 198, 224)",
+      "muted": "rgb(161, 176, 193)",
+      "onAccent": "rgb(12, 20, 32)",
+      "cubeInk": "rgb(211, 224, 235)",
+      "canvasInk": "#d3e0eb",
+      "persistent": true
+    },
+    {
+      "scheme": "light",
+      "paper": "rgb(241, 238, 231)",
+      "ink": "rgb(32, 36, 43)",
+      "accent": "rgb(47, 83, 215)",
+      "muted": "rgb(94, 101, 111)",
+      "onAccent": "rgb(255, 255, 255)",
+      "cubeInk": "rgb(32, 36, 43)",
+      "canvasInk": "#20242b",
+      "persistent": true
+    }
+  ],
+  "errors": []
+}

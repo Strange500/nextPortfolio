@@ -1,16 +1,63 @@
-/* The portfolio is an isolated editorial surface; blog styles stay unchanged. */
+/* Shared with body controls and portalled menus. CSS also follows the system
+   before hydration (and without JavaScript); next-themes owns explicit choices. */
+:root {
+  color-scheme: light;
+  --portfolio-paper: #f1eee7;
+  --portfolio-ink: #20242b;
+  --portfolio-muted: #5e656f;
+  --portfolio-line: #c8c6c2;
+  --portfolio-acid: #2f53d7;
+  --portfolio-panel: #e7e5df;
+  --portfolio-accent-ink: #2f53d7;
+  --portfolio-on-accent: #ffffff;
+  --portfolio-accent-hover: #2445bc;
+  --portfolio-cube-ink: #20242b;
+  --portfolio-cube-accent: #2f53d7;
+}
+:root.dark {
+  color-scheme: dark;
+  --portfolio-paper: #0c1420;
+  --portfolio-ink: #eaf0f5;
+  --portfolio-muted: #a1b0c1;
+  --portfolio-line: #2d3b4d;
+  --portfolio-acid: #78c6e0;
+  --portfolio-panel: #141f2e;
+  --portfolio-accent-ink: #78c6e0;
+  --portfolio-on-accent: #0c1420;
+  --portfolio-accent-hover: #99d7eb;
+  --portfolio-cube-ink: #d3e0eb;
+  --portfolio-cube-accent: #78c6e0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    color-scheme: dark;
+    --portfolio-paper: #0c1420;
+    --portfolio-ink: #eaf0f5;
+    --portfolio-muted: #a1b0c1;
+    --portfolio-line: #2d3b4d;
+    --portfolio-acid: #78c6e0;
+    --portfolio-panel: #141f2e;
+    --portfolio-accent-ink: #78c6e0;
+    --portfolio-on-accent: #0c1420;
+    --portfolio-accent-hover: #99d7eb;
+    --portfolio-cube-ink: #d3e0eb;
+    --portfolio-cube-accent: #78c6e0;
+  }
+}
+
+/* Editorial layout aliases the shared portfolio palette. */
 .narrative {
-  --paper: #141c18;
-  --ink: #eeeee4;
-  --muted: #b4bfb2;
-  --line: #3c4a3f;
-  --acid: #d6f268;
-  --panel: #1d2821;
-  --accent-ink: #d6f268;
-  --on-accent: #20271d;
-  --accent-hover: #e3ff80;
-  --cube-ink: #e0e9db;
-  --cube-accent: #d6f268;
+  --paper: var(--portfolio-paper);
+  --ink: var(--portfolio-ink);
+  --muted: var(--portfolio-muted);
+  --line: var(--portfolio-line);
+  --acid: var(--portfolio-acid);
+  --panel: var(--portfolio-panel);
+  --accent-ink: var(--portfolio-accent-ink);
+  --on-accent: var(--portfolio-on-accent);
+  --accent-hover: var(--portfolio-accent-hover);
+  --cube-ink: var(--portfolio-cube-ink);
+  --cube-accent: var(--portfolio-cube-accent);
   position: relative;
   z-index: 1;
   background: var(--paper);
@@ -73,7 +120,7 @@
   left: 16px;
   transform: translateY(-120%);
   background: var(--acid);
-  color: #222820;
+  color: var(--on-accent);
   padding: 12px;
 }
 .skip-link:focus {
@@ -161,8 +208,8 @@
   align-items: center;
   justify-content: space-between;
   background: var(--acid);
-  color: #222820 !important;
-  border: 1px solid #bdcf7b;
+  color: var(--on-accent) !important;
+  border: 1px solid var(--acid);
   padding: 14px 22px;
   font-size: 12px;
   font-weight: 500;
@@ -277,7 +324,7 @@
 }
 .facet-rail nav a[aria-current] {
   background: var(--acid);
-  color: #222820;
+  color: var(--on-accent);
 }
 .rail-arrow {
   margin-left: auto;
@@ -322,25 +369,25 @@
   cursor: pointer;
 }
 .terminal-window {
-  background: #222b22;
-  color: #e7eadb;
-  border: 1px solid #3c4937;
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
 }
 .terminal-window .window-bar {
-  color: #a8b59b;
-  border-color: #46533d;
+  color: var(--muted);
+  border-color: var(--line);
 }
 .terminal-window pre {
   padding: 24px;
   font-size: 11px;
   line-height: 1.45;
   margin: 0;
-  color: #d6f268;
+  color: var(--accent-ink);
 }
 .terminal-note {
   display: block;
-  border-top: 1px solid #46533d;
-  color: #b4c0a8;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
   font-size: 10px;
   padding: 12px 18px;
 }
@@ -456,8 +503,8 @@
 }
 .topology button[aria-pressed='true'] {
   background: var(--acid);
-  border-color: #9daf5c;
-  color: #222820;
+  border-color: var(--acid);
+  color: var(--on-accent);
 }
 .machine-detail {
   padding: 25px;

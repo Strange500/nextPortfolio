@@ -199,3 +199,19 @@ the entire oversized cube. Backing resolution follows DPR up to 2, bounded by
 opaque between ASCII glyphs without internal antialias seams. Rust still supplies
 the ASCII material; the same projected corners drive occlusion and face hit tests.
 The scene viewport clips overscan and avoids horizontal document overflow.
+
+## System color palettes
+
+The homepage now follows the existing `next-themes` system default: Encre &
+glacier (`#0c1420`, `#eaf0f5`, accent `#78c6e0`) in dark mode, Papier & cobalt
+(`#f1eee7`, `#20242b`, accent `#2f53d7`) in light mode. A CSS media-query fallback
+selects the palette before hydration and without JavaScript; explicit theme
+choices from the existing blog menu remain respected. System changes update
+colors in place, including the persistent WASM canvas in reduced-motion mode.
+
+Shared root tokens cover the page, language control and portalled résumé menu;
+terminal, topology, labels and active controls use the same palette. The shared
+Tailwind surface/text tokens match these colors too. Syntax and semantic status
+colors retain their existing definitions. `scripts/test-system-palettes.mjs`
+checks automatic selection, live changes without remounting, text/action
+contrast (at least 4.5:1), first paint without JS, mobile layout and résumé menus.
