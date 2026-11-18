@@ -1,0 +1,38 @@
+{
+  "result": "PASS",
+  "changes": [
+    {
+      "name": "Python",
+      "hidden": true
+    },
+    {
+      "name": "TailwindCSS",
+      "hidden": true
+    },
+    {
+      "name": "Postgres",
+      "hidden": true
+    },
+    {
+      "name": "Linux",
+      "hidden": true
+    },
+    {
+      "name": "TypeScript",
+      "hidden": true
+    },
+    {
+      "name": "JavaScript",
+      "hidden": true
+    },
+    {
+      "name": "NixOS",
+      "hidden": true
+    },
+    {
+      "name": "Rust",
+      "hidden": true
+    }
+  ],
+  "errors": []
+}
