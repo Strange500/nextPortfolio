@@ -105,8 +105,10 @@ chapters. Reduced motion disables autonomous rotation but retains manual control
 A WASM-load failure leaves HTML and navigation available.
 
 Each chapter selects its own verified technology set in `data/cube-context.ts`.
-The intro cycles the 17 local logo assets plus five typographic fallbacks (WASM,
-Nix, Home Manager, Maven, Bitcoin), swapping only hidden faces. Section changes
+The intro cycles 22 locally supplied technology textures, swapping only hidden
+faces. Transparent monochrome glyphs preserve negative space (especially JS/TS);
+Nix and NixOS share the snowflake, and Home Manager uses a typographic name.
+Asset provenance and licenses are in `public/logo/cube/README.md`. Section changes
 fade textures before changing the set. Contact returns to the plain material.
 At most two upright legends (one on mobile) connect to projected visible face
 centres, with visibility thresholds to avoid flicker. Labels follow their face
@@ -199,3 +201,44 @@ the entire oversized cube. Backing resolution follows DPR up to 2, bounded by
 opaque between ASCII glyphs without internal antialias seams. Rust still supplies
 the ASCII material; the same projected corners drive occlusion and face hit tests.
 The scene viewport clips overscan and avoids horizontal document overflow.
+
+## System color palettes
+
+The homepage now follows the existing `next-themes` system default: Encre &
+glacier (`#0c1420`, `#eaf0f5`, accent `#78c6e0`) in dark mode, Papier & cobalt
+(`#f1eee7`, `#20242b`, accent `#2f53d7`) in light mode. A CSS media-query fallback
+selects the palette before hydration and without JavaScript; explicit theme
+choices from the existing blog menu remain respected. System changes update
+colors in place, including the persistent WASM canvas in reduced-motion mode.
+
+Shared root tokens cover the page, language control and portalled résumé menu;
+terminal, topology, labels and active controls use the same palette. The shared
+Tailwind surface/text tokens match these colors too. Syntax and semantic status
+colors retain their existing definitions. `scripts/test-system-palettes.mjs`
+checks automatic selection, live changes without remounting, text/action
+contrast (at least 4.5:1), first paint without JS, mobile layout and résumé menus.
+
+A persistent appearance button beside the language control offers Light, Dark
+and Automatic (localized in French). The selected radio option is announced,
+explicit choices persist through reloads, and Automatic returns to live system
+tracking. The utility controls stay available while reading other chapters.
+
+## Interaction boundaries and reading poses
+
+Gestures beyond the first/last chapter are no-ops. The settled step determines
+the reading orientation even when an integer `scrollY` rounds either side of a
+fractional chapter anchor. Chapter changes clear stale hover, pointer capture,
+inertia and temporary drag/card pauses; only an explicit Pause survives.
+
+`test-cube-interaction-boundaries.mjs` exercises both document boundaries,
+fractional anchors, drag/click/touch followed by navigation, and explicit Pause.
+`test-cube-logo-assets.mjs` decodes all 22 textures through the actual loader,
+checks nonblank/nonsolid masks, and renders an atlas through Rust/WASM.
+
+During a stepped transition, the scroll writer triggers the scene draw in the
+same animation frame, after the scroll write. Independent frame loops no longer
+apply a one-frame-old compensation to pinned intro/Rust text. The standalone
+scene loop still handles idle rotation and native scrolling. The stability test
+measures visible text/header positions in both directions (≤1 CSS px drift).
+Reading-pose rounding is corrected only within 2px of the selected chapter's
+actual anchor, preserving direct/native intermediate scroll positions.

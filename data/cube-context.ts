@@ -1,6 +1,6 @@
 import { technologies } from './technologies'
 
-export const wordmarks = [
+export const additionalCubeTechnologies = [
   'WebAssembly',
   'Nix',
   'Home Manager',
@@ -9,7 +9,7 @@ export const wordmarks = [
 ]
 export const cubeTechnologyNames = [
   ...technologies.map(t => t.name),
-  ...wordmarks
+  ...additionalCubeTechnologies
 ]
 export const contextTechnologies: Record<string, string[]> = {
   intro: cubeTechnologyNames,

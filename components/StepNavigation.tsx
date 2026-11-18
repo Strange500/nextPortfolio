@@ -37,6 +37,12 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
     }
     const go = (next: number, animate = true) => {
       next = Math.max(0, Math.min(ids.length - 1, next))
+      // A gesture into the document boundary is a no-op, not a new scene.
+      // Keep forced initialization/resize alignment available.
+      if (animate && next === index && Math.abs(scrollY - top(next)) < 2) {
+        reset()
+        return
+      }
       cancelAnimationFrame(frame)
       const start = scrollY,
         end = top(next),
@@ -67,6 +73,11 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
           locked = false
           surface.dataset.transitioning = 'false'
         }
+        // Draw after this exact scroll write, in the same display frame. The
+        // scene must not compensate the preceding frame's scroll position for pinned text.
+        window.dispatchEvent(
+          new CustomEvent('portfolio-scene-frame', { detail: now })
+        )
       }
       frame = requestAnimationFrame(tick)
     }

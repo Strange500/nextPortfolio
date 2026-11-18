@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "reports": [
+    {
+      "destination": "rust",
+      "frames": 119,
+      "heroDrift": 0,
+      "rustDrift": 0,
+      "headerDrift": 0
+    },
+    {
+      "destination": "intro",
+      "frames": 127,
+      "heroDrift": 0,
+      "rustDrift": 0,
+      "headerDrift": 0
+    }
+  ],
+  "errors": []
+}

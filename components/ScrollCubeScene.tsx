@@ -147,10 +147,18 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
     media.addEventListener('change', invalidate)
     surface.dataset.scene = 'ready'
 
-    const update = (time: number) => {
+    const update = (time: number, schedule = true) => {
       if (disposed) return
-      frame = requestAnimationFrame(update)
+      if (schedule) frame = requestAnimationFrame(update)
       if (document.hidden) return
+      // During a stepped journey its scroll writer owns the draw. Independent
+      // rAF loops otherwise cancel the preceding frame's scroll and text shakes.
+      if (
+        schedule &&
+        surface.dataset.stepped &&
+        surface.dataset.transitioning === 'true'
+      )
+        return
       const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 1 / 60
       lastTime = time
       const reduced = media.matches
@@ -200,6 +208,28 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
                 )
         p = clamp((y - start) / ((i === 1 ? introEnd : anchors[i]) - start))
         break
+      }
+      // Integer scrollY can stop either side of a fractional chapter anchor.
+      // Once stepped navigation settles, its chapter is the reading pose;
+      // a subpixel residual must not leave the cube "in transition" forever.
+      if (
+        surface.dataset.stepped &&
+        surface.dataset.transitioning === 'false'
+      ) {
+        const reading = sections.indexOf(
+          surface.dataset.step === 'missions'
+            ? 'bitcoin'
+            : surface.dataset.step || ''
+        )
+        const readingAnchor =
+          surface.dataset.step === 'missions'
+            ? document.getElementById('missions')!.getBoundingClientRect().top +
+              y
+            : anchors[reading]
+        if (reading >= 0 && Math.abs(y - readingAnchor) < 2) {
+          from = to = reading
+          p = 0
+        }
       }
       if (reduced) {
         from = index
@@ -333,6 +363,9 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       stage.current!.dataset.technologyCount = String(logos.length)
       stage.current!.dataset.technologyAssetCount = String(
         logos.filter(logo => logo.kind === 'asset').length
+      )
+      stage.current!.dataset.technologyFallbackCount = String(
+        logos.filter(logo => logo.kind === 'fallback').length
       )
       cube.set_rotation(...(angles as [number, number, number]))
       cube.set_rotation_speed(0, 0, 0)
@@ -501,6 +534,11 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         dt
       )
     }
+    const coordinatedFrame = (event: Event) => {
+      dirty = true
+      update((event as CustomEvent<number>).detail, false)
+    }
+    window.addEventListener('portfolio-scene-frame', coordinatedFrame)
     frame = requestAnimationFrame(update)
     async function load() {
       try {
@@ -529,6 +567,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       disposed = true
       cancelAnimationFrame(frame)
       cube?.free()
+      window.removeEventListener('portfolio-scene-frame', coordinatedFrame)
       themeObserver.disconnect()
       window.removeEventListener('wheel', stopNavigation)
       window.removeEventListener('touchstart', stopNavigation)

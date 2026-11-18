@@ -1,0 +1,269 @@
+{
+  "result": "PASS",
+  "logos": [
+    {
+      "name": "Docker",
+      "kind": "asset",
+      "foreground": 2306,
+      "density": 0.5279304029304029,
+      "bounds": [
+        11,
+        22,
+        88,
+        77
+      ]
+    },
+    {
+      "name": "Spring Boot",
+      "kind": "asset",
+      "foreground": 3558,
+      "density": 0.6516483516483517,
+      "bounds": [
+        11,
+        15,
+        88,
+        84
+      ]
+    },
+    {
+      "name": "React",
+      "kind": "asset",
+      "foreground": 1865,
+      "density": 0.3415750915750916,
+      "bounds": [
+        11,
+        15,
+        88,
+        84
+      ]
+    },
+    {
+      "name": "NextJS",
+      "kind": "asset",
+      "foreground": 4258,
+      "density": 0.6998685075608152,
+      "bounds": [
+        11,
+        11,
+        88,
+        88
+      ]
+    },
+    {
+      "name": "Java EE",
+      "kind": "asset",
+      "foreground": 784,
+      "density": 0.1755485893416928,
+      "bounds": [
+        21,
+        12,
+        78,
+        88
+      ]
+    },
+    {
+      "name": "Node.js",
+      "kind": "asset",
+      "foreground": 1911,
+      "density": 0.35,
+      "bounds": [
+        15,
+        11,
+        84,
+        88
+      ]
+    },
+    {
+      "name": "Python",
+      "kind": "asset",
+      "foreground": 3924,
+      "density": 0.6449704142011834,
+      "bounds": [
+        11,
+        11,
+        88,
+        88
+      ]
+    },
+    {
+      "name": "TailwindCSS",
+      "kind": "asset",
+      "foreground": 1277,
+      "density": 0.34107905982905984,
+      "bounds": [
+        11,
+        26,
+        88,
+        73
+      ]
+    },
+    {
+      "name": "Git",
+      "kind": "asset",
+      "foreground": 2862,
+      "density": 0.47041420118343197,
+      "bounds": [
+        11,
+        11,
+        88,
+        88
+      ]
+    },
+    {
+      "name": "Postgres",
+      "kind": "asset",
+      "foreground": 1268,
+      "density": 0.21390013495276652,
+      "bounds": [
+        12,
+        11,
+        87,
+        88
+      ]
+    },
+    {
+      "name": "Linux",
+      "kind": "asset",
+      "foreground": 1192,
+      "density": 0.2387820512820513,
+      "bounds": [
+        18,
+        11,
+        81,
+        88
+      ]
+    },
+    {
+      "name": "TypeScript",
+      "kind": "asset",
+      "foreground": 4969,
+      "density": 0.8167324128862591,
+      "bounds": [
+        11,
+        11,
+        88,
+        88
+      ]
+    },
+    {
+      "name": "JavaScript",
+      "kind": "asset",
+      "foreground": 5283,
+      "density": 0.8683431952662722,
+      "bounds": [
+        11,
+        11,
+        88,
+        88
+      ]
+    },
+    {
+      "name": "NixOS",
+      "kind": "asset",
+      "foreground": 2208,
+      "density": 0.416289592760181,
+      "bounds": [
+        11,
+        16,
+        88,
+        83
+      ]
+    },
+    {
+      "name": "Rust",
+      "kind": "asset",
+      "foreground": 3270,
+      "density": 0.5374753451676528,
+      "bounds": [
+        11,
+        11,
+        88,
+        88
+      ]
+    },
+    {
+      "name": "Angular",
+      "kind": "asset",
+      "foreground": 2044,
+      "density": 0.3541233541233541,
+      "bounds": [
+        13,
+        11,
+        86,
+        88
+      ]
+    },
+    {
+      "name": "Selenium",
+      "kind": "asset",
+      "foreground": 4487,
+      "density": 0.7773735273735274,
+      "bounds": [
+        13,
+        11,
+        86,
+        88
+      ]
+    },
+    {
+      "name": "WebAssembly",
+      "kind": "asset",
+      "foreground": 5202,
+      "density": 0.8550295857988166,
+      "bounds": [
+        11,
+        11,
+        88,
+        88
+      ]
+    },
+    {
+      "name": "Nix",
+      "kind": "asset",
+      "foreground": 2208,
+      "density": 0.416289592760181,
+      "bounds": [
+        11,
+        16,
+        88,
+        83
+      ]
+    },
+    {
+      "name": "Home Manager",
+      "kind": "wordmark",
+      "foreground": 516,
+      "density": 0.31773399014778325,
+      "bounds": [
+        22,
+        35,
+        77,
+        63
+      ]
+    },
+    {
+      "name": "Maven",
+      "kind": "asset",
+      "foreground": 1684,
+      "density": 0.372236958443855,
+      "bounds": [
+        21,
+        11,
+        78,
+        88
+      ]
+    },
+    {
+      "name": "Bitcoin",
+      "kind": "asset",
+      "foreground": 3961,
+      "density": 0.651051939513478,
+      "bounds": [
+        11,
+        11,
+        88,
+        88
+      ]
+    }
+  ]
+}

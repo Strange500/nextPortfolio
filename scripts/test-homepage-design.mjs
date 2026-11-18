@@ -45,7 +45,7 @@ try {
     )
     assert.equal(
       await page.$eval('[data-theme-toggle]', e => getComputedStyle(e).display),
-      'none'
+      'inline-flex'
     )
     assert.equal(await page.$eval('main', e => e.lang), lang)
     const type = await page.evaluate(() =>

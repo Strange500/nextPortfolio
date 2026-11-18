@@ -158,9 +158,16 @@ CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
   REVIEW_DIR=/tmp/portfolio-intro-timing node scripts/test-intro-timing.mjs
 ```
 
-Intro logo showcase (17 local legacy assets, hidden-face cycling and navigation):
+Technology textures (22 local assets, hidden-face cycling and inspection):
 
 ```sh
 CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
   REVIEW_DIR=/tmp/portfolio-technologies node scripts/test-intro-technologies.mjs
+```
+
+Audit texture masks and their Rust/WASM rendering, then interaction boundaries:
+
+```sh
+PORTFOLIO_URL=http://localhost:3100 node scripts/test-cube-logo-assets.mjs
+PORTFOLIO_URL=http://localhost:3100 node scripts/test-cube-interaction-boundaries.mjs
 ```

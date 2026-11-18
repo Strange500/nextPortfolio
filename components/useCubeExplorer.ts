@@ -59,7 +59,7 @@ export function useCubeExplorer(
     assigned: [0, 1, 2, 3, 4, 5],
     seen: Array(6).fill(false),
     textured: false,
-    interactionHold: false,
+    manualPause: false,
     hover: null as number | null,
     labels: [] as number[],
     drag: null as null | {
@@ -87,8 +87,8 @@ export function useCubeExplorer(
   }
   const pause = () => {
     stopCoast()
-    state.current.interactionHold = false
-    patch({ pause: !state.current.ui.pause })
+    state.current.manualPause = !state.current.ui.pause
+    patch({ pause: state.current.manualPause })
   }
   const hover = (face: number | null) => {
     state.current.hover = face
@@ -96,7 +96,6 @@ export function useCubeExplorer(
   }
   const open = (name: string) => {
     stopCoast()
-    state.current.interactionHold = true
     if (name)
       patch({
         selected: { name, context: state.current.profile || 'intro' },
@@ -114,7 +113,6 @@ export function useCubeExplorer(
   }
   const catalog = () => {
     stopCoast()
-    state.current.interactionHold = true
     return patch({
       catalog: !state.current.ui.catalog,
       selected: null,
@@ -155,7 +153,6 @@ export function useCubeExplorer(
       face,
       moved: false
     }
-    state.current.interactionHold = true
     patch({ pause: true })
     e.currentTarget.setPointerCapture(e.pointerId)
   }
@@ -223,7 +220,6 @@ export function useCubeExplorer(
         fromVector(directions[e.key]),
         state.current.orientation || fromEuler([0.32, 2.6, -0.08])
       )
-      state.current.interactionHold = true
       patch({ pause: true })
     } else if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault()
@@ -321,9 +317,18 @@ export function useCubeExplorer(
       const pool = (contextTechnologies[target] || [])
         .map(name => logos.findIndex(l => l.name === name))
         .filter(i => i >= 0)
-      const releaseInteraction = !!s.profile && s.interactionHold
       s.profile = target
-      s.interactionHold = false
+      // Hover/drag/card pauses belong to their chapter; only the explicit
+      // Pause control survives navigation.
+      const hitLayer =
+        root.current?.querySelector<SVGSVGElement>('.cube-hit-layer')
+      const pointerId = s.drag?.id
+      s.drag = null
+      if (pointerId !== undefined && hitLayer?.hasPointerCapture(pointerId))
+        hitLayer.releasePointerCapture(pointerId)
+      s.hover = null
+      stopCoast()
+      stage.current?.setAttribute('data-dragging', 'false')
       s.labels = []
       s.seen.fill(false)
       if (pool.length) {
@@ -346,7 +351,7 @@ export function useCubeExplorer(
       }
       patch({
         context: target,
-        pause: releaseInteraction ? false : s.ui.pause,
+        pause: s.manualPause,
         names: pool.length ? s.assigned.map(i => logos[i].name) : [],
         selected: null,
         catalog: false
