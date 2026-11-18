@@ -201,6 +201,23 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         p = clamp((y - start) / ((i === 1 ? introEnd : anchors[i]) - start))
         break
       }
+      // Integer scrollY can stop either side of a fractional chapter anchor.
+      // Once stepped navigation settles, its chapter is the reading pose;
+      // a subpixel residual must not leave the cube "in transition" forever.
+      if (
+        surface.dataset.stepped &&
+        surface.dataset.transitioning === 'false'
+      ) {
+        const reading = sections.indexOf(
+          surface.dataset.step === 'missions'
+            ? 'bitcoin'
+            : surface.dataset.step || ''
+        )
+        if (reading >= 0) {
+          from = to = reading
+          p = 0
+        }
+      }
       if (reduced) {
         from = index
         to = index
@@ -333,6 +350,9 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       stage.current!.dataset.technologyCount = String(logos.length)
       stage.current!.dataset.technologyAssetCount = String(
         logos.filter(logo => logo.kind === 'asset').length
+      )
+      stage.current!.dataset.technologyFallbackCount = String(
+        logos.filter(logo => logo.kind === 'fallback').length
       )
       cube.set_rotation(...(angles as [number, number, number]))
       cube.set_rotation_speed(0, 0, 0)

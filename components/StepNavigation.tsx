@@ -37,6 +37,12 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
     }
     const go = (next: number, animate = true) => {
       next = Math.max(0, Math.min(ids.length - 1, next))
+      // A gesture into the document boundary is a no-op, not a new scene.
+      // Keep forced initialization/resize alignment available.
+      if (animate && next === index && Math.abs(scrollY - top(next)) < 2) {
+        reset()
+        return
+      }
       cancelAnimationFrame(frame)
       const start = scrollY,
         end = top(next),

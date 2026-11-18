@@ -105,8 +105,10 @@ chapters. Reduced motion disables autonomous rotation but retains manual control
 A WASM-load failure leaves HTML and navigation available.
 
 Each chapter selects its own verified technology set in `data/cube-context.ts`.
-The intro cycles the 17 local logo assets plus five typographic fallbacks (WASM,
-Nix, Home Manager, Maven, Bitcoin), swapping only hidden faces. Section changes
+The intro cycles 22 locally supplied technology textures, swapping only hidden
+faces. Transparent monochrome glyphs preserve negative space (especially JS/TS);
+Nix and NixOS share the snowflake, and Home Manager uses a typographic name.
+Asset provenance and licenses are in `public/logo/cube/README.md`. Section changes
 fade textures before changing the set. Contact returns to the plain material.
 At most two upright legends (one on mobile) connect to projected visible face
 centres, with visibility thresholds to avoid flicker. Labels follow their face
@@ -220,3 +222,15 @@ A persistent appearance button beside the language control offers Light, Dark
 and Automatic (localized in French). The selected radio option is announced,
 explicit choices persist through reloads, and Automatic returns to live system
 tracking. The utility controls stay available while reading other chapters.
+
+## Interaction boundaries and reading poses
+
+Gestures beyond the first/last chapter are no-ops. The settled step determines
+the reading orientation even when an integer `scrollY` rounds either side of a
+fractional chapter anchor. Chapter changes clear stale hover, pointer capture,
+inertia and temporary drag/card pauses; only an explicit Pause survives.
+
+`test-cube-interaction-boundaries.mjs` exercises both document boundaries,
+fractional anchors, drag/click/touch followed by navigation, and explicit Pause.
+`test-cube-logo-assets.mjs` decodes all 22 textures through the actual loader,
+checks nonblank/nonsolid masks, and renders an atlas through Rust/WASM.

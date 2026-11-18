@@ -65,6 +65,8 @@ jobs:
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/intro-timing" node scripts/test-intro-timing.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/technologies" node scripts/test-intro-technologies.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/palettes" node scripts/test-system-palettes.mjs
+          REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/logos" node scripts/test-cube-logo-assets.mjs
+          node scripts/test-cube-interaction-boundaries.mjs
 
       - name: Upload ultrawide review evidence
         if: always()
