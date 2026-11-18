@@ -5,9 +5,10 @@ import type { Cube } from 'ascii-cube'
 import { Pause, Play } from 'lucide-react'
 import {
   loadCubeTechnologies,
-  faceTechnology,
   type CubeTechnology
 } from '@/lib/cube-technologies'
+import { useCubeExplorer } from './useCubeExplorer'
+import CubeExplorerControls from './CubeExplorerControls'
 
 const sections = ['intro', 'rust', 'nix', 'testing', 'bitcoin', 'contact']
 // Face indices and projection match ascii-cube-rs at the flake.lock revision:
@@ -82,14 +83,10 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
   const root = useRef<HTMLDivElement>(null)
   const stage = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
-  const paused = useRef(false)
-  const hovered = useRef('')
+  const explorer = useCubeExplorer(root, stage)
   const navigating = useRef(false)
-  const [pause, setPause] = useState(false)
   const [status, setStatus] = useState('loading')
   const [current, setCurrent] = useState('intro')
-  const [hover, setHover] = useState('')
-  const [faceNames, setFaceNames] = useState<string[]>([])
 
   useEffect(() => {
     let disposed = false,
@@ -97,29 +94,10 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
     let cube: Cube | undefined
     let memory: WebAssembly.Memory
     let previous = '',
-      lastTime = 0,
-      phase = 0
+      lastTime = 0
     let lastRaster = 0
     let rustShift = 0
-    let introTime = 0,
-      lastSwap = 0,
-      nextTechnology = 6,
-      textured = false
     let logos: CubeTechnology[] = []
-    const assigned = [0, 1, 2, 3, 4, 5]
-    const seen = Array(6).fill(false)
-    const publishFace = (face: number) => {
-      const logo = logos[assigned[face]]
-      const texture = faceTechnology(logo, face)
-      cube!.update_face_fast(face, texture.characters, texture.colors)
-      const group = root.current?.querySelector<SVGGElement>(
-        `[data-cube-face="${face}"]`
-      )
-      if (group) group.dataset.technology = logo.name
-    }
-    const publishNames = () =>
-      setFaceNames(assigned.map(index => logos[index].name))
-
     const media = matchMedia('(prefers-reduced-motion: reduce)')
     const nodes = sections.map(id => document.getElementById(id)!)
     const surface = document.querySelector<HTMLElement>('.narrative')!
@@ -164,6 +142,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
     window.addEventListener('keydown', scrollKey)
     window.addEventListener('scrollend', endNavigation)
     window.addEventListener('scroll', invalidate, { passive: true })
+    window.addEventListener('cube-explorer-change', invalidate)
     window.addEventListener('resize', invalidate)
     media.addEventListener('change', invalidate)
     surface.dataset.scene = 'ready'
@@ -308,27 +287,18 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       stage.current!.style.width = `${size}px`
       stage.current!.style.height = `${size}px`
       stage.current!.style.transform = `translate3d(${x - size / 2}px, ${cy - size / 2}px, 0)`
-      if (!reduced && !paused.current && !hovered.current) phase += dt * 0.55
-      const introIdle = y < 2 && surface.dataset.transitioning !== 'true'
-      if (introIdle && !reduced && !paused.current && !hovered.current)
-        introTime += dt
-      const spin = reduced
-        ? [0, 0, 0]
-        : [
-            Math.sin(introTime * 0.31) * 0.65,
-            introTime * 0.42,
-            Math.sin(introTime * 0.23) * 0.28
-          ]
-      const drift = reduced ? 0 : Math.sin(phase) * 0.035
-      const angles = displayed.rotation.map((n, i) => {
-        if (from === 0) {
-          const delta = a.rotation[i] + spin[i] - b.rotation[i]
-          const nearest =
-            b.rotation[i] + Math.atan2(Math.sin(delta), Math.cos(delta))
-          return mix(nearest, b.rotation[i], progress) + (i < 2 ? drift : 0)
-        }
-        return n + (i < 2 ? drift : 0)
-      })
+      const transitioning = surface.dataset.transitioning === 'true'
+      const angles = explorer.motion(
+        from,
+        to,
+        progress,
+        a.rotation,
+        b.rotation,
+        dt,
+        reduced,
+        !transitioning && (from === to || p === 0)
+      )
+      const depths = normals.map(normal => rotate(normal, angles)[2])
       stage.current!.dataset.active = id
       root.current!.dataset.motion = reduced ? 'reduced' : 'full'
       if (!cube || !memory || !canvas.current) return
@@ -338,43 +308,32 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       lastRaster = time
       dirty = false
       stage.current!.dataset.rotation = angles.map(n => n.toFixed(4)).join(',')
-      const logoWeight = from === 0 && logos.length ? 1 - smooth(p / 0.3) : 0
-      if (logoWeight > 0 && !textured) {
-        assigned.forEach((_, face) => publishFace(face))
-        textured = true
-      } else if (logoWeight === 0 && textured) {
-        for (let face = 0; face < 6; face++)
-          cube.set_face_color(face, `#${(0x100001 + face).toString(16)}`)
-        textured = false
-      }
+      const mission = document.getElementById('missions')!
+      const context = transitioning
+        ? surface.dataset.step || id
+        : Math.abs(mission.getBoundingClientRect().top) < 2
+          ? 'missions'
+          : id
+      const transitionProgress = Number(surface.dataset.stepProgress || 1)
+      const {
+        weight: logoWeight,
+        textured,
+        context: textureContext
+      } = explorer.textures(
+        cube,
+        logos,
+        context,
+        transitioning,
+        transitionProgress,
+        depths,
+        y < 2 && !transitioning && !reduced
+      )
+      stage.current!.dataset.context = textureContext
       stage.current!.dataset.technologyMode = String(logoWeight > 0)
       stage.current!.dataset.technologyCount = String(logos.length)
-      if (
-        introIdle &&
-        textured &&
-        !reduced &&
-        !paused.current &&
-        !hovered.current
-      ) {
-        for (let face = 0; face < 6; face++) {
-          const depth = rotate(normals[face], angles)[2]
-          if (depth < -0.1) seen[face] = true
-          if (
-            depth > 0.18 &&
-            seen[face] &&
-            introTime - lastSwap > 0.8 &&
-            logos.length > 6
-          ) {
-            while (assigned.includes(nextTechnology % logos.length))
-              nextTechnology++
-            assigned[face] = nextTechnology++ % logos.length
-            publishFace(face)
-            publishNames()
-            seen[face] = false
-            lastSwap = introTime
-          }
-        }
-      }
+      stage.current!.dataset.technologyAssetCount = String(
+        logos.filter(logo => logo.kind === 'asset').length
+      )
       cube.set_rotation(...(angles as [number, number, number]))
       cube.set_rotation_speed(0, 0, 0)
       cube.next_frame()
@@ -526,20 +485,21 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         group
           .querySelector('polygon')!
           .setAttribute('points', points.map(p => p.join(',')).join(' '))
-        const text = group.querySelector('text')!
-        const cx = points.reduce((n, p) => n + p[0], 0) / 4
-        const cy = points.reduce((n, p) => n + p[1], 0) / 4
-        text.setAttribute('x', String(cx))
-        text.setAttribute('y', String(cy))
-        const plate = group.querySelector('rect')!
-        const labelWidth = mobile ? 744 : 360
-        const labelHeight = mobile ? 180 : 86
-        plate.setAttribute('width', String(labelWidth))
-        plate.setAttribute('height', String(labelHeight))
-        plate.setAttribute('x', String(cx - labelWidth / 2))
-        plate.setAttribute('y', String(cy - labelHeight / 2))
-        group.dataset.current = String(section === id)
       })
+      explorer.layout(
+        projectedFaces,
+        depths,
+        vw,
+        vh,
+        size,
+        x,
+        cy,
+        mobile,
+        landscape,
+        transitioning,
+        logicalSize,
+        dt
+      )
     }
     frame = requestAnimationFrame(update)
     async function load() {
@@ -557,23 +517,6 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         for (let face = 0; face < 6; face++)
           cube.set_face_color(face, `#${(0x100001 + face).toString(16)}`)
         cube.set_rotation_speed(0, 0, 0)
-        if (logos.length) {
-          const preferred = [
-            'Rust',
-            'Git',
-            'NixOS',
-            'Spring Boot',
-            'React',
-            'TypeScript'
-          ]
-          assigned.forEach((_, face) => {
-            assigned[face] = Math.max(
-              0,
-              logos.findIndex(logo => logo.name === preferred[face])
-            )
-          })
-          publishNames()
-        }
         // Rust still supplies every material glyph and depth sample.
         dirty = true
         setStatus('ready')
@@ -594,6 +537,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       window.removeEventListener('scrollend', endNavigation)
       navigating.current = false
       window.removeEventListener('scroll', invalidate)
+      window.removeEventListener('cube-explorer-change', invalidate)
       window.removeEventListener('resize', invalidate)
       media.removeEventListener('change', invalidate)
       surface.style.removeProperty('--intro-opacity')
@@ -609,12 +553,9 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       document.body.style.removeProperty('--intro-shift')
       document.body.style.removeProperty('--intro-ui-opacity')
     }
+    // Explorer frame methods close over stable refs; this effect owns one WASM instance.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  function enter(section: string) {
-    hovered.current = section
-    setHover(section)
-  }
   function navigate(id: string) {
     if (document.querySelector('.narrative[data-stepped]')) {
       window.dispatchEvent(new CustomEvent('portfolio-step', { detail: id }))
@@ -638,7 +579,6 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           className='scene-cube'
           data-persistent-cube
           data-wasm={status}
-          data-hover={hover}
         >
           <canvas
             ref={canvas}
@@ -655,57 +595,71 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           <svg
             viewBox={`0 0 ${logicalSize} ${logicalSize}`}
             className='cube-hit-layer'
-            aria-hidden='true'
-            onPointerLeave={() => enter('')}
+            role='group'
+            aria-label={
+              fr
+                ? 'Cube interactif des technologies'
+                : 'Interactive technology cube'
+            }
+            aria-describedby='cube-explorer-instructions'
+            tabIndex={explorer.ui.context === 'intro' ? 0 : -1}
+            data-cube-manipulation={
+              explorer.ui.context === 'intro' ? 'true' : undefined
+            }
+            onPointerLeave={() => explorer.hover(null)}
+            onPointerDown={explorer.pointerDown}
+            onPointerMove={explorer.pointerMove}
+            onPointerUp={e => explorer.pointerEnd(e)}
+            onPointerCancel={e => explorer.pointerEnd(e, true)}
+            onLostPointerCapture={e => explorer.pointerEnd(e, true)}
+            onKeyDown={explorer.keyDown}
           >
             {faceSections.map((id, face) => (
               <g
                 key={id}
                 style={{ display: 'none' }}
                 data-cube-face={face}
-                data-section={id}
-                onPointerEnter={() => enter(id)}
-                onClick={() => navigate(id)}
+                aria-hidden='true'
+                onPointerEnter={() => explorer.hover(face)}
               >
                 <polygon />
-                <rect width='230' height='52' rx='4' />
-                <text textAnchor='middle' dominantBaseline='middle'>
-                  {labels[sections.indexOf(id)]}
-                </text>
               </g>
             ))}
           </svg>
-          <p className='cube-caption mono' aria-live='polite'>
+          <p
+            className='cube-caption mono'
+            hidden={explorer.ui.context !== 'intro'}
+          >
             {status === 'failed' ? (
               fr ? (
-                'WASM indisponible · navigation ci-dessous'
+                'WASM indisponible'
               ) : (
-                'WASM unavailable · use navigation below'
+                'WASM unavailable'
               )
-            ) : hover ? (
-              `${current === 'intro' && faceNames.length ? `${faceNames[faceSections.indexOf(hover)]} · ` : ''}↗ ${fr ? 'Aller à' : 'Go to'} ${labels[sections.indexOf(hover)]}`
             ) : (
               <>
-                {current === 'intro' && faceNames.length
-                  ? fr
-                    ? 'Technologies'
-                    : 'Technology stack'
-                  : labels[sections.indexOf(current)]}{' '}
-                ·{' '}
                 <span className='cube-desktop-hint'>
-                  {fr ? 'survoler une face' : 'hover a face'}
+                  {fr
+                    ? 'Glisser pour tourner · cliquer pour explorer'
+                    : 'Drag to rotate · click to explore'}
                 </span>
                 <span className='cube-touch-hint'>
-                  {fr ? 'toucher une face' : 'tap a face'}
+                  {fr ? 'Glisser · toucher' : 'Drag · tap'}
                 </span>
               </>
             )}
           </p>
         </div>
       </div>
+      <p id='cube-explorer-instructions' className='sr-only'>
+        {fr
+          ? 'Sur l’accueil, glissez pour tourner le cube. Au clavier, utilisez les flèches, puis Entrée pour explorer une face. Le bouton Technologies donne accès à toutes les technologies. La navigation entre sections est séparée.'
+          : 'On the intro, drag to rotate. Use arrow keys and Enter to explore a face. The Technologies button provides all technologies. Section navigation is separate.'}
+      </p>
+      <CubeExplorerControls explorer={explorer} lang={lang} />
       <nav
         className='scene-nav mono'
-        aria-label={fr ? 'Parcours du cube' : 'Cube journey'}
+        aria-label={fr ? 'Navigation des sections' : 'Section navigation'}
       >
         {sections.map((id, i) => (
           <a
@@ -727,9 +681,9 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           </a>
         ))}
         <button
-          aria-pressed={pause}
+          aria-pressed={explorer.ui.pause}
           aria-label={
-            pause
+            explorer.ui.pause
               ? fr
                 ? 'Reprendre la rotation du cube'
                 : 'Resume cube rotation'
@@ -738,7 +692,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
                 : 'Pause cube rotation'
           }
           title={
-            pause
+            explorer.ui.pause
               ? fr
                 ? 'Reprendre la rotation'
                 : 'Resume rotation'
@@ -746,12 +700,9 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
                 ? 'Suspendre la rotation'
                 : 'Pause rotation'
           }
-          onClick={() => {
-            paused.current = !pause
-            setPause(!pause)
-          }}
+          onClick={explorer.pause}
         >
-          {pause ? (
+          {explorer.ui.pause ? (
             <Play size={16} aria-hidden='true' />
           ) : (
             <Pause size={16} aria-hidden='true' />

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import ScrollCubeScene from './ScrollCubeScene'
 import StepNavigation from './StepNavigation'
-import { technologies } from '@/data/technologies'
+import { cubeTechnologyNames } from '@/data/cube-context'
 import '../app/scroll-scene.css'
 import { ResumeDropdown } from './ResumeDropdown'
 
@@ -180,7 +180,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
               className='intro-tech-accessible sr-only'
             >
               {t('Technologies: ', 'Technologies : ')}
-              {technologies.map(technology => technology.name).join(' · ')}
+              {cubeTechnologyNames.join(' · ')}
             </p>
             <a className='solid-link' href='#rust'>
               {t('Explore my work', 'Découvrir mon travail')} <span>↓</span>
