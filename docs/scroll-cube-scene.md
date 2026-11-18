@@ -89,14 +89,23 @@ rather than an automatic alternating pattern. Each chapter retains a reading
 plateau of at least 45vh before its next transition (longer chapters retain
 more).
 
-The document remains native HTML in normal flow. The text navigation and visible
-face clicks call the same native smooth scroll; they do not run a second cube
-animation. Wheel, touch, pointer and scrolling-key input explicitly cancel a
-pending navigation animation without preventing the native input. Keyboard
-navigation and ordinary section links provide access to every chapter, including
-hidden faces. Reduced motion changes chapter poses directly, suppresses
-fades/drift and skips repeated raster work. A WASM-load failure leaves the HTML
-and navigation available with a fallback message.
+The document remains native HTML. Text links and step controls navigate chapters;
+cube faces no longer navigate. On the intro, drag a visible face to rotate, use
+arrow keys with the cube focused, or click/tap a face to inspect its technology.
+Dragging suppresses the click. Manipulation pauses automatic rotation; the
+existing play control resumes it. Outside the cube, touch gestures still change
+chapters. Reduced motion disables autonomous rotation but retains manual controls.
+A WASM-load failure leaves HTML and navigation available.
+
+Each chapter selects its own verified technology set in `data/cube-context.ts`.
+The intro cycles the 17 local logo assets plus five typographic fallbacks (WASM,
+Nix, Home Manager, Maven, Bitcoin), swapping only hidden faces. Section changes
+fade textures before changing the set. Contact returns to the plain material.
+At most two upright legends (one on mobile) connect to projected visible face
+centres, with visibility thresholds to avoid flicker. The Technologies button
+also exposes hidden technologies through ordinary keyboard-accessible buttons.
+The information panel contains a short contextual role and a source where one
+is established. It does not capture chapter navigation outside the panel.
 
 ## Material and interaction
 

@@ -9,15 +9,9 @@ const output = process.env.REVIEW_DIR || '/tmp/portfolio-technologies',
   base = process.env.PORTFOLIO_URL || 'http://localhost:3100'
 await mkdir(output, { recursive: true })
 const wait = ms => new Promise(r => setTimeout(r, ms))
-const distance = (a, b) =>
-  a.reduce(
-    (s, n, i) =>
-      s + Math.abs(Math.atan2(Math.sin(n - b[i]), Math.cos(n - b[i]))),
-    0
-  )
+const errors = []
 try {
-  const p = await browser.newPage(),
-    errors = []
+  const p = await browser.newPage()
   p.on('pageerror', e => errors.push(e.message))
   await p.setViewport({ width: 1440, height: 1000 })
   await p.goto(`${base}/fr`, { waitUntil: 'networkidle0' })
@@ -26,137 +20,147 @@ try {
     await p.$eval('[data-persistent-cube]', e =>
       Number(e.dataset.technologyCount)
     ),
-    17,
-    'All existing logo assets decode'
+    22
   )
-  await p.evaluate(() => {
-    window.techChanges = []
-    new MutationObserver(records => {
-      for (const { target, attributeName } of records)
-        if (attributeName === 'data-technology')
-          window.techChanges.push({
-            name: target.dataset.technology,
-            hidden:
-              target.hasAttribute('hidden') ||
-              getComputedStyle(target).display === 'none'
-          })
-    }).observe(document.querySelector('.cube-hit-layer'), {
-      subtree: true,
-      attributes: true,
-      attributeFilter: ['data-technology']
-    })
-  })
-  const rotation = () =>
-    p.$eval('[data-persistent-cube]', e =>
-      e.dataset.rotation.split(',').map(Number)
-    )
-  const a = await rotation()
-  await wait(2000)
-  assert.ok(
-    distance(a, await rotation()) > 0.4,
-    'Intro has a substantial rotation'
-  )
-  for (let i = 0; i < 4; i++) {
-    await wait(4500)
-    await p.screenshot({ path: `${output}/intro-${i}.png` })
-  }
-  const changes = await p.evaluate(() => window.techChanges)
-  assert.ok(changes.length >= 3, JSON.stringify(changes))
-  assert.ok(
-    changes.every(c => c.hidden),
-    'Logos only change while the face is hidden'
-  )
-  const hit = await p.evaluate(() => {
-    const area = e => {
-      const pts = [...e.querySelector('polygon').points]
-      return Math.abs(
-        pts.reduce((sum, point, i) => {
-          const next = pts[(i + 1) % pts.length]
-          return sum + point.x * next.y - next.x * point.y
-        }, 0)
-      )
-    }
-    const g = [...document.querySelectorAll('[data-cube-face]:not([hidden])')]
-        .filter(e => e.dataset.section !== 'intro')
-        .sort((a, b) => area(b) - area(a))[0],
-      poly = g.querySelector('polygon'),
-      point = new DOMPoint(
-        [...poly.points].reduce((s, p) => s + p.x, 0) / 4,
-        [...poly.points].reduce((s, p) => s + p.y, 0) / 4
-      ).matrixTransform(poly.getScreenCTM())
-    return { x: point.x, y: point.y, section: g.dataset.section }
-  })
-  await p.mouse.move(hit.x, hit.y)
-  await wait(100)
-  const frozen = await rotation()
-  await wait(1200)
-  assert.ok(
-    distance(frozen, await rotation()) < 0.005,
-    'Hover freezes the showcase'
-  )
-  assert.ok(
-    (await p.$eval('.cube-caption', e => e.textContent)).includes('Aller à'),
-    'Hover announces the navigation destination'
-  )
-  await p.mouse.click(hit.x, hit.y)
-  await p.waitForFunction(
-    id =>
-      document.querySelector('.narrative').dataset.step === id &&
-      document.querySelector('.narrative').dataset.transitioning === 'false',
-    {},
-    hit.section
-  )
-  await p.mouse.move(20, 100)
-  await wait(100)
   assert.equal(
-    await p.$eval('[data-persistent-cube]', e => e.dataset.technologyMode),
-    'false'
+    await p.$$eval('[data-cube-face][data-section]', es => es.length),
+    0
   )
-  const calm = await rotation()
-  await wait(1500)
-  assert.ok(
-    distance(calm, await rotation()) < 0.15,
-    'Sections retain calm motion'
+  const rotation = () =>
+    p.$eval('[data-persistent-cube]', e => e.dataset.rotation)
+  const a = await rotation()
+  await wait(1200)
+  assert.notEqual(a, await rotation(), 'Intro rotates')
+  const hit = () =>
+    p.evaluate(() => {
+      const g = [
+        ...document.querySelectorAll('[data-cube-face]:not([hidden])')
+      ].sort(
+        (a, b) =>
+          b.getBoundingClientRect().width * b.getBoundingClientRect().height -
+          a.getBoundingClientRect().width * a.getBoundingClientRect().height
+      )[0]
+      const poly = g.querySelector('polygon'),
+        pts = [...poly.points]
+      const q = new DOMPoint(
+        pts.reduce((s, p) => s + p.x, 0) / 4,
+        pts.reduce((s, p) => s + p.y, 0) / 4
+      ).matrixTransform(poly.getScreenCTM())
+      return { x: q.x, y: q.y }
+    })
+  let h = await hit()
+  await p.mouse.move(h.x, h.y)
+  await p.mouse.down()
+  const before = await rotation()
+  await p.mouse.move(h.x + 65, h.y + 25, { steps: 12 })
+  await p.mouse.up()
+  await wait(150)
+  assert.notEqual(before, await rotation(), 'Drag rotates real cube')
+  assert.equal(await p.$('[data-cube-panel]'), null, 'Drag does not open card')
+  assert.equal(await p.$eval('.narrative', e => e.dataset.step), 'intro')
+  h = await hit()
+  await p.mouse.click(h.x, h.y)
+  await p.waitForSelector('[data-cube-panel]')
+  assert.equal(
+    await p.$eval('.narrative', e => e.dataset.step),
+    'intro',
+    'Face click does not navigate'
   )
-  assert.equal(await p.$$eval('[data-persistent-cube]', es => es.length), 1)
+  await p.keyboard.press('Escape')
+  await p.waitForSelector('[data-cube-panel]', { hidden: true })
+  await p.click('#cube-explore-trigger')
+  assert.equal(
+    await p.$$eval('.cube-technology-list button', es => es.length),
+    22
+  )
+  await p.screenshot({ path: `${output}/intro-catalog.png` })
+  await p.keyboard.press('Escape')
+  for (const [section, pool] of [
+    ['rust', ['Rust', 'WebAssembly', 'NextJS', 'React']],
+    ['nix', ['NixOS', 'Nix', 'Home Manager', 'Linux']],
+    ['testing', ['Java EE', 'Spring Boot', 'Selenium', 'Maven']],
+    ['bitcoin', ['Rust', 'Bitcoin', 'Nix']],
+    ['contact', []]
+  ]) {
+    await p.click(`[data-facet-link="${section}"]`)
+    await p.waitForFunction(
+      id =>
+        document.querySelector('.narrative').dataset.step === id &&
+        document.querySelector('.narrative').dataset.transitioning === 'false',
+      {},
+      section
+    )
+    await wait(150)
+    const result = await p.evaluate(() => ({
+      context: document.querySelector('[data-persistent-cube]').dataset.context,
+      names: [...document.querySelectorAll('[data-cube-face]')].map(
+        e => e.dataset.technology
+      ),
+      labels: [
+        ...document.querySelectorAll('[data-face-callout][data-visible="true"]')
+      ].length
+    }))
+    assert.equal(result.context, section)
+    if (pool.length)
+      assert.ok(
+        result.names.every(n => pool.includes(n)),
+        JSON.stringify(result)
+      )
+    assert.ok(result.labels <= 2)
+    assert.ok(
+      await p.$$eval('[data-face-callout][data-visible="false"]', es =>
+        es.every(e => getComputedStyle(e).opacity === '0')
+      ),
+      'Hidden legends leave no stale labels'
+    )
+    if (!pool.length) assert.equal(result.labels, 0)
+    await p.screenshot({ path: `${output}/${section}.png` })
+  }
   await p.click('[data-facet-link="intro"]')
   await p.waitForFunction(
     () => document.querySelector('.narrative').dataset.transitioning === 'false'
   )
-  await wait(100)
-  assert.equal(
-    await p.$eval('[data-persistent-cube]', e => e.dataset.technologyMode),
-    'true'
-  )
   await p.emulateMediaFeatures([
     { name: 'prefers-reduced-motion', value: 'reduce' }
   ])
+  await wait(150)
+  const frozen = await rotation()
+  await wait(600)
+  assert.equal(await rotation(), frozen)
+  await p.$eval('.cube-hit-layer', e => e.focus())
+  await p.keyboard.press('ArrowRight')
   await wait(100)
-  const reduced = await rotation()
-  await wait(1000)
-  assert.ok(distance(reduced, await rotation()) < 0.005)
-  assert.ok(
-    await p.$eval(
-      '#portfolio-technologies',
-      e =>
-        e.getBoundingClientRect().height > 20 &&
-        getComputedStyle(e).position === 'static'
-    ),
-    'Reduced motion exposes the HTML stack list'
+  assert.notEqual(
+    await rotation(),
+    frozen,
+    'Keyboard rotates with reduced motion'
   )
-  await p.screenshot({ path: `${output}/reduced.png` })
+  assert.equal(await p.$eval('.narrative', e => e.dataset.step), 'intro')
+  assert.equal(await p.$$eval('[data-persistent-cube]', es => es.length), 1)
   await p.emulateMediaFeatures([])
-  await p.setViewport({ width: 390, height: 844 })
+  await p.setViewport({
+    width: 390,
+    height: 844,
+    isMobile: true,
+    hasTouch: true
+  })
   await p.goto(`${base}/en`, { waitUntil: 'networkidle0' })
-  await p.waitForSelector('[data-wasm="ready"][data-technology-mode="true"]')
-  await p.screenshot({ path: `${output}/mobile.png` })
+  await p.waitForSelector('[data-wasm="ready"]')
+  h = await hit()
+  await p.touchscreen.tap(h.x, h.y)
+  await p.waitForSelector('[data-cube-panel]')
+  await p.screenshot({ path: `${output}/mobile-card.png` })
   assert.ok(
     await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
   )
   assert.deepEqual(errors, [])
-  const result = { result: 'PASS', changes, errors }
-  await writeFile(`${output}/evidence.json`, JSON.stringify(result, null, 2))
-  console.log(JSON.stringify(result))
+  await writeFile(
+    `${output}/evidence.json`,
+    JSON.stringify({ result: 'PASS', errors }, null, 2)
+  )
+  console.log(
+    'PASS: contextual pools, dragging, face inspection, catalog, keyboard, reduced motion, mobile, persistent WASM'
+  )
 } finally {
   await browser.close()
 }

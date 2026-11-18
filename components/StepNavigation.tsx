@@ -51,6 +51,7 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
       locked = true
       needsRelease = true
       surface.dataset.step = ids[index]
+      surface.dataset.stepProgress = '0'
       surface.dataset.transitioning = 'true'
       history.replaceState(null, '', `#${ids[index]}`)
       const duration =
@@ -59,6 +60,7 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
         const p = duration ? Math.min(1, (now - started) / duration) : 1
         // One continuous passage: no interior stop or separate cube clock.
         const eased = (1 - Math.cos(Math.PI * p)) / 2
+        surface.dataset.stepProgress = String(p)
         scrollTo({ top: start + (end - start) * eased, behavior: 'instant' })
         if (p < 1) frame = requestAnimationFrame(tick)
         else {
@@ -85,6 +87,8 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
       return false
     }
     const wheel = (e: WheelEvent) => {
+      if (e.target instanceof Element && e.target.closest('[data-cube-panel]'))
+        return
       if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return
       const now = performance.now(),
         gap = now - lastWheel
@@ -111,6 +115,8 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
       if (Math.abs(total) >= 100) go(index + Math.sign(total))
     }
     const key = (e: KeyboardEvent) => {
+      if (e.target instanceof Element && e.target.closest('[data-cube-panel]'))
+        return
       if (
         e.target instanceof Element &&
         e.target.closest(
@@ -156,10 +162,24 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
       if (next >= 0) go(next)
     }
     const startTouch = (e: TouchEvent) => {
+      if (
+        e.target instanceof Element &&
+        (e.target.closest('[data-cube-panel]') ||
+          (surface.dataset.step === 'intro' &&
+            e.target.closest('[data-cube-manipulation="true"]')))
+      )
+        return
       touchY = e.touches[0].clientY
       touchScrolled = e.touches.length !== 1
     }
     const moveTouch = (e: TouchEvent) => {
+      if (
+        e.target instanceof Element &&
+        (e.target.closest('[data-cube-panel]') ||
+          (surface.dataset.step === 'intro' &&
+            e.target.closest('[data-cube-manipulation="true"]')))
+      )
+        return
       if (e.touches.length !== 1) return
       const delta = touchY - e.touches[0].clientY
       if (!locked && canScroll(e.target, delta)) {
@@ -169,6 +189,13 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
       e.preventDefault()
     }
     const endTouch = (e: TouchEvent) => {
+      if (
+        e.target instanceof Element &&
+        (e.target.closest('[data-cube-panel]') ||
+          (surface.dataset.step === 'intro' &&
+            e.target.closest('[data-cube-manipulation="true"]')))
+      )
+        return
       const delta = touchY - e.changedTouches[0].clientY
       if (!locked && !touchScrolled && Math.abs(delta) > 60)
         go(index + Math.sign(delta))
@@ -209,6 +236,7 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
       delete surface.dataset.stepped
       delete surface.dataset.step
       delete surface.dataset.transitioning
+      delete surface.dataset.stepProgress
     }
   }, [])
   const request = (next: number) =>
