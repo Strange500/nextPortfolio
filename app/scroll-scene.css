@@ -515,7 +515,7 @@ body:has(.narrative) {
 }
 .narrative .portfolio-nav nav {
   font-size: 13px;
-  margin-right: 80px;
+  margin-right: 132px;
 }
 .narrative .portfolio-nav nav a {
   display: inline-flex;
@@ -523,23 +523,22 @@ body:has(.narrative) {
   min-height: 44px;
 }
 body:has(.narrative) .global-controls {
+  position: fixed;
   right: 6vw;
   top: 30px;
 }
-body:has(.narrative) [data-theme-toggle] {
-  display: none;
-}
-body:has(.narrative) [data-language-switch] {
+body:has(.narrative) :is([data-language-switch], [data-theme-toggle]) {
   min-width: 44px;
   min-height: 44px;
   color: var(--portfolio-ink);
   border: 1px solid var(--portfolio-line);
   border-radius: 0;
 }
-body:has(.narrative) [data-language-switch]:hover {
+body:has(.narrative) :is([data-language-switch], [data-theme-toggle]):hover {
   background: var(--portfolio-panel);
 }
-body:has(.narrative) [data-language-switch]:focus-visible {
+body:has(.narrative)
+  :is([data-language-switch], [data-theme-toggle]):focus-visible {
   outline: 2px solid var(--portfolio-acid);
   outline-offset: 4px;
 }
@@ -1121,18 +1120,11 @@ html:has(.narrative[data-stepped]) {
 .narrative[data-stepped] .portfolio-nav {
   transform: translate(-50%, var(--intro-shift, 0px));
 }
-body:has(.narrative[data-stepped]) .global-controls {
-  transform: translateY(var(--intro-shift, 0px));
-}
-.narrative[data-intro-occluded='true'] .portfolio-nav,
-body:has(.narrative[data-intro-occluded='true']) .global-controls {
+.narrative[data-intro-occluded='true'] .portfolio-nav {
   visibility: hidden;
 }
 .narrative[data-stepped] .portfolio-nav {
   opacity: var(--intro-opacity, 1);
-}
-body:has(.narrative[data-stepped]) .global-controls {
-  opacity: var(--intro-ui-opacity, 1);
 }
 /* The intro showcases the stack; destination labels appear on deliberate hover. */
 .scene-cube[data-technology-mode='true']
@@ -1356,4 +1348,25 @@ body:has(.narrative)::after {
   .narrative .cube-technology-panel {
     bottom: 88px;
   }
+}
+
+/* Available throughout the scene, including portalled menu content. */
+.theme-menu {
+  min-width: 180px;
+  background: var(--portfolio-paper);
+  color: var(--portfolio-ink);
+  border: 1px solid var(--portfolio-line);
+  border-radius: 0;
+}
+.theme-menu [role='menuitemradio'] {
+  min-height: 44px;
+  gap: 10px;
+  border-radius: 0;
+}
+.theme-menu [role='menuitemradio'][data-highlighted] {
+  background: var(--portfolio-panel);
+  color: var(--portfolio-ink);
+}
+.theme-menu [role='menuitemradio'][data-state='checked'] {
+  color: var(--portfolio-accent-ink);
 }

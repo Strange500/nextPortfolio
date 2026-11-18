@@ -215,3 +215,8 @@ Tailwind surface/text tokens match these colors too. Syntax and semantic status
 colors retain their existing definitions. `scripts/test-system-palettes.mjs`
 checks automatic selection, live changes without remounting, text/action
 contrast (at least 4.5:1), first paint without JS, mobile layout and résumé menus.
+
+A persistent appearance button beside the language control offers Light, Dark
+and Automatic (localized in French). The selected radio option is announced,
+explicit choices persist through reloads, and Automatic returns to live system
+tracking. The utility controls stay available while reading other chapters.

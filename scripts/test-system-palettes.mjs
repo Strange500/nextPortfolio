@@ -172,6 +172,55 @@ try {
     await wait(100)
     await p.screenshot({ path: `${output}/${scheme}-intro-standard.png` })
   }
+  // Explicit choices override the OS; Automatic returns to live OS tracking.
+  await p.emulateMediaFeatures([
+    { name: 'prefers-color-scheme', value: 'light' }
+  ])
+  for (const choice of ['dark', 'light', 'system']) {
+    await p.click('[data-theme-toggle]')
+    await p.waitForSelector(`[data-theme-choice="${choice}"]`)
+    await p.click(`[data-theme-choice="${choice}"]`)
+    await p.waitForSelector('[data-theme-choice]', { hidden: true })
+    await p.waitForFunction(
+      c => localStorage.getItem('theme') === c,
+      {},
+      choice
+    )
+    await p.waitForFunction(
+      c => document.documentElement.classList.contains(c),
+      {},
+      choice === 'dark' ? 'dark' : 'light'
+    )
+  }
+  await p.emulateMediaFeatures([
+    { name: 'prefers-color-scheme', value: 'dark' }
+  ])
+  await p.waitForFunction(() =>
+    document.documentElement.classList.contains('dark')
+  )
+  await p.reload({ waitUntil: 'networkidle0' })
+  assert.equal(await p.evaluate(() => localStorage.getItem('theme')), 'system')
+  await p.waitForSelector('[data-wasm="ready"]')
+  await p.setViewport({ width: 390, height: 844 })
+  await p.click('[data-facet-link="contact"]')
+  await p.waitForFunction(
+    () => document.querySelector('.narrative').dataset.transitioning === 'false'
+  )
+  await p.click('[data-theme-toggle]')
+  await p.waitForSelector('[data-theme-choice="system"]')
+  assert.equal(
+    await p.$eval('[data-theme-choice="system"]', e =>
+      e.getAttribute('aria-checked')
+    ),
+    'true'
+  )
+  await wait(200)
+  await p.screenshot({ path: `${output}/mobile-theme-menu.png` })
+  await p.keyboard.press('Escape')
+  await p.waitForSelector('[data-theme-choice]', { hidden: true })
+  await p.waitForFunction(() =>
+    document.activeElement.matches('[data-theme-toggle]')
+  )
   // The stylesheet must choose the OS palette before client-side hydration too.
   const nojs = await browser.newPage()
   await nojs.setJavaScriptEnabled(false)

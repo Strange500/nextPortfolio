@@ -1,39 +1,55 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { Moon, Sun } from "lucide-react"
-import { useTheme } from "next-themes"
-
-import { Button } from "@/components/ui/button"
+import { Monitor, Moon, Sun } from 'lucide-react'
+import { useTheme } from 'next-themes'
+import { usePathname } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
 
 export function ModeToggle() {
-  const { setTheme } = useTheme()
-
+  const { theme, setTheme } = useTheme()
+  const fr = usePathname().startsWith('/fr')
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button data-theme-toggle variant="outline" size="icon" className="rounded-full bg-background/50 backdrop-blur-sm border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
-          <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
+        <Button
+          data-theme-toggle
+          variant='outline'
+          size='icon'
+          className='relative rounded-full bg-background/50 text-muted-foreground'
+          aria-label={fr ? 'Changer le thème' : 'Change theme'}
+        >
+          <Sun aria-hidden='true' className='h-4 w-4 dark:hidden' />
+          <Moon aria-hidden='true' className='hidden h-4 w-4 dark:block' />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-background/95 backdrop-blur-sm border-border/50">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
-        </DropdownMenuItem>
+      <DropdownMenuContent
+        align='end'
+        collisionPadding={12}
+        className='theme-menu'
+        aria-label={fr ? 'Apparence' : 'Appearance'}
+      >
+        <DropdownMenuRadioGroup
+          value={theme || 'system'}
+          onValueChange={setTheme}
+        >
+          <DropdownMenuRadioItem value='light' data-theme-choice='light'>
+            <Sun aria-hidden='true' size={16} /> {fr ? 'Clair' : 'Light'}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value='dark' data-theme-choice='dark'>
+            <Moon aria-hidden='true' size={16} /> {fr ? 'Sombre' : 'Dark'}
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value='system' data-theme-choice='system'>
+            <Monitor aria-hidden='true' size={16} />{' '}
+            {fr ? 'Automatique' : 'Automatic'}
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   )
