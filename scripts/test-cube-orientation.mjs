@@ -19,7 +19,8 @@ const {
   slerp,
   coast,
   between,
-  trackball
+  trackball,
+  rotationVector
 } = await import(
   `data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`
 )
@@ -87,3 +88,19 @@ assert.ok(
 console.log(
   'PASS: 1200 XYZ round trips including gimbal poles, 1000 free rotations, frame-independent damping, trackball and quaternion interpolation'
 )
+
+// Camera at negative Z: the facing surface must move with the screen gesture.
+const frontX = ([x, y, z, w]) => -2 * (x * z + w * y)
+for (const sign of [-1, 1]) {
+  const drag = between(
+    trackball(0, 0, 0, 0, 100),
+    trackball(sign * 40, 0, 0, 0, 100)
+  )
+  assert.ok(frontX(drag) * sign > 0, 'Horizontal drag follows the pointer')
+  const release = coast(drag, rotationVector(drag), 0.05).rotation
+  assert.ok(
+    (frontX(release) - frontX(drag)) * sign > 0,
+    'Inertia continues in the release direction'
+  )
+}
+console.log('PASS: left/right screen direction and matching inertia')

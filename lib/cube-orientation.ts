@@ -85,7 +85,9 @@ export function trackball(
   cy: number,
   radius: number
 ): number[] {
-  const u = (x - cx) / radius,
+  // The renderer views the cube from negative Z: mirror screen X so the
+  // grabbed surface follows the pointer rather than rotating away from it.
+  const u = (cx - x) / radius,
     v = (cy - y) / radius,
     d = Math.hypot(u, v)
   const z = d < Math.SQRT1_2 ? Math.sqrt(1 - d * d) : 0.5 / d

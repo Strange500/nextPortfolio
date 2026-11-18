@@ -210,8 +210,8 @@ export function useCubeExplorer(
   const keyDown = (e: KeyboardEvent<SVGSVGElement>) => {
     if (!interactive()) return
     const directions: Record<string, number[]> = {
-      ArrowLeft: [0, -0.22, 0],
-      ArrowRight: [0, 0.22, 0],
+      ArrowLeft: [0, 0.22, 0],
+      ArrowRight: [0, -0.22, 0],
       ArrowUp: [-0.2, 0, 0],
       ArrowDown: [0.2, 0, 0]
     }
