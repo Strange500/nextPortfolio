@@ -9,6 +9,18 @@ import {
 import type { Cube } from 'ascii-cube'
 import { faceTechnology, type CubeTechnology } from '@/lib/cube-technologies'
 import { contextTechnologies } from '@/data/cube-context'
+import {
+  between,
+  coast,
+  fromEuler,
+  fromVector,
+  multiply,
+  rotationVector,
+  slerp,
+  toEuler,
+  trackball,
+  type Quaternion
+} from '@/lib/cube-orientation'
 
 const smooth = (p: number) => {
   const t = Math.max(0, Math.min(1, p))
@@ -37,6 +49,9 @@ export function useCubeExplorer(
     ui,
     offsets: Array.from({ length: 6 }, () => [0, 0, 0]),
     introTime: 0,
+    orientation: null as Quaternion | null,
+    velocity: [0, 0, 0],
+    labelPositions: new Map<number, { x: number; y: number }>(),
     readingTime: 0,
     lastSwap: 0,
     next: 6,
@@ -51,7 +66,11 @@ export function useCubeExplorer(
       id: number
       x: number
       y: number
-      rotation: number[]
+      point: number[]
+      cx: number
+      cy: number
+      radius: number
+      time: number
       face: number
       moved: boolean
     }
@@ -63,7 +82,11 @@ export function useCubeExplorer(
     setUI(state.current.ui)
     invalidate()
   }
+  const stopCoast = () => {
+    state.current.velocity = [0, 0, 0]
+  }
   const pause = () => {
+    stopCoast()
     state.current.interactionHold = false
     patch({ pause: !state.current.ui.pause })
   }
@@ -72,6 +95,7 @@ export function useCubeExplorer(
     invalidate()
   }
   const open = (name: string) => {
+    stopCoast()
     state.current.interactionHold = true
     if (name)
       patch({
@@ -89,6 +113,7 @@ export function useCubeExplorer(
     )
   }
   const catalog = () => {
+    stopCoast()
     state.current.interactionHold = true
     return patch({
       catalog: !state.current.ui.catalog,
@@ -113,11 +138,20 @@ export function useCubeExplorer(
     )
       return
     e.preventDefault()
+    const rect = e.currentTarget.getBoundingClientRect(),
+      radius = Math.max(40, rect.width * 0.44),
+      cx = rect.x + rect.width / 2,
+      cy = rect.y + rect.height / 2
+    stopCoast()
     state.current.drag = {
       id: e.pointerId,
       x: e.clientX,
       y: e.clientY,
-      rotation: [...state.current.offsets[0]],
+      point: trackball(e.clientX, e.clientY, cx, cy, radius),
+      cx,
+      cy,
+      radius,
+      time: performance.now(),
       face,
       moved: false
     }
@@ -132,11 +166,26 @@ export function useCubeExplorer(
       dy = e.clientY - d.y
     if (Math.hypot(dx, dy) > 6) d.moved = true
     if (d.moved) {
-      state.current.offsets[0] = [
-        Math.max(-1.6, Math.min(1.6, d.rotation[0] + dy * 0.008)),
-        d.rotation[1] + dx * 0.009,
-        d.rotation[2]
-      ]
+      const now = performance.now(),
+        elapsed = Math.max(0.008, (now - d.time) / 1000)
+      const point = trackball(e.clientX, e.clientY, d.cx, d.cy, d.radius)
+      const delta = between(d.point, point)
+      state.current.orientation = multiply(
+        delta,
+        state.current.orientation || fromEuler([0.32, 2.6, -0.08])
+      )
+      const speed = rotationVector(delta).map(v => v / elapsed),
+        blend = 1 - Math.exp(-elapsed * 22)
+      state.current.velocity = state.current.velocity.map(
+        (v, i) => v + (speed[i] - v) * blend
+      )
+      const magnitude = Math.hypot(...state.current.velocity)
+      if (magnitude > 7)
+        state.current.velocity = state.current.velocity.map(
+          v => (v * 7) / magnitude
+        )
+      d.point = point
+      d.time = now
       stage.current?.setAttribute('data-dragging', 'true')
       invalidate()
     }
@@ -144,6 +193,13 @@ export function useCubeExplorer(
   const pointerEnd = (e: PointerEvent<SVGSVGElement>, cancel = false) => {
     const d = state.current.drag
     if (!d || d.id !== e.pointerId) return
+    if (
+      cancel ||
+      !d.moved ||
+      performance.now() - d.time > 100 ||
+      matchMedia('(prefers-reduced-motion: reduce)').matches
+    )
+      stopCoast()
     state.current.drag = null
     stage.current?.setAttribute('data-dragging', 'false')
     hover(null)
@@ -162,8 +218,10 @@ export function useCubeExplorer(
     if (directions[e.key]) {
       e.preventDefault()
       e.stopPropagation()
-      state.current.offsets[0] = state.current.offsets[0].map(
-        (v, i) => v + directions[e.key][i]
+      stopCoast()
+      state.current.orientation = multiply(
+        fromVector(directions[e.key]),
+        state.current.orientation || fromEuler([0.32, 2.6, -0.08])
       )
       state.current.interactionHold = true
       patch({ pause: true })
@@ -186,13 +244,35 @@ export function useCubeExplorer(
     stable: boolean
   ) => {
     const s = state.current
+    if (!s.orientation)
+      s.orientation = fromEuler(from === 0 ? a : [0.32, 2.6, -0.08])
+    if (reduced || !stable || from !== 0 || s.ui.selected || s.ui.catalog)
+      stopCoast()
+    if (stable && from === 0 && !s.drag && Math.hypot(...s.velocity) > 0.015) {
+      const next = coast(s.orientation, s.velocity, dt)
+      s.orientation = next.rotation
+      s.velocity = next.velocity
+    } else if (Math.hypot(...s.velocity) <= 0.015) stopCoast()
+    stage.current?.setAttribute(
+      'data-orientation',
+      s.orientation.map(v => v.toFixed(7)).join(',')
+    )
+    stage.current?.setAttribute(
+      'data-angular-speed',
+      String(Math.hypot(...s.velocity))
+    )
     if (stable && !reduced && !s.ui.pause && s.hover === null && !s.drag) {
       const offset = s.offsets[from]
       if (from === 0) {
         s.introTime += dt
-        offset[0] += Math.cos(s.introTime * 0.31) * 0.65 * 0.31 * dt
-        offset[1] += 0.42 * dt
-        offset[2] += Math.cos(s.introTime * 0.23) * 0.28 * 0.23 * dt
+        s.orientation = multiply(
+          fromVector([
+            Math.cos(s.introTime * 0.31) * 0.65 * 0.31 * dt,
+            0.42 * dt,
+            Math.cos(s.introTime * 0.23) * 0.28 * 0.23 * dt
+          ]),
+          s.orientation
+        )
       } else {
         s.readingTime += dt
         offset[0] += Math.cos(s.readingTime * 0.2) * 0.1 * 0.2 * dt
@@ -200,12 +280,17 @@ export function useCubeExplorer(
         offset[2] += Math.cos(s.readingTime * 0.17) * 0.05 * 0.17 * dt
       }
     }
-    return a.map((n, i) => {
-      const end = b[i] + s.offsets[to][i],
-        delta = n + s.offsets[from][i] - end
-      return end + Math.atan2(Math.sin(delta), Math.cos(delta)) * (1 - progress)
-    })
+    const start =
+      from === 0
+        ? s.orientation
+        : fromEuler(a.map((n, i) => n + s.offsets[from][i]))
+    const end =
+      to === 0
+        ? s.orientation
+        : fromEuler(b.map((n, i) => n + s.offsets[to][i]))
+    return toEuler(slerp(start, end, progress))
   }
+
   const textures = (
     cube: Cube,
     logos: CubeTechnology[],
@@ -309,7 +394,8 @@ export function useCubeExplorer(
     mobile: boolean,
     landscape: boolean,
     transitioning: boolean,
-    logicalSize: number
+    logicalSize: number,
+    dt: number
   ) => {
     const s = state.current,
       names = s.ui.names,
@@ -365,39 +451,102 @@ export function useCubeExplorer(
         : '0'
       if (!visible) {
         el.style.opacity = '0'
+        s.labelPositions.delete(face)
         continue
       }
-      const width = mobile ? 210 : 190
-      const left = mobile
+      const points = faces[face].points,
+        cx = points.reduce((sum, p) => sum + p[0], 0) / 4,
+        ccy = points.reduce((sum, p) => sum + p[1], 0) / 4,
+        anchorX = x - size / 2 + (cx / logicalSize) * size,
+        anchorY = cy - size / 2 + (ccy / logicalSize) * size
+      // Each label travels with its face, upright and outside the projected
+      // silhouette. The nearest edge keeps leaders short and unambiguous.
+      const projected = faces
+        .flatMap(f => (f.visible ? f.points : []))
+        .map(p => [
+          x - size / 2 + (p[0] / logicalSize) * size,
+          cy - size / 2 + (p[1] / logicalSize) * size
+        ])
+      const right = x > vw / 2,
+        height = mobile ? 30 : 64
+      const edge = right
+        ? Math.max(...projected.map(p => p[0]))
+        : Math.min(...projected.map(p => p[0]))
+      const width = mobile
+        ? 210
+        : Math.max(128, Math.min(176, right ? vw - edge - 42 : edge - 42))
+      const faceOffset = Math.max(12, Math.min(36, 22 + (anchorX - x) * 0.12))
+      const desiredX = mobile
         ? landscape
           ? 20
-          : (vw - width) / 2
-        : x > vw / 2
-          ? Math.min(vw - width - 24, x + size / 2 - 64)
-          : Math.max(24, x - size / 2 - 126)
-      const top = mobile
+          : Math.max(
+              16,
+              Math.min(
+                vw - width - 16,
+                (vw - width) / 2 + (anchorX - vw / 2) * 0.35
+              )
+            )
+        : Math.max(
+            20,
+            Math.min(
+              vw - width - 20,
+              right ? edge + faceOffset : edge - width - faceOffset
+            )
+          )
+      let desiredY = mobile
         ? landscape
-          ? vh - 122
-          : 184
-        : slot === 0
-          ? Math.max(80, cy - size / 2 - 76)
-          : Math.min(vh - 164, cy + size / 2 + 10)
+          ? vh - 122 + Math.max(-10, Math.min(10, (anchorY - cy) * 0.2))
+          : Math.max(164, Math.min(184, 174 + (anchorY - cy) * 0.2))
+        : Math.max(80, Math.min(vh - 164, anchorY - height / 2))
+      // Split colliding callouts around their own face centres, consistently by
+      // depth-independent face index so labels cannot exchange slots mid-turn.
+      if (!mobile && s.labels.length === 2) {
+        const other = s.labels.find(f => f !== face)!,
+          otherY =
+            cy -
+            size / 2 +
+            (faces[other].points.reduce((sum, p) => sum + p[1], 0) /
+              4 /
+              logicalSize) *
+              size
+        if (Math.abs(anchorY - otherY) < height + 14) {
+          const upper = anchorY === otherY ? face < other : anchorY < otherY
+          desiredY = Math.max(
+            80,
+            Math.min(
+              vh - 164,
+              (anchorY + otherY) / 2 -
+                height / 2 +
+                ((upper ? -1 : 1) * (height + 14)) / 2
+            )
+          )
+        }
+      }
+      const previous = s.labelPositions.get(face),
+        follow = 1 - Math.exp(-12 * dt)
+      const position = previous
+        ? {
+            x: previous.x + (desiredX - previous.x) * follow,
+            y: previous.y + (desiredY - previous.y) * follow
+          }
+        : { x: desiredX, y: desiredY }
+      s.labelPositions.set(face, position)
+      const { x: left, y: top } = position
       el.style.transform = `translate3d(${left}px,${top}px,0)`
       el.style.width = `${width}px`
       el.style.opacity = String(smooth((-depths[face] - 0.12) / 0.25))
-      const points = faces[face].points,
-        cx = points.reduce((sum, p) => sum + p[0], 0) / 4,
-        ccy = points.reduce((sum, p) => sum + p[1], 0) / 4
-      line.setAttribute('x1', String(x - size / 2 + (cx / logicalSize) * size))
-      line.setAttribute(
-        'y1',
-        String(cy - size / 2 + (ccy / logicalSize) * size)
-      )
+      line.setAttribute('x1', String(anchorX))
+      line.setAttribute('y1', String(anchorY))
       line.setAttribute(
         'x2',
-        String(mobile ? left + width / 2 : x > vw / 2 ? left : left + width)
+        String(mobile ? left + width / 2 : right ? left : left + width)
       )
-      line.setAttribute('y2', String(mobile ? top : top + 30))
+      line.setAttribute(
+        'y2',
+        String(
+          mobile ? top : Math.max(top + 8, Math.min(top + height - 8, anchorY))
+        )
+      )
     }
   }
   return {

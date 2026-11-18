@@ -497,7 +497,8 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         mobile,
         landscape,
         transitioning,
-        logicalSize
+        logicalSize,
+        dt
       )
     }
     frame = requestAnimationFrame(update)

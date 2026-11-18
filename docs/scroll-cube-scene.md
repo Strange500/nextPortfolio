@@ -92,8 +92,15 @@ more).
 The document remains native HTML. Text links and step controls navigate chapters;
 cube faces no longer navigate. On the intro, drag a visible face to rotate, use
 arrow keys with the cube focused, or click/tap a face to inspect its technology.
-Dragging suppresses the click. Manipulation pauses automatic rotation; the
-existing play control resumes it. Outside the cube, touch gestures still change
+Dragging suppresses the click. The intro stores a normalized quaternion and
+uses a virtual trackball in screen space; XYZ angles are only converted at the
+existing Rust/projection boundary, never accumulated during gestures. Shortest
+path quaternion interpolation joins the reading poses. Release velocity is
+estimated from recent drag samples, capped at 7 rad/s, and decays exponentially
+(rate 5/s) until settled. Pointer cancellation, a held release, a new gesture,
+Pause, a technology panel or a chapter transition cancels coasting. Reduced
+motion suppresses inertia. Manipulation pauses automatic rotation; the existing
+play control resumes it. Outside the cube, touch gestures still change
 chapters. Reduced motion disables autonomous rotation but retains manual controls.
 A WASM-load failure leaves HTML and navigation available.
 
@@ -102,7 +109,10 @@ The intro cycles the 17 local logo assets plus five typographic fallbacks (WASM,
 Nix, Home Manager, Maven, Bitcoin), swapping only hidden faces. Section changes
 fade textures before changing the set. Contact returns to the plain material.
 At most two upright legends (one on mobile) connect to projected visible face
-centres, with visibility thresholds to avoid flicker. The Technologies button
+centres, with visibility thresholds to avoid flicker. Labels follow their face
+centres with light damping; compact boxes sit near the outer silhouette with
+short leaders, viewport bounds and separation when they approach one another.
+Mobile uses a limited tracking range above the chapter text. The Technologies button
 also exposes hidden technologies through ordinary keyboard-accessible buttons.
 The information panel contains a short contextual role and a source where one
 is established. It does not capture chapter navigation outside the panel.

@@ -113,6 +113,24 @@ try {
       ),
       'Hidden legends leave no stale labels'
     )
+    if (section === 'rust') {
+      const sample = () =>
+        p.$$eval('[data-face-callout][data-visible="true"]', es =>
+          es.map(e => ({
+            face: e.dataset.faceCallout,
+            y: e.getBoundingClientRect().y
+          }))
+        )
+      const first = await sample()
+      await wait(800)
+      const second = await sample()
+      assert.ok(
+        first.some(a =>
+          second.some(b => a.face === b.face && Math.abs(a.y - b.y) > 0.1)
+        ),
+        'Legend positions follow rotating faces'
+      )
+    }
     if (!pool.length) assert.equal(result.labels, 0)
     await p.screenshot({ path: `${output}/${section}.png` })
   }
@@ -147,12 +165,51 @@ try {
   await p.goto(`${base}/en`, { waitUntil: 'networkidle0' })
   await p.waitForSelector('[data-wasm="ready"]')
   h = await hit()
+  const client = await p.createCDPSession(),
+    touchStart = await rotation()
+  await client.send('Input.dispatchTouchEvent', {
+    type: 'touchStart',
+    touchPoints: [{ x: h.x, y: h.y }]
+  })
+  await client.send('Input.dispatchTouchEvent', {
+    type: 'touchMove',
+    touchPoints: [{ x: h.x + 45, y: h.y + 15 }]
+  })
+  await client.send('Input.dispatchTouchEvent', {
+    type: 'touchEnd',
+    touchPoints: []
+  })
+  await wait(150)
+  assert.notEqual(await rotation(), touchStart, 'Touch drag rotates')
+  assert.equal(
+    await p.$eval('.narrative', e => e.dataset.step),
+    'intro',
+    'Cube drag does not advance chapter'
+  )
+  await wait(1500)
+  h = await hit()
   await p.touchscreen.tap(h.x, h.y)
   await p.waitForSelector('[data-cube-panel]')
   await p.screenshot({ path: `${output}/mobile-card.png` })
   assert.ok(
     await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
   )
+  await p.keyboard.press('Escape')
+  await p.setViewport({
+    width: 844,
+    height: 390,
+    isMobile: true,
+    hasTouch: true
+  })
+  await p.click('[data-facet-link="rust"]')
+  await p.waitForFunction(
+    () => document.querySelector('.narrative').dataset.transitioning === 'false'
+  )
+  assert.ok(
+    await p.$eval('#rust h2', e => e.getBoundingClientRect().width > 350),
+    'Landscape retains a readable content column'
+  )
+  await p.screenshot({ path: `${output}/landscape.png` })
   assert.deepEqual(errors, [])
   await writeFile(
     `${output}/evidence.json`,
