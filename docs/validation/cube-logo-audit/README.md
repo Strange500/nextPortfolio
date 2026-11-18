@@ -19,3 +19,9 @@ PORTFOLIO_URL=http://localhost:3100 node scripts/test-cube-interaction-boundarie
 
 The interaction regression checks wheel input at both boundaries, fractional
 reading anchors, drag/card/touch followed by navigation, and explicit Pause.
+
+The first-scroll stability test samples visible intro/Rust text and the header
+at paint time, forward and backward. The preceding standalone build (5204470)
+failed with 28 CSS px of intro drift. The coordinated scroll/draw build measured
+0 px in both directions at 1440×1000; the regression allows at most 1 px.
+`first-scroll-stability.json` contains the optimized-server measurements.

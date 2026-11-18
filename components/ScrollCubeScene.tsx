@@ -147,10 +147,18 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
     media.addEventListener('change', invalidate)
     surface.dataset.scene = 'ready'
 
-    const update = (time: number) => {
+    const update = (time: number, schedule = true) => {
       if (disposed) return
-      frame = requestAnimationFrame(update)
+      if (schedule) frame = requestAnimationFrame(update)
       if (document.hidden) return
+      // During a stepped journey its scroll writer owns the draw. Independent
+      // rAF loops otherwise cancel the preceding frame's scroll and text shakes.
+      if (
+        schedule &&
+        surface.dataset.stepped &&
+        surface.dataset.transitioning === 'true'
+      )
+        return
       const dt = lastTime ? Math.min((time - lastTime) / 1000, 0.05) : 1 / 60
       lastTime = time
       const reduced = media.matches
@@ -213,7 +221,12 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
             ? 'bitcoin'
             : surface.dataset.step || ''
         )
-        if (reading >= 0) {
+        const readingAnchor =
+          surface.dataset.step === 'missions'
+            ? document.getElementById('missions')!.getBoundingClientRect().top +
+              y
+            : anchors[reading]
+        if (reading >= 0 && Math.abs(y - readingAnchor) < 2) {
           from = to = reading
           p = 0
         }
@@ -521,6 +534,11 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         dt
       )
     }
+    const coordinatedFrame = (event: Event) => {
+      dirty = true
+      update((event as CustomEvent<number>).detail, false)
+    }
+    window.addEventListener('portfolio-scene-frame', coordinatedFrame)
     frame = requestAnimationFrame(update)
     async function load() {
       try {
@@ -549,6 +567,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       disposed = true
       cancelAnimationFrame(frame)
       cube?.free()
+      window.removeEventListener('portfolio-scene-frame', coordinatedFrame)
       themeObserver.disconnect()
       window.removeEventListener('wheel', stopNavigation)
       window.removeEventListener('touchstart', stopNavigation)

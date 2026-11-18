@@ -234,3 +234,11 @@ inertia and temporary drag/card pauses; only an explicit Pause survives.
 fractional anchors, drag/click/touch followed by navigation, and explicit Pause.
 `test-cube-logo-assets.mjs` decodes all 22 textures through the actual loader,
 checks nonblank/nonsolid masks, and renders an atlas through Rust/WASM.
+
+During a stepped transition, the scroll writer triggers the scene draw in the
+same animation frame, after the scroll write. Independent frame loops no longer
+apply a one-frame-old compensation to pinned intro/Rust text. The standalone
+scene loop still handles idle rotation and native scrolling. The stability test
+measures visible text/header positions in both directions (≤1 CSS px drift).
+Reading-pose rounding is corrected only within 2px of the selected chapter's
+actual anchor, preserving direct/native intermediate scroll positions.

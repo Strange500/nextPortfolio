@@ -73,6 +73,11 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
           locked = false
           surface.dataset.transitioning = 'false'
         }
+        // Draw after this exact scroll write, in the same display frame. The
+        // scene must not compensate the preceding frame's scroll position for pinned text.
+        window.dispatchEvent(
+          new CustomEvent('portfolio-scene-frame', { detail: now })
+        )
       }
       frame = requestAnimationFrame(tick)
     }
