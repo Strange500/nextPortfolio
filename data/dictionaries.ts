@@ -38,9 +38,9 @@ export const dictionaries = {
           date: "Sept 2025 – Present",
           deepDive: "/en/blog/automated-testing-framework",
           bullets: [
-            "Refactored and structured an existing Selenium/Java test framework, separating framework code from test scenarios and introducing reusable abstractions to factor out duplication and improve readability.",
-            "Migrated the testing platform to Spring Boot and built an Angular interface to launch and monitor runs; tests execute identically through Maven in CI (Jenkins) or an asynchronous REST API, across roughly 50 to 70 automated tests depending on scope.",
-            "Improved automated test reliability through framework refactoring and test-data lifecycle management (creation, update and deletion) in shared environments where other users also modify the data.",
+            "Built a Spring Boot API and Angular interface to launch, schedule and monitor automated tests, with asynchronous execution and real-time status updates over WebSockets.",
+            "Refactored an existing Selenium/Java framework into reusable abstractions, separating framework code from test scenarios; enabled the same tests to run through Maven/Jenkins or the API.",
+            "Improved reliability across roughly 50 to 70 automated tests through test-data lifecycle management (creation, update and deletion) in shared environments.",
             "Cut the time needed to adapt tests after an environment change or a major application version from about four hours to under ten minutes.",
             "Develop and maintain business application features in Java and Angular, and designed a Spring Boot internal tool that now distributes daily product-support duties across about 40 developers.",
             "Led technical assessments for intern and apprentice recruitment, designing Java coding exercises and questionnaires on Java, Hibernate and Agile practices and conducting technical interviews; trained an intern and an apprentice on the testing framework."
@@ -103,9 +103,9 @@ export const dictionaries = {
           date: "Sept 2025 – Présent",
           deepDive: "/fr/blog/automated-testing-framework",
           bullets: [
-            "Refactoring et structuration d'un framework de tests Selenium/Java existant : séparation du code du framework et des scénarios, introduction d'abstractions réutilisables pour factoriser le code et améliorer sa lisibilité.",
-            "Migration de la plateforme de tests vers Spring Boot et développement d'une interface Angular pour lancer et superviser les exécutions ; les tests s'exécutent à l'identique via Maven en CI (Jenkins) ou via une API REST asynchrone, sur un ensemble d'environ 50 à 70 tests automatisés selon le périmètre.",
-            "Amélioration de la fiabilité des tests via le refactoring du framework et la gestion du cycle de vie des données de test (création, mise à jour, suppression) dans des environnements partagés où d'autres utilisateurs modifient aussi les données.",
+            "Développement d'une API Spring Boot et d'une interface Angular pour lancer, planifier et superviser les tests automatisés, avec exécution asynchrone et suivi des statuts en temps réel via WebSockets.",
+            "Refactoring d'un framework Selenium/Java existant en abstractions réutilisables, séparant le framework des scénarios ; exécution des mêmes tests via Maven/Jenkins ou l'API.",
+            "Fiabilisation d'environ 50 à 70 tests automatisés grâce à la gestion du cycle de vie des données de test (création, mise à jour, suppression) en environnements partagés.",
             "Réduction du temps d'adaptation des tests après un changement d'environnement ou une version majeure de l'application, d'environ quatre heures à moins de dix minutes.",
             "Développement et déploiement d'un outil interne Spring Boot répartissant chaque jour les tâches de support produit entre environ 40 développeurs, et maintenance de fonctionnalités métier en Java et Angular.",
             "Responsabilité de l'évaluation technique des candidats stagiaires et alternants : conception d'un exercice Java sur ordinateur et de QCM Java, Hibernate et pratiques Agile, entretiens techniques ; formation d'un stagiaire et d'un alternant au framework de tests."
