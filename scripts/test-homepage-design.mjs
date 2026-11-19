@@ -90,7 +90,7 @@ try {
       nodes.forEach(e => (e.open = false))
     )
     await jump('contact')
-    await page.click('.resume-trigger')
+    await page.click('#contact .resume-trigger')
     await page.waitForSelector('.resume-menu')
     const menu = await page.$eval('.resume-menu', e => {
       const r = e.getBoundingClientRect(),
@@ -117,7 +117,7 @@ try {
     await page.screenshot({ path: `${output}/${lang}-contact-menu.png` })
     await page.keyboard.press('Escape')
     await page.waitForFunction(
-      () => document.querySelector('.resume-trigger') === document.activeElement
+      () => document.querySelector('#contact .resume-trigger') === document.activeElement
     )
     for (const width of [320, 390, 768, 1024, 1440, 1920]) {
       await page.setViewport({ width, height: 900 })
@@ -188,7 +188,7 @@ try {
             'Reading title clears the pinned mobile scene'
           )
         if (id === 'contact' && width === 390) {
-          await page.click('.resume-trigger')
+          await page.click('#contact .resume-trigger')
           await page.waitForSelector('.resume-menu')
           await delay(180)
           assert.ok(
@@ -209,7 +209,7 @@ try {
           await page.keyboard.press('Escape')
           await page.waitForFunction(
             () =>
-              document.querySelector('.resume-trigger') ===
+              document.querySelector('#contact .resume-trigger') ===
               document.activeElement
           )
         }

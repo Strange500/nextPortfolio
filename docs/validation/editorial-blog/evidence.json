@@ -1,0 +1,78 @@
+{
+  "result": "PASS",
+  "evidence": [
+    {
+      "lang": "fr",
+      "scheme": "dark",
+      "slug": "ascii-cube-journey",
+      "headings": 6
+    },
+    {
+      "lang": "fr",
+      "scheme": "dark",
+      "slug": "automated-testing-framework",
+      "headings": 10
+    },
+    {
+      "lang": "fr",
+      "scheme": "dark",
+      "slug": "nixos-2026-reproducible",
+      "headings": 11
+    },
+    {
+      "lang": "fr",
+      "scheme": "light",
+      "slug": "ascii-cube-journey",
+      "headings": 6
+    },
+    {
+      "lang": "fr",
+      "scheme": "light",
+      "slug": "automated-testing-framework",
+      "headings": 10
+    },
+    {
+      "lang": "fr",
+      "scheme": "light",
+      "slug": "nixos-2026-reproducible",
+      "headings": 11
+    },
+    {
+      "lang": "en",
+      "scheme": "dark",
+      "slug": "ascii-cube-journey",
+      "headings": 6
+    },
+    {
+      "lang": "en",
+      "scheme": "dark",
+      "slug": "automated-testing-framework",
+      "headings": 10
+    },
+    {
+      "lang": "en",
+      "scheme": "dark",
+      "slug": "nixos-2026-reproducible",
+      "headings": 11
+    },
+    {
+      "lang": "en",
+      "scheme": "light",
+      "slug": "ascii-cube-journey",
+      "headings": 6
+    },
+    {
+      "lang": "en",
+      "scheme": "light",
+      "slug": "automated-testing-framework",
+      "headings": 10
+    },
+    {
+      "lang": "en",
+      "scheme": "light",
+      "slug": "nixos-2026-reproducible",
+      "headings": 11
+    }
+  ],
+  "errors": []
+}

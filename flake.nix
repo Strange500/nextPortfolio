@@ -29,7 +29,7 @@
         python3Packages.weasyprint
       ];
       nativeBuildInputs = buildInputs;
-      npmDepsHash = "sha256-F8R4qjER08LyrvbYFZV9DzDOdo7jj/kt5/LBn94WdVs=";
+      npmDepsHash = "sha256-UXg1pdRYSPoSpdiUVb36AlxSbl3yXOqTNkfNW7ILPpc=";
     in {
       devShells.default = pkgs.mkShell {
         inherit buildInputs;

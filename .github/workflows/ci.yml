@@ -49,7 +49,7 @@ jobs:
           cp -r .next/static .next/standalone/.next/
           tar -czf portfolio-test-node22.tar.gz -C .next/standalone .
 
-      - name: Ultrawide viewport and contact regressions
+      - name: Browser regressions (portfolio and blog)
         shell: bash
         run: |
           set -euo pipefail
@@ -68,6 +68,8 @@ jobs:
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/logos" node scripts/test-cube-logo-assets.mjs
           node scripts/test-cube-interaction-boundaries.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/first-scroll" node scripts/test-first-scroll-stability.mjs
+          REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/blog" node scripts/test-blog-design.mjs
+          REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/hero-resume" node scripts/test-homepage-resume.mjs
 
       - name: Upload ultrawide review evidence
         if: always()
