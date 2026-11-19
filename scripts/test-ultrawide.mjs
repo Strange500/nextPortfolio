@@ -216,7 +216,7 @@ try {
           behavior: 'instant'
         })
       )
-      await page.click('.resume-trigger')
+      await page.click('#contact .resume-trigger')
       await page.waitForSelector('.resume-menu')
       assert.ok(
         await page.$eval('.resume-menu', e => {

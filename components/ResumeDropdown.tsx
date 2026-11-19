@@ -1,6 +1,6 @@
 'use client'
 
-import { FileText, ChevronDown, ExternalLink } from 'lucide-react'
+import { FileText, ChevronDown, ExternalLink, Download } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +11,14 @@ import {
 interface ResumeDropdownProps {
   lang: 'en' | 'fr'
   label: string
+  download?: boolean
 }
 
-export function ResumeDropdown({ lang, label }: ResumeDropdownProps) {
+export function ResumeDropdown({
+  lang,
+  label,
+  download = false
+}: ResumeDropdownProps) {
   const options = [
     {
       lang: 'en',
@@ -32,7 +37,11 @@ export function ResumeDropdown({ lang, label }: ResumeDropdownProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button type='button' className='resume-trigger'>
+        <button
+          type='button'
+          className='resume-trigger'
+          data-resume-download={download || undefined}
+        >
           <FileText size={16} aria-hidden='true' />
           {label}
           <ChevronDown size={14} aria-hidden='true' />
@@ -52,18 +61,25 @@ export function ResumeDropdown({ lang, label }: ResumeDropdownProps) {
             <a
               className='resume-option'
               href={option.href}
-              target='_blank'
-              rel='noopener noreferrer'
+              download={
+                download ? `Benjamin-Roget-CV-${option.lang}.pdf` : undefined
+              }
+              target={download ? undefined : '_blank'}
+              rel={download ? undefined : 'noopener noreferrer'}
               lang={option.lang}
             >
               <span>
                 <strong>{option.title}</strong>
                 <small>{option.detail}</small>
               </span>
-              <ExternalLink
-                size={16}
-                aria-label={lang === 'fr' ? 'Nouvel onglet' : 'New tab'}
-              />
+              {download ? (
+                <Download size={16} aria-hidden='true' />
+              ) : (
+                <ExternalLink
+                  size={16}
+                  aria-label={lang === 'fr' ? 'Nouvel onglet' : 'New tab'}
+                />
+              )}
             </a>
           </DropdownMenuItem>
         ))}

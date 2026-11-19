@@ -242,3 +242,9 @@ scene loop still handles idle rotation and native scrolling. The stability test
 measures visible text/header positions in both directions (≤1 CSS px drift).
 Reading-pose rounding is corrected only within 2px of the selected chapter's
 actual anchor, preserving direct/native intermediate scroll positions.
+
+The intro also exposes a CV download selector beside its primary action. Its
+FR/EN links use native `download` attributes, ordered by the current language;
+the contact menu retains its existing PDF previews. The same reusable component
+supports both modes. `test-homepage-resume.mjs` verifies real browser downloads,
+first-viewport visibility and keyboard focus on desktop and mobile.

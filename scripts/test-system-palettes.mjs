@@ -132,7 +132,7 @@ try {
       () =>
         document.querySelector('.narrative').dataset.transitioning === 'false'
     )
-    await p.click('.resume-trigger')
+    await p.click('#contact .resume-trigger')
     await p.waitForSelector('.resume-menu')
     assert.equal(
       await p.$eval('.resume-menu', e => getComputedStyle(e).color),

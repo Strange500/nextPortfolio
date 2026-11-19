@@ -1370,3 +1370,27 @@ body:has(.narrative)::after {
 .theme-menu [role='menuitemradio'][data-state='checked'] {
   color: var(--portfolio-accent-ink);
 }
+
+/* Secondary download action is available before the visitor starts scrolling. */
+.narrative .hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.narrative .hero-actions :is(.solid-link, .resume-trigger) {
+  min-height: 54px;
+  white-space: nowrap;
+}
+@media (max-height: 800px) and (min-width: 900px),
+  (max-height: 600px) and (min-width: 650px) {
+  .narrative .hero-actions {
+    gap: 8px;
+  }
+  .narrative .hero-actions :is(.solid-link, .resume-trigger) {
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 12px;
+    gap: 10px;
+  }
+}

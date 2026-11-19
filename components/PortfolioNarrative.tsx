@@ -130,9 +130,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
         </a>
         <nav aria-label={t('Main navigation', 'Navigation principale')}>
           <a href='#missions'>{t('The work', 'Missions')}</a>
-          <a href={`/${lang}/blog`}>
-            {t('Field notes', 'Carnet')}
-          </a>
+          <a href={`/${lang}/blog`}>{t('Field notes', 'Carnet')}</a>
           <a href='#contact'>Contact ↗</a>
         </nav>
       </header>
@@ -182,9 +180,16 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
               {t('Technologies: ', 'Technologies : ')}
               {cubeTechnologyNames.join(' · ')}
             </p>
-            <a className='solid-link' href='#rust'>
-              {t('Explore my work', 'Découvrir mon travail')} <span>↓</span>
-            </a>
+            <div className='hero-actions'>
+              <a className='solid-link' href='#rust'>
+                {t('Explore my work', 'Découvrir mon travail')} <span>↓</span>
+              </a>
+              <ResumeDropdown
+                lang={lang}
+                label={t('Download CV', 'Télécharger le CV')}
+                download
+              />
+            </div>
           </div>
         </div>
         <div className='hero-bottom mono'>
