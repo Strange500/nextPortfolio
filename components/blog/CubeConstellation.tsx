@@ -40,12 +40,14 @@ export default function CubeConstellation({ reading }: { reading: boolean }) {
       width = 0,
       height = 0,
       color = '',
+      strokeAlpha = 0.65,
+      lineWidth = 0.8,
       visible = true,
       drawn = 0
     const paint = () => {
       ctx.clearRect(0, 0, width, height)
       ctx.strokeStyle = color
-      ctx.lineWidth = 0.8
+      ctx.lineWidth = lineWidth
       const nodes = (
         reading ? readingStars : mobile.matches ? stars.slice(0, 4) : stars
       ).map(([u, v, size], i) => {
@@ -60,7 +62,7 @@ export default function CubeConstellation({ reading }: { reading: boolean }) {
             Z = -x * Math.sin(b) + z * Math.cos(b)
           return [X * scale, (y * Math.cos(a) - Z * Math.sin(a)) * scale]
         })
-        ctx.globalAlpha = reading ? 0.32 : 0.65
+        ctx.globalAlpha = strokeAlpha
         ctx.beginPath()
         for (const [a, b] of edges) {
           ctx.moveTo(x + projected[a][0], y + projected[a][1])
@@ -70,7 +72,7 @@ export default function CubeConstellation({ reading }: { reading: boolean }) {
         return { x, y }
       })
       if (!reading) {
-        ctx.globalAlpha = 0.16
+        ctx.globalAlpha = strokeAlpha * 0.24
         ctx.beginPath()
         for (const [a, b] of [
           [0, 1],
@@ -88,6 +90,16 @@ export default function CubeConstellation({ reading }: { reading: boolean }) {
       ctx.globalAlpha = 1
       canvas.dataset.frames = String(++drawn)
     }
+    const palette = () => {
+      color = getComputedStyle(document.documentElement)
+        .getPropertyValue('--portfolio-muted')
+        .trim()
+      const style = getComputedStyle(canvas)
+      strokeAlpha =
+        parseFloat(style.getPropertyValue('--constellation-alpha')) || 0.65
+      lineWidth =
+        parseFloat(style.getPropertyValue('--constellation-line-width')) || 0.8
+    }
     const size = () => {
       width = canvas.clientWidth
       height = canvas.clientHeight
@@ -100,9 +112,7 @@ export default function CubeConstellation({ reading }: { reading: boolean }) {
       canvas.width = Math.round(width * dpr)
       canvas.height = Math.round(height * dpr)
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-      color = getComputedStyle(document.documentElement)
-        .getPropertyValue('--portfolio-muted')
-        .trim()
+      palette()
       paint()
     }
     const tick = (now: number) => {
@@ -114,7 +124,7 @@ export default function CubeConstellation({ reading }: { reading: boolean }) {
       frame = requestAnimationFrame(tick)
       if (now - last < 1000 / 24) return
       if (last)
-        phase += Math.min((now - last) / 1000, 0.1) * (reading ? 0.035 : 0.12)
+        phase += Math.min((now - last) / 1000, 0.1) * (reading ? 0.06 : 0.16)
       last = now
       paint()
     }
@@ -138,9 +148,7 @@ export default function CubeConstellation({ reading }: { reading: boolean }) {
     })
     observer.observe(canvas)
     const theme = new MutationObserver(() => {
-      color = getComputedStyle(document.documentElement)
-        .getPropertyValue('--portfolio-muted')
-        .trim()
+      palette()
       paint()
     })
     theme.observe(document.documentElement, {

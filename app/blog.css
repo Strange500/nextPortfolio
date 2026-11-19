@@ -517,6 +517,8 @@ time,
   color: var(--blog-accent);
 }
 .blog-constellation {
+  --constellation-alpha: 0.85;
+  --constellation-line-width: 1.1;
   position: absolute;
   top: 118px;
   right: max(0px, calc((100vw - 1240px) / 2));
@@ -524,10 +526,11 @@ time,
   height: 440px;
   pointer-events: none;
   z-index: -1;
-  opacity: 0.65;
+  opacity: 0.9;
   mask-image: linear-gradient(to right, transparent 0%, #000 30%);
 }
 .blog-constellation.is-reading {
+  --constellation-alpha: 0.62;
   position: fixed;
   inset: 0;
   width: 100vw;
@@ -535,8 +538,18 @@ time,
   left: 50%;
   transform: translateX(-50%);
   height: 100dvh;
-  opacity: 0.5;
+  opacity: 0.75;
   mask-image: none;
+}
+/* Preserve the quieter dark palette; light edges need more weight on paper. */
+.dark .blog-constellation {
+  --constellation-alpha: 0.65;
+  --constellation-line-width: 0.8;
+  opacity: 0.65;
+}
+.dark .blog-constellation.is-reading {
+  --constellation-alpha: 0.32;
+  opacity: 0.5;
 }
 .blog-diagram {
   position: relative;
@@ -695,6 +708,9 @@ time,
     top: 96px;
     width: 65vw;
     height: 280px;
+    opacity: 0.42;
+  }
+  .dark .blog-constellation {
     opacity: 0.22;
   }
   .blog-constellation.is-reading {

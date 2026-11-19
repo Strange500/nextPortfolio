@@ -37,3 +37,8 @@ heading/outline integrity, semantic tables, diagram enlargement, mobile,
 ultrawide/landscape, reduced motion, offscreen suspension, keyboard skip link,
 theme/language changes and navigation back to the original WASM scene. Viewport
 captures and JSON evidence are written to `REVIEW_DIR` (default `/tmp/blog-review`).
+
+Light-mode cube edges use stronger opacity and a 1.1px stroke; dark mode keeps
+its quieter 0.8px edges. The shared rotation phase advances at 0.16 rad/s on the
+index and 0.06 rad/s in reading margins. Motion remains capped at 24 fps and is
+still disabled by reduced-motion preferences.
