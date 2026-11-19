@@ -32,7 +32,7 @@ export function getPostBySlug(slug: string, lang: string): BlogPost | null {
       slug,
       title: data.title || slug,
       date: data.date || '',
-      summary: data.summary || '',
+      summary: data.summary || data.description || '',
       tags: data.tags || [],
       content,
     };

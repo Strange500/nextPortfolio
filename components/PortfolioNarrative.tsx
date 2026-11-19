@@ -130,7 +130,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
         </a>
         <nav aria-label={t('Main navigation', 'Navigation principale')}>
           <a href='#missions'>{t('The work', 'Missions')}</a>
-          <a href={blog('nixos-2026-reproducible')}>
+          <a href={`/${lang}/blog`}>
             {t('Field notes', 'Carnet')}
           </a>
           <a href='#contact'>Contact ↗</a>

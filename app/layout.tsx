@@ -2,12 +2,10 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./narrative.css";
 import "highlight.js/styles/github-dark.css";
-import BG from '@/components/Background'
 import { ThemeProvider } from '@/components/theme-provider'
-import { ModeToggle } from '@/components/ModeToggle'
+import GlobalControls from '@/components/GlobalControls'
 
 import localFont from 'next/font/local'
-import { LanguageSwitcher } from '@/components/LanguageSwitcher'
 
 const inter = localFont({
   src: '../public/fonts/Inter/web/InterVariable.woff2',
@@ -49,11 +47,7 @@ export default function RootLayout({
         enableSystem
         disableTransitionOnChange
       >
-        <BG />
-        <div className="global-controls absolute top-6 right-4 z-50 flex items-center gap-2">
-          <LanguageSwitcher />
-          <ModeToggle />
-        </div>
+        <GlobalControls />
         {children}
       </ThemeProvider>
       </body>

@@ -1,79 +1,100 @@
-"use client";
-
-import React, { useEffect, useRef, useState } from "react";
-import mermaid from "mermaid";
-import { useTheme } from "next-themes";
-import { Maximize2, X } from "lucide-react";
+'use client'
+import { useEffect, useId, useState } from 'react'
+import mermaid from 'mermaid'
+import { useTheme } from 'next-themes'
+import { usePathname } from 'next/navigation'
+import { Maximize2 } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger
+} from '@/components/ui/dialog'
 
 export function Mermaid({ chart }: { chart: string }) {
-  const [svg, setSvg] = useState<string>("");
-  const [open, setOpen] = useState(false);
-  const { resolvedTheme } = useTheme();
-
+  const [svg, setSvg] = useState(''),
+    [failed, setFailed] = useState(false),
+    id = useId().replace(/[^a-z0-9]/gi, ''),
+    { resolvedTheme } = useTheme(),
+    fr = usePathname().startsWith('/fr')
   useEffect(() => {
-    // Re-initialize mermaid when theme changes
+    let cancelled = false
+    const palette = getComputedStyle(document.documentElement),
+      token = (name: string) =>
+        palette.getPropertyValue(`--portfolio-${name}`).trim()
     mermaid.initialize({
       startOnLoad: false,
-      theme: resolvedTheme === "dark" ? "dark" : "default",
-    });
-
-    const renderChart = async () => {
-      try {
-        const id = `mermaid-${Math.random().toString(36).substr(2, 9)}`;
-        const { svg } = await mermaid.render(id, chart);
-        setSvg(svg);
-      } catch (err) {
-        console.error("Mermaid parsing error", err);
-      }
-    };
-
-    renderChart();
-  }, [chart, resolvedTheme]);
-
-  if (!svg) {
+      securityLevel: 'strict',
+      suppressErrorRendering: true,
+      theme: 'base',
+      themeVariables: {
+        darkMode: resolvedTheme === 'dark',
+        background: token('paper'),
+        primaryColor: token('panel'),
+        primaryTextColor: token('ink'),
+        primaryBorderColor: token('line'),
+        lineColor: token('muted'),
+        secondaryColor: token('panel'),
+        tertiaryColor: token('paper'),
+        clusterBkg: token('panel'),
+        clusterBorder: token('line'),
+        edgeLabelBackground: token('paper'),
+        titleColor: token('ink')
+      },
+      fontFamily: 'system-ui, sans-serif'
+    })
+    mermaid
+      .render(`diagram-${id}`, chart)
+      .then(({ svg }) => {
+        if (!cancelled) {
+          setSvg(svg)
+          setFailed(false)
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setFailed(true)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [chart, resolvedTheme, id])
+  if (failed) return <pre data-diagram-fallback>{chart}</pre>
+  if (!svg)
     return (
-      <div className="flex justify-center my-8">
-        <div className="animate-pulse w-full h-32 bg-muted rounded-lg border border-border/40"></div>
-      </div>
-    );
-  }
-
-  return (
-    <>
       <div
-        role="button"
-        tabIndex={0}
-        onClick={() => setOpen(true)}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setOpen(true); }}
-        title="Click to enlarge"
-        className="group relative my-8 flex cursor-zoom-in justify-center overflow-x-auto rounded-xl border border-border/40 bg-muted/50 p-4"
-      >
-        <span className="absolute right-3 top-3 flex items-center gap-1 rounded bg-background/80 px-2 py-1 font-mono text-[10px] uppercase tracking-wider text-muted-foreground opacity-70 transition-opacity group-hover:opacity-100">
-          <Maximize2 size={12} /> Click to enlarge
-        </span>
-        <div dangerouslySetInnerHTML={{ __html: svg }} />
-      </div>
-
-      {open && (
+        className='blog-diagram-placeholder'
+        role='status'
+        aria-label={fr ? 'Chargement du diagramme' : 'Loading diagram'}
+      />
+    )
+  return (
+    <Dialog>
+      <figure className='blog-diagram'>
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 md:p-10"
-          onClick={() => setOpen(false)}
-        >
-          <button
-            onClick={() => setOpen(false)}
-            className="absolute right-4 top-4 z-10 rounded-full bg-background/20 p-2 text-foreground hover:bg-background/40"
-            aria-label="Close"
-          >
-            <X size={20} />
+          className='blog-diagram-preview'
+          role='img'
+          aria-label={fr ? 'Diagramme d’architecture' : 'Architecture diagram'}
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
+        <DialogTrigger asChild>
+          <button type='button'>
+            <Maximize2 size={14} aria-hidden='true' />
+            {fr ? 'Agrandir le diagramme' : 'Enlarge diagram'}
           </button>
-          <div
-            className="max-h-full max-w-full overflow-auto rounded-xl border border-border bg-background p-6"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div dangerouslySetInnerHTML={{ __html: svg }} />
-          </div>
-        </div>
-      )}
-    </>
-  );
+        </DialogTrigger>
+      </figure>
+      <DialogContent className='blog-diagram-dialog'>
+        <DialogTitle>
+          {fr ? 'Diagramme d’architecture' : 'Architecture diagram'}
+        </DialogTitle>
+        <DialogDescription className='sr-only'>
+          {fr
+            ? 'Version agrandie. Échap pour fermer.'
+            : 'Expanded view. Press Escape to close.'}
+        </DialogDescription>
+        <div dangerouslySetInnerHTML={{ __html: svg }} />
+      </DialogContent>
+    </Dialog>
+  )
 }
