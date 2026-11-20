@@ -83,7 +83,7 @@ try {
     await page.waitForSelector('[data-wasm="ready"]')
     const anchors = await page.evaluate(() =>
       Object.fromEntries(
-        ['intro', 'rust', 'nix', 'testing', 'bitcoin', 'contact'].map(id => [
+        ['intro', 'rust', 'testing', 'nix', 'bitcoin', 'contact'].map(id => [
           id,
           id === 'intro'
             ? 0

@@ -1,6 +1,7 @@
 'use client'
 import { useRef } from 'react'
 import { Menu } from 'lucide-react'
+import { portfolioLabel } from '@/data/portfolio-navigation'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -15,7 +16,7 @@ export default function MobilePortfolioMenu({ lang }: { lang: 'fr' | 'en' }) {
     ['rust', 'Rust / WASM'],
     ['nix', 'NixOS'],
     ['bitcoin', 'Bitcoin'],
-    ['missions', fr ? 'Missions' : 'The work'],
+    ['missions', portfolioLabel('missions', lang)],
     ['contact', 'Contact']
   ]
   return (

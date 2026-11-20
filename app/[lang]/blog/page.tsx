@@ -58,8 +58,8 @@ export default async function BlogPage({
         </h1>
         <p className='blog-deck'>
           {fr
-            ? 'Des projets, leurs choix d’architecture et ce qu’ils m’ont appris. Rust, infrastructure et tests : le travail, déplié.'
-            : 'Projects, architectural choices and lessons from building them. Rust, infrastructure and testing: the work, unfolded.'}
+            ? 'Des retours d’expérience sur mes projets : le problème de départ, les choix techniques et les limites rencontrées.'
+            : 'Project write-ups covering the original problem, technical decisions and the limits I encountered.'}
         </p>
         <Link className='blog-back' href={`/${lang}`}>
           ← {fr ? 'Retour au portfolio' : 'Back to portfolio'}

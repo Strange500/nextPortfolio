@@ -17,7 +17,7 @@ export const contextTechnologies: Record<string, string[]> = {
   nix: ['NixOS', 'Nix', 'Home Manager', 'Linux'],
   testing: ['Java EE', 'Spring Boot', 'Angular', 'Selenium', 'Maven'],
   bitcoin: ['Rust', 'Bitcoin', 'Nix'],
-  missions: ['Rust', 'NixOS', 'Spring Boot', 'Bitcoin'],
+  missions: ['Java EE', 'Maven', 'Postgres', 'Git'],
   contact: []
 }
 const notes: Record<string, Record<string, [string, string]>> = {
@@ -82,6 +82,10 @@ export function technologyNote(name: string, context: string, fr: boolean) {
   return (notes[context]?.[name] || general[name] || [name, name])[fr ? 0 : 1]
 }
 export function technologySource(name: string, context: string, lang: string) {
+  if (context === 'missions')
+    return name === 'Postgres'
+      ? 'https://github.com/Strange500/QGChat'
+      : 'https://github.com/Strange500/RayTracer'
   if (context === 'bitcoin') return 'https://github.com/Strange500/min-btc-node'
   if (
     context === 'testing' ||

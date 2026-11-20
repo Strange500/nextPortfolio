@@ -30,6 +30,9 @@ jobs:
       - name: Quaternion rotation and inertia regressions
         run: node scripts/test-cube-orientation.mjs
 
+      - name: Editorial source and translation consistency
+        run: node scripts/test-editorial-content.mjs
+
       - name: Resume content and HTML preview regression tests
         run: |
           node scripts/test-resume-content.mjs
@@ -73,6 +76,7 @@ jobs:
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/first-scroll" node scripts/test-first-scroll-stability.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/blog" node scripts/test-blog-design.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/mobile" node scripts/test-mobile-portfolio.mjs
+          REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/editorial" node scripts/test-editorial-navigation.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/recruiter" node scripts/test-recruiter-path.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/hero-resume" node scripts/test-homepage-resume.mjs
 

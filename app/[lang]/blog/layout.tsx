@@ -30,7 +30,7 @@ export default async function BlogLayout({
           b<span>_</span>r <small>/ Benjamin Roget</small>
         </Link>
         <nav aria-label={fr ? 'Navigation principale' : 'Main navigation'}>
-          <Link href={`/${lang}#missions`}>{fr ? 'Missions' : 'The work'}</Link>
+          <Link href={`/${lang}#missions`}>{fr ? 'Projets' : 'Projects'}</Link>
           <Link href={`/${lang}/blog`} aria-current='true'>
             {fr ? 'Carnet' : 'Field notes'}
           </Link>
@@ -46,11 +46,11 @@ export default async function BlogLayout({
         <span>
           BENJAMIN ROGET <span aria-hidden='true'>/</span>{' '}
           {fr
-            ? 'CONÇU AVEC INTENTION. CODE OUVERT.'
-            : 'BUILT WITH INTENT. OPEN SOURCE.'}
+            ? 'PROJETS ET RETOURS D’EXPÉRIENCE.'
+            : 'PROJECTS AND ENGINEERING NOTES.'}
         </span>
         <Link href={`/${lang}#contact`}>
-          {fr ? 'Faisons le lien' : 'Let’s connect'} ↗
+          {fr ? 'Échangeons' : 'Get in touch'} ↗
         </Link>
       </footer>
     </div>
