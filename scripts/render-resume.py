@@ -23,6 +23,7 @@ Dependencies:
 import argparse
 import html
 import json
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -163,10 +164,28 @@ def join_non_empty(parts, separator=" · "):
 # CSS
 # -----------------------------------------------------------------------------
 
+def portfolio_palette() -> dict[str, str]:
+    """Use the portfolio's light palette for the printable document."""
+    source = (ROOT / "app" / "narrative.css").read_text(encoding="utf-8")
+    root = re.search(r":root\s*\{(.*?)\}", source, re.S)
+    if not root:
+        raise ValueError("Portfolio light palette not found")
+    colors = {}
+    for token in ("paper", "ink", "muted", "line", "acid", "panel"):
+        match = re.search(
+            r"--portfolio-" + token + r":\s*(#[0-9a-fA-F]{6})\s*;", root.group(1)
+        )
+        if not match:
+            raise ValueError(f"Missing portfolio palette token: {token}")
+        colors[token] = match.group(1)
+    return colors
+
+
 def css(page_size: str, lang: str = "en") -> str:
     # Keep the body readable on one A4 page instead of shrinking it.
-    body_font_size = "8.9pt" if lang == "fr" else "9pt"
+    body_font_size = "9.25pt"
     body_line_height = "1.34"
+    palette = portfolio_palette()
 
     return f"""
     @font-face {{
@@ -213,19 +232,19 @@ def css(page_size: str, lang: str = "en") -> str:
 
     @page {{
         size: {page_size};
-        margin: 0.42in;
-        background: #FAFAFA;
+        margin: 13mm 14mm;
+        background: {palette["paper"]};
     }}
 
     :root {{
-        --ink: #1E293B;
-        --ink-strong: #0F172A;
-        --ink-muted: #475569;
-        --accent: #4F46E5;
-        --rule: #E2E8F0;
-        --bg: #FAFAFA;
+        --ink: {palette["ink"]};
+        --ink-strong: {palette["ink"]};
+        --ink-muted: {palette["muted"]};
+        --accent: {palette["acid"]};
+        --rule: {palette["line"]};
+        --bg: {palette["paper"]};
         --card-bg: #FFFFFF;
-        --tag-bg: #F8FAFC;
+        --tag-bg: {palette["panel"]};
     }}
 
     * {{
@@ -251,6 +270,8 @@ def css(page_size: str, lang: str = "en") -> str:
         text-decoration: none;
     }}
 
+    .nowrap {{ white-space: nowrap; }}
+
     .mono {{
         font-family: 'Fira Code', monospace;
     }}
@@ -260,24 +281,26 @@ def css(page_size: str, lang: str = "en") -> str:
        ------------------------------------------------------------------------- */
 
     header {{
-        text-align: center;
-        margin-bottom: 7pt;
+        text-align: left;
+        margin-bottom: 9pt;
+        padding-bottom: 7pt;
+        border-bottom: 1px solid var(--rule);
     }}
 
     .name {{
         margin: 0;
         color: var(--ink-strong);
-        font-size: 16pt;
+        font-size: 23pt;
         line-height: 1.05;
-        font-weight: 800;
-        letter-spacing: -0.025em;
+        font-weight: 500;
+        letter-spacing: -0.06em;
     }}
 
     .label {{
-        margin-top: 2pt;
+        margin-top: 4pt;
         color: var(--accent);
-        font-size: 8.5pt;
-        line-height: 1.15;
+        font-size: 11pt;
+        line-height: 1.2;
         font-weight: 500;
     }}
 
@@ -289,7 +312,7 @@ def css(page_size: str, lang: str = "en") -> str:
     }}
 
     .contact .mono {{
-        color: var(--accent);
+        color: var(--ink-muted);
         font-weight: 500;
     }}
 
@@ -324,12 +347,14 @@ def css(page_size: str, lang: str = "en") -> str:
     }}
 
     h2 {{
-        margin: 0 0 2.5pt 0;
-        padding: 0;
-        color: var(--ink-strong);
-        font-size: 8.5pt;
-        line-height: 1.1;
-        font-weight: 800;
+        margin: 0 0 3pt 0;
+        padding: 0 0 3pt;
+        border-bottom: 1px solid var(--rule);
+        color: var(--ink-muted);
+        font-family: 'Fira Code', monospace;
+        font-size: 8pt;
+        line-height: 1.2;
+        font-weight: 500;
         text-transform: uppercase;
         letter-spacing: 0.08em;
         break-after: avoid;
@@ -357,6 +382,13 @@ def css(page_size: str, lang: str = "en") -> str:
     .summary p {{
         margin: 0;
         line-height: 1.36;
+    }}
+
+    .summary .availability {{
+        margin-bottom: 5pt;
+        padding-left: 7pt;
+        border-left: 2pt solid var(--accent);
+        color: var(--ink-strong);
     }}
 
     /* -------------------------------------------------------------------------
@@ -387,7 +419,7 @@ def css(page_size: str, lang: str = "en") -> str:
 
     .job-title {{
         margin: 0;
-        font-size: 8.7pt;
+        font-size: 9.5pt;
         line-height: 1.2;
         font-weight: 700;
         color: var(--ink-strong);
@@ -473,7 +505,7 @@ def css(page_size: str, lang: str = "en") -> str:
     .project-name {{
         margin: 0;
         color: var(--ink-strong);
-        font-size: 7.9pt;
+        font-size: 9pt;
         font-weight: 700;
         line-height: 1.2;
         min-width: 0;
@@ -498,15 +530,15 @@ def css(page_size: str, lang: str = "en") -> str:
     .project-description {{
         margin: 0;
         line-height: 1.3;
-        font-size: 8.25pt;
+        font-size: 9pt;
     }}
 
     .project-tags {{
         display: inline-block;
-        margin-top: 1.5pt;
-        padding: 1pt 3pt;
-        border-radius: 3px;
-        background: var(--tag-bg);
+        margin-top: 2pt;
+        padding: 0;
+        border-radius: 0;
+        background: transparent;
         color: var(--ink-muted);
         font-family: 'Fira Code', monospace;
         font-size: 7.5pt;
@@ -518,7 +550,7 @@ def css(page_size: str, lang: str = "en") -> str:
        ------------------------------------------------------------------------- */
 
     .skills-card {{
-        padding: 4.5pt 6.5pt;
+        padding: 0;
     }}
 
     .skill-row {{
@@ -544,9 +576,9 @@ def css(page_size: str, lang: str = "en") -> str:
     }}
 
     .skill-item {{
-        font-family: 'Fira Code', monospace;
-        color: var(--accent);
-        font-size: 7.5pt;
+        font-family: 'Inter', sans-serif;
+        color: var(--ink);
+        font-size: 9pt;
         font-weight: 500;
     }}
 
@@ -590,7 +622,7 @@ def css(page_size: str, lang: str = "en") -> str:
 
     .education-institution {{
         color: var(--ink-strong);
-        font-size: 8.3pt;
+        font-size: 9pt;
         font-weight: 700;
         line-height: 1.3;
     }}
@@ -744,6 +776,13 @@ def render_summary(data: dict, lang: str = "en") -> str:
     """
 
 
+def format_highlight(value: str) -> str:
+    # Keep this compound tool name intact in the PDF's text extraction too.
+    return escape(value).replace(
+        "Maven/Jenkins", '<span class="nowrap">Maven/Jenkins</span>'
+    )
+
+
 def render_experience(data: dict, lang: str = "en") -> str:
     jobs = []
 
@@ -755,7 +794,7 @@ def render_experience(data: dict, lang: str = "en") -> str:
         )
 
         highlights = "".join(
-            f"<li>{escape(highlight)}</li>"
+            f"<li>{format_highlight(highlight)}</li>"
             for highlight in job.get("highlights", [])
         )
 
@@ -764,9 +803,8 @@ def render_experience(data: dict, lang: str = "en") -> str:
         if job.get("url"):
             deeplink = f"""
             <div class="deeplink">
-                ↳
                 <a href="{escape(job["url"])}">
-                    {escape(short_url(job["url"]))}
+                    {"Étude de cas · plateforme de tests" if lang == "fr" else "Case study · automated test platform"} ↗
                 </a>
             </div>
             """
@@ -980,7 +1018,7 @@ def render_languages(data: dict, lang: str = "en") -> str:
     )
 
     interests = join_non_empty(
-        [escape(interest["name"]) for interest in data.get("interests", [])]
+        [escape(interest["name"]) + (" (" + escape(", ".join(interest["keywords"])) + ")" if interest.get("keywords") else "") for interest in data.get("interests", [])]
     )
 
     lines = ""
@@ -1013,24 +1051,13 @@ def render(data: dict, page_size: str, lang: str = "en") -> str:
     basics = data["basics"]
 
     # Both CVs lead with Education (student applications), then experience.
-    if lang == "fr":
-        body_content = f"""
+    body_content = f"""
         {render_header(data, lang=lang)}
         {render_summary(data, lang=lang)}
-        {render_education(data, lang=lang)}
         {render_experience(data, lang=lang)}
+        {render_education(data, lang=lang)}
         {render_skills(data, lang=lang)}
         {render_projects(data, lang=lang)}
-        {render_languages(data, lang=lang)}
-        """
-    else:
-        body_content = f"""
-        {render_header(data, lang=lang)}
-        {render_summary(data, lang=lang)}
-        {render_education(data, lang=lang)}
-        {render_experience(data, lang=lang)}
-        {render_projects(data, lang=lang)}
-        {render_skills(data, lang=lang)}
         {render_languages(data, lang=lang)}
         """
 

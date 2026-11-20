@@ -30,8 +30,11 @@ jobs:
       - name: Quaternion rotation and inertia regressions
         run: node scripts/test-cube-orientation.mjs
 
-      - name: Resume HTML preview regression tests
-        run: python3 scripts/test-resume-preview.py
+      - name: Resume content and HTML preview regression tests
+        run: |
+          node scripts/test-resume-content.mjs
+          git diff --exit-code -- resume.json resume-en.json resume-fr.json
+          python3 scripts/test-resume-preview.py
 
       - name: Lint
         # Non-blocking: `next lint` was removed in Next 15+, so use eslint directly.

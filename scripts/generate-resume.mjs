@@ -36,15 +36,14 @@ const projectsFr = JSON.parse(
 const basicsData = {
   en: {
     name: "Benjamin Roget",
-    label: "Software Engineering Student | Backend & Systems",
+    label: "Engineering Student — Java Backend & Systems",
     email: "benjamin.rogetpro@gmail.com",
     phone: "+33 7 83 03 95 25",
     url: "https://portfolio.qgroget.com",
     summary:
-      "Seeking a 3-month software engineering internship starting June 2027 in Poland, Romania, " +
-      "Czechia or the Nordics, in English-speaking teams; the US is a secondary option. " +
-      "Engineering student and software engineering apprentice with experience building Java/Spring Boot " +
-      "applications and automated testing tools. Personal projects focus on Rust, networking and Linux infrastructure.",
+      "Seeking a 3-month software engineering internship starting June 2027, in an English-speaking team. " +
+      "Engineering apprentice at IMT Nord Europe and Numih France. Java/Spring Boot backend " +
+      "and automated testing, with personal projects in Rust and Linux infrastructure.",
     location: {
       city: "Villeneuve d'Ascq",
       region: "Hauts-de-France",
@@ -57,18 +56,15 @@ const basicsData = {
   },
   fr: {
     name: "Benjamin Roget",
-    label: "Ingénieur Logiciel — Backend & Systèmes",
+    label: "Élève ingénieur — Backend Java & systèmes",
     email: "benjamin.rogetpro@gmail.com",
     phone: "+33 7 83 03 95 25",
     url: "https://portfolio.qgroget.com/fr",
-    image: `file://${join(ROOT, "public/img/cv-profile.jpg")}`,
     summary:
       "À la recherche d'un stage d'ingénieur de 3 mois à partir de juin 2027. " +
       "Apprenti ingénieur à l'IMT Nord Europe, spécialisé en backend Java/Spring Boot, " +
       "tests automatisés et outillage système (Rust, NixOS, Docker).",
     location: {
-      address: "12 bis rue Jules Ferry",
-      postalCode: "59491",
       city: "Villeneuve d'Ascq",
       region: "Hauts-de-France",
       countryCode: "FR",
@@ -88,7 +84,7 @@ const languagesData = {
   ],
   fr: [
     { language: "Français", fluency: "Langue maternelle" },
-    { language: "Anglais",  fluency: "Courant (TOEIC 980/990)" },
+    { language: "Anglais",  fluency: "TOEIC Listening & Reading : 980/990 (2026)" },
     { language: "Espagnol", fluency: "Intermédiaire" },
   ],
 };
@@ -97,12 +93,10 @@ const interestsData = {
   en: [
     { name: "Sport shooting",     keywords: ["national level"] },
     { name: "Triathlon training", keywords: [] },
-    { name: "Weightlifting",      keywords: [] },
   ],
   fr: [
     { name: "Tir sportif",            keywords: ["niveau national"] },
     { name: "Entraînement triathlon", keywords: [] },
-    { name: "Musculation",            keywords: [] },
   ],
 };
 
@@ -110,9 +104,8 @@ const interestsData = {
 const projectDescriptions = {
   en: {
     "min-btc-node":
-      "Built a Rust Bitcoin light-client prototype with asynchronous P2P networking across " +
-      "multiple peers, block-header synchronization, and BIP157/158 compact filters to retrieve " +
-      "relevant blocks and track wallet UTXOs.",
+      "Rust light-client prototype: asynchronous multi-peer P2P networking, header synchronization, " +
+      "BIP157/158 compact filters and UTXO tracking.",
     "nixos-config":
       "Managed six hosts with declarative NixOS configurations, Nix flakes and Home Manager, " +
       "with version-controlled settings and dotfiles.",
@@ -122,9 +115,8 @@ const projectDescriptions = {
   },
   fr: {
     "min-btc-node":
-      "Prototype de client léger Bitcoin en Rust : réseau P2P asynchrone multi-pairs, " +
-      "synchronisation des en-têtes de blocs et filtres compacts BIP157/158 pour récupérer les " +
-      "blocs pertinents et suivre les UTXO du portefeuille.",
+      "Prototype Rust : client P2P asynchrone multi-pairs, synchronisation d’en-têtes, " +
+      "filtres compacts BIP157/158 et suivi d’UTXO.",
     "nixos-config":
       "Gestion de six machines via des configurations NixOS déclaratives (Nix flakes, " +
       "Home Manager), avec réglages système et dotfiles versionnés.",
@@ -136,6 +128,12 @@ const projectDescriptions = {
 
 const extraProjectsData = {
   en: [
+    {
+      name: "RayTracer",
+      description: "Academic Java ray tracer: parallel rendering, BVH acceleration and JUnit 5 regression tests comparing generated images against references.",
+      keywords: ["Java", "JUnit 5", "Parallelism", "BVH"],
+      url: "https://github.com/Strange500/RayTracer",
+    },
     {
       name: "RayTracer-Rust",
       description:
@@ -161,6 +159,12 @@ const extraProjectsData = {
     },
   ],
   fr: [
+    {
+      name: "RayTracer",
+      description: "Projet académique en Java : rendu parallèle, accélération BVH et tests de non-régression JUnit 5 par comparaison d’images de référence.",
+      keywords: ["Java", "JUnit 5", "Parallélisme", "BVH"],
+      url: "https://github.com/Strange500/RayTracer",
+    },
     {
       name: "RayTracer-Rust",
       description:
@@ -189,18 +193,16 @@ const extraProjectsData = {
 
 const skillGroupsData = {
   en: {
-    "Backend": ["Java", "Spring Boot", "Java EE", "REST APIs", "SQL", "Maven"],
-    "Systems & Languages": ["Rust", "C", "Python", "TypeScript", "JavaScript", "WebAssembly"],
-    "Web": ["Angular", "React", "Next.js"],
-    "Testing & Tooling": ["Selenium", "JUnit 5", "Jenkins", "Git"],
-    "Infrastructure": ["NixOS", "Linux", "Docker", "Podman"],
+    "Backend": ["Java", "Spring Boot", "REST APIs", "SQL"],
+    "Testing & Delivery": ["Selenium", "JUnit 5", "Maven", "Jenkins", "Git"],
+    "Web": ["Angular", "TypeScript", "React", "Next.js"],
+    "Systems": ["Rust", "Linux", "NixOS", "Docker"],
   },
   fr: {
-    "Backend": ["Java", "Spring Boot", "Java EE", "API REST", "SQL", "Maven"],
-    "Langages & Systèmes": ["Rust", "C", "Python", "TypeScript", "JavaScript", "WebAssembly"],
-    "Web": ["Angular", "React", "Next.js"],
-    "Tests & Outillage": ["Selenium", "JUnit 5", "Jenkins", "Git"],
-    "Infrastructure": ["NixOS", "Linux", "Docker", "Podman"],
+    "Backend": ["Java", "Spring Boot", "API REST", "SQL"],
+    "Tests & Livraison": ["Selenium", "JUnit 5", "Maven", "Jenkins", "Git"],
+    "Web": ["Angular", "TypeScript", "React", "Next.js"],
+    "Systèmes": ["Rust", "Linux", "NixOS", "Docker"],
   },
 };
 
@@ -298,7 +300,7 @@ function buildResume(lang) {
   ];
 
   // Curate only the resume, leaving the portfolio gallery intact.
-  const selectedProjects = ["min-btc-node", "QGChat", "nixos-config"].map((name) => {
+  const selectedProjects = ["RayTracer", "min-btc-node", "nixos-config"].map((name) => {
     const project = allProjects.find((entry) => entry.name === name);
     if (!project) throw new Error(`Missing selected resume project: ${name}`);
     return project;

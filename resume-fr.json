@@ -2,15 +2,12 @@
   "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
   "basics": {
     "name": "Benjamin Roget",
-    "label": "Ingénieur Logiciel — Backend & Systèmes",
+    "label": "Élève ingénieur — Backend Java & systèmes",
     "email": "benjamin.rogetpro@gmail.com",
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com/fr",
-    "image": "file:///opt/data/nextPortfolio/public/img/cv-profile.jpg",
     "summary": "À la recherche d'un stage d'ingénieur de 3 mois à partir de juin 2027. Apprenti ingénieur à l'IMT Nord Europe, spécialisé en backend Java/Spring Boot, tests automatisés et outillage système (Rust, NixOS, Docker).",
     "location": {
-      "address": "12 bis rue Jules Ferry",
-      "postalCode": "59491",
       "city": "Villeneuve d'Ascq",
       "region": "Hauts-de-France",
       "countryCode": "FR"
@@ -36,12 +33,11 @@
       "endDate": "",
       "url": "https://portfolio.qgroget.com/fr/blog/automated-testing-framework",
       "highlights": [
-        "Développement de l’API Spring Boot asynchrone sur un backend d’équipe existant et réalisation intégrale de l’interface Angular pour lancer, planifier et superviser les tests, avec intégration des notifications WebSocket.",
-        "Refactoring d'un framework Selenium/Java existant en abstractions réutilisables, séparant le framework des scénarios ; exécution des mêmes tests via Maven/Jenkins ou l'API.",
-        "Fiabilisation d'environ 50 à 70 tests automatisés grâce à la gestion du cycle de vie des données de test (création, mise à jour, suppression) en environnements partagés.",
-        "Réduction du temps d'adaptation des tests après un changement d'environnement ou une version majeure de l'application, d'environ quatre heures à moins de dix minutes.",
-        "Développement et déploiement d'un outil interne Spring Boot répartissant chaque jour les tâches de support produit entre environ 40 développeurs, et maintenance de fonctionnalités métier en Java et Angular.",
-        "Responsabilité de l'évaluation technique des candidats stagiaires et alternants : conception d'un exercice Java sur ordinateur et de QCM Java, Hibernate et pratiques Agile, entretiens techniques ; formation d'un stagiaire et d'un alternant au framework de tests."
+        "Refonte d’un framework Selenium/Java existant et migration vers Spring Boot : moteur partagé entre la CI Maven/Jenkins et une API REST asynchrone.",
+        "Réalisation intégrale de l’interface Angular de lancement, programmation et suivi des tests, avec intégration des notifications de statut WebSocket.",
+        "Fiabilisation d’environ 50–70 tests par gestion du cycle de vie des données ; adaptation d’environnement/version ramenée d’environ 4 h à moins de 10 min (estimation issue de l’expérience).",
+        "Développement d’un outil Spring Boot distinct répartissant le support quotidien entre environ 40 développeurs ; maintenance de fonctionnalités métier Java et Angular.",
+        "Évaluation technique de candidats (exercices Java et entretiens) ; formation d’un stagiaire et d’un alternant au framework de tests."
       ]
     },
     {
@@ -78,47 +74,36 @@
       "keywords": [
         "Java",
         "Spring Boot",
-        "Java EE",
         "API REST",
-        "SQL",
-        "Maven"
+        "SQL"
       ]
     },
     {
-      "name": "Langages & Systèmes",
+      "name": "Tests & Livraison",
       "keywords": [
-        "Rust",
-        "C",
-        "Python",
-        "TypeScript",
-        "JavaScript",
-        "WebAssembly"
+        "Selenium",
+        "JUnit 5",
+        "Maven",
+        "Jenkins",
+        "Git"
       ]
     },
     {
       "name": "Web",
       "keywords": [
         "Angular",
+        "TypeScript",
         "React",
         "Next.js"
       ]
     },
     {
-      "name": "Tests & Outillage",
+      "name": "Systèmes",
       "keywords": [
-        "Selenium",
-        "JUnit 5",
-        "Jenkins",
-        "Git"
-      ]
-    },
-    {
-      "name": "Infrastructure",
-      "keywords": [
-        "NixOS",
+        "Rust",
         "Linux",
-        "Docker",
-        "Podman"
+        "NixOS",
+        "Docker"
       ]
     }
   ],
@@ -129,7 +114,7 @@
     },
     {
       "language": "Anglais",
-      "fluency": "Courant (TOEIC 980/990)"
+      "fluency": "TOEIC Listening & Reading : 980/990 (2026)"
     },
     {
       "language": "Espagnol",
@@ -146,32 +131,29 @@
     {
       "name": "Entraînement triathlon",
       "keywords": []
-    },
-    {
-      "name": "Musculation",
-      "keywords": []
     }
   ],
   "projects": [
     {
+      "name": "RayTracer",
+      "description": "Projet académique en Java : rendu parallèle, accélération BVH et tests de non-régression JUnit 5 par comparaison d’images de référence.",
+      "keywords": [
+        "Java",
+        "JUnit 5",
+        "Parallélisme",
+        "BVH"
+      ],
+      "url": "https://github.com/Strange500/RayTracer"
+    },
+    {
       "name": "min-btc-node",
-      "description": "Prototype de client léger Bitcoin en Rust : réseau P2P asynchrone multi-pairs, synchronisation des en-têtes de blocs et filtres compacts BIP157/158 pour récupérer les blocs pertinents et suivre les UTXO du portefeuille.",
+      "description": "Prototype Rust : client P2P asynchrone multi-pairs, synchronisation d’en-têtes, filtres compacts BIP157/158 et suivi d’UTXO.",
       "keywords": [
         "Rust",
         "Bitcoin",
         "Réseau"
       ],
       "url": "https://github.com/Strange500/min-btc-node"
-    },
-    {
-      "name": "QGChat",
-      "description": "Application de chat MVC en Java EE : API REST pour les canaux et les messages, persistance PostgreSQL, invitations par jetons JWT temporaires et déploiement Docker Compose.",
-      "keywords": [
-        "Java EE",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "url": "https://github.com/Strange500/QGChat"
     },
     {
       "name": "nixos-config",
