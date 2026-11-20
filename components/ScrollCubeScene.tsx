@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Cube } from 'ascii-cube'
 import { Pause, Play } from 'lucide-react'
+import { portfolioSections, portfolioLabel } from '@/data/portfolio-navigation'
 import {
   loadCubeTechnologies,
   type CubeTechnology
@@ -10,7 +11,7 @@ import {
 import { useCubeExplorer } from './useCubeExplorer'
 import CubeExplorerControls from './CubeExplorerControls'
 
-const sections = ['intro', 'rust', 'nix', 'testing', 'bitcoin', 'contact']
+const sections = ['intro', 'rust', 'testing', 'nix', 'bitcoin', 'contact']
 // Face indices and projection match ascii-cube-rs at the flake.lock revision:
 // +Y, -Y, -X, +X, +Z, -Z; camera at Z=-100, Euler XYZ (Rx * Ry * Rz).
 const faceSections = ['rust', 'contact', 'nix', 'testing', 'intro', 'bitcoin']
@@ -31,8 +32,8 @@ const logicalSize = columns * 8
 const poses = [
   { x: 0.74, size: 0.32, rotation: [0.32, 2.6, -0.08] },
   { x: 0.25, size: 0.34, rotation: [-1.08, 0.38, -0.12] },
-  { x: 0.75, size: 0.31, rotation: [0.32, -1.08, 0.12] },
   { x: 0.73, size: 0.34, rotation: [0.38, 1.12, -0.12] },
+  { x: 0.75, size: 0.31, rotation: [0.32, -1.08, 0.12] },
   { x: 0.25, size: 0.3, rotation: [0.3, 0.4, 0.12] },
   { x: 0.25, size: 0.29, rotation: [1.25, 0.22, -0.06] }
 ]
@@ -72,14 +73,6 @@ function corners(face: number) {
 
 export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
   const fr = lang === 'fr'
-  const labels = [
-    fr ? 'Accueil' : 'Intro',
-    'Rust / WASM',
-    'NixOS',
-    fr ? 'Tests' : 'Testing',
-    'Bitcoin',
-    'Contact'
-  ]
   const root = useRef<HTMLDivElement>(null)
   const stage = useRef<HTMLDivElement>(null)
   const canvas = useRef<HTMLCanvasElement>(null)
@@ -182,9 +175,17 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       for (let i = 2; i < anchors.length; i++)
         if (y >= anchors[i] - vh * 0.15) index = i
       const id = mobile ? 'intro' : sections[index]
-      if (previous !== id) {
-        previous = id
-        setCurrent(id)
+      const missionTop =
+        document.getElementById('missions')!.getBoundingClientRect().top + y
+      const navigationId =
+        !mobile &&
+        y >= missionTop - vh * 0.15 &&
+        y < anchors[anchors.length - 1] - vh * 0.15
+          ? 'missions'
+          : id
+      if (previous !== navigationId) {
+        previous = navigationId
+        setCurrent(navigationId)
       }
       let from = 0,
         to = 0,
@@ -317,6 +318,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       const x = mobile
         ? targetX
         : Math.max(size / 2 + 16, Math.min(vw - size / 2 - 16, targetX))
+      root.current!.style.setProperty('--cube-controls-x', `${x}px`)
       const targetY =
         mobile && mobileSlot
           ? mobileSlot.y + mobileSlot.height / 2
@@ -710,19 +712,19 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       <p id='cube-explorer-instructions' className='sr-only'>
         {fr
           ? 'Sur l’accueil, glissez pour tourner le cube. Au clavier, utilisez les flèches, puis Entrée pour explorer une face. Le bouton Technologies donne accès à toutes les technologies. La navigation entre sections est séparée.'
-          : 'On the intro, drag to rotate. Use arrow keys and Enter to explore a face. The Technologies button provides all technologies. Section navigation is separate.'}
+          : 'In the introduction, drag the cube to rotate it. Use arrow keys and Enter to explore a face. The Technologies button provides all technologies. Section navigation is separate.'}
       </p>
       <CubeExplorerControls explorer={explorer} lang={lang} />
       <nav
         className='scene-nav mono'
         aria-label={fr ? 'Navigation des sections' : 'Section navigation'}
       >
-        {sections.map((id, i) => (
+        {portfolioSections.map((id, i) => (
           <a
             key={id}
             href={`#${id}`}
             data-facet-link={id}
-            aria-label={labels[i]}
+            aria-label={portfolioLabel(id, lang)}
             aria-current={current === id ? 'step' : undefined}
             onClick={e => {
               e.preventDefault()
@@ -731,7 +733,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           >
             <span className='scene-index'>0{i}</span>
             <span className={id === 'rust' ? 'scene-label-wide' : undefined}>
-              {labels[i]}
+              {portfolioLabel(id, lang)}
             </span>
             {id === 'rust' && <span className='scene-label-short'>Rust</span>}
           </a>

@@ -156,7 +156,7 @@ try {
             await page.$$eval('[data-counter]', nodes =>
               nodes.map(e => e.textContent.trim())
             ),
-            ['50–70', '≈70%', '4h → <10m', '≈40'],
+            ['CI + API', 'Angular', '≈40'],
             'Published values remain stable when entering the proof section'
           )
         assert.equal(

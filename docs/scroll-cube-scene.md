@@ -2,8 +2,10 @@
 
 ## Current navigation contract
 
-The homepage now advances through seven viewport-sized chapters: intro, Rust,
-NixOS, testing, Bitcoin, missions, contact. `StepNavigation` accumulates 100px
+On desktop, the homepage advances through seven viewport-sized chapters: intro,
+Rust, work experience, NixOS, Bitcoin, projects (`#missions`), contact. Below 900px
+the document scrolls natively and each chapter grows with its content.
+`StepNavigation` accumulates 100px
 of vertical wheel intent, then animates the window to the next or previous
 chapter over 1100ms. The desktop intro ↔ Rust transition has a dedicated
 2400ms continuous transition, without an interior pause. The cube translates
@@ -13,13 +15,14 @@ fades before the cube crosses; Rust fades in during its retreat. Both remain
 pinned to their reading position. The same progression works in reverse.
 There is no full-screen zoom or viewport-wide masking phase.
 Wheel input is consumed during transit; a 180ms quiet gap
-re-arms the next gesture so trackpad inertia cannot skip chapters. Keyboard,
-swipe, previous/next buttons, text links and cube faces use the same controller.
+re-arms the next gesture so trackpad inertia cannot skip chapters. On desktop, keyboard input, previous/next buttons and section links use the
+same controller. Cube faces inspect technologies; they do not navigate chapters.
+Mobile anchors and vertical gestures use native document scrolling.
 Reduced motion changes chapters immediately. Resize preserves the selected
 chapter. Hash links restore it on entry. Tab focus can enter another chapter.
 
 The one persistent WASM cube still reads the actual window position, including
-transit. No second scene or independent click timeline is created. Chapter
+transit. No second scene or independent click timeline is created. Desktop chapter
 containers are exactly 100dvh. Technical details use native disclosures, keeping
 the initial reading state short; expanded details and unusually short or zoomed
 viewports may scroll inside the chapter without moving the outer viewport.

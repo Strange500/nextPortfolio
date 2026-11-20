@@ -2,15 +2,9 @@
 
 import { useEffect, useState, useSyncExternalStore } from 'react'
 
-const ids = [
-  'intro',
-  'rust',
-  'nix',
-  'testing',
-  'bitcoin',
-  'missions',
-  'contact'
-]
+import { portfolioSections } from '@/data/portfolio-navigation'
+
+const ids: string[] = [...portfolioSections]
 
 const desktopSnapshot = () => matchMedia('(min-width: 900px)').matches
 const subscribeDesktop = (update: () => void) => {
