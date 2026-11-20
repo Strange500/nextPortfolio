@@ -181,7 +181,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       let index = y >= introEnd * 0.9 ? 1 : 0
       for (let i = 2; i < anchors.length; i++)
         if (y >= anchors[i] - vh * 0.15) index = i
-      const id = sections[index]
+      const id = mobile ? 'intro' : sections[index]
       if (previous !== id) {
         previous = id
         setCurrent(id)
@@ -236,6 +236,12 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         to = index
         p = 0
       }
+      // On phones the one real cube is an inline intro experiment, not a
+      // viewport overlay that competes with the reading content.
+      if (mobile) {
+        from = to = 0
+        p = 0
+      }
       const a = poses[from],
         b = poses[to],
         progress = smooth(p)
@@ -282,9 +288,13 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           ? Math.sin(Math.PI * p)
           : 0
       stage.current!.dataset.travelling = String(traversal > 0.02)
+      const mobileSlot = mobile
+        ? document
+            .querySelector<HTMLElement>('[data-mobile-cube-slot]')
+            ?.getBoundingClientRect()
+        : null
       const readingSize = mobile
-        ? Math.min(190, vw * 0.46) *
-          (reduced ? 1 : 1 + Math.sin(p * Math.PI) * 0.08)
+        ? Math.min(160, (mobileSlot?.width || 140) * 1.05)
         : Math.min(
             1000,
             safeBottom - safeTop,
@@ -300,24 +310,29 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
           )
         : readingSize
       const landscape = mobile && vh < 550 && vw >= 650
-      const targetX = landscape
-        ? vw * 0.2
-        : mobile
-          ? vw * 0.5 + Math.sin(p * Math.PI) * 12
+      const targetX =
+        mobile && mobileSlot
+          ? mobileSlot.x + mobileSlot.width / 2
           : compositionLeft + compositionWidth * displayed.x
-      const x = Math.max(size / 2 + 16, Math.min(vw - size / 2 - 16, targetX))
-      const targetY = landscape
-        ? vh * 0.44
-        : mobile
-          ? mix(156, 100, clamp(y / 160))
+      const x = mobile
+        ? targetX
+        : Math.max(size / 2 + 16, Math.min(vw - size / 2 - 16, targetX))
+      const targetY =
+        mobile && mobileSlot
+          ? mobileSlot.y + mobileSlot.height / 2
           : vh * (0.49 - traversal * 0.25)
       const cy = mobile
         ? targetY
         : Math.max(safeTop + size / 2, Math.min(safeBottom - size / 2, targetY))
+      const mobileVisible =
+        !!mobileSlot && mobileSlot.bottom > 0 && mobileSlot.top < vh
+      stage.current!.style.visibility = mobile && !mobileVisible ? 'hidden' : ''
+      root.current!.dataset.presentation = mobile ? 'inline' : 'scene'
       stage.current!.style.width = `${size}px`
       stage.current!.style.height = `${size}px`
       stage.current!.style.transform = `translate3d(${x - size / 2}px, ${cy - size / 2}px, 0)`
       const transitioning = surface.dataset.transitioning === 'true'
+      if (mobile && !mobileVisible) return
       const angles = explorer.motion(
         from,
         to,
@@ -339,11 +354,13 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
       dirty = false
       stage.current!.dataset.rotation = angles.map(n => n.toFixed(4)).join(',')
       const mission = document.getElementById('missions')!
-      const context = transitioning
-        ? surface.dataset.step || id
-        : Math.abs(mission.getBoundingClientRect().top) < 2
-          ? 'missions'
-          : id
+      const context = mobile
+        ? 'intro'
+        : transitioning
+          ? surface.dataset.step || id
+          : Math.abs(mission.getBoundingClientRect().top) < 2
+            ? 'missions'
+            : id
       const transitionProgress = Number(surface.dataset.stepProgress || 1)
       const {
         weight: logoWeight,
@@ -356,7 +373,7 @@ export default function ScrollCubeScene({ lang }: { lang: 'en' | 'fr' }) {
         transitioning,
         transitionProgress,
         depths,
-        y < 2 && !transitioning && !reduced
+        (mobile || y < 2) && !transitioning && !reduced
       )
       stage.current!.dataset.context = textureContext
       stage.current!.dataset.technologyMode = String(logoWeight > 0)

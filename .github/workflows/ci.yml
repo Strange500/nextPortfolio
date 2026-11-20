@@ -69,6 +69,7 @@ jobs:
           node scripts/test-cube-interaction-boundaries.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/first-scroll" node scripts/test-first-scroll-stability.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/blog" node scripts/test-blog-design.mjs
+          REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/mobile" node scripts/test-mobile-portfolio.mjs
           REVIEW_DIR="$RUNNER_TEMP/portfolio-ultrawide/hero-resume" node scripts/test-homepage-resume.mjs
 
       - name: Upload ultrawide review evidence

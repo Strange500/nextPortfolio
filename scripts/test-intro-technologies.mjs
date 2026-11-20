@@ -155,68 +155,14 @@ try {
   )
   assert.equal(await p.$eval('.narrative', e => e.dataset.step), 'intro')
   assert.equal(await p.$$eval('[data-persistent-cube]', es => es.length), 1)
-  await p.emulateMediaFeatures([])
-  await p.setViewport({
-    width: 390,
-    height: 844,
-    isMobile: true,
-    hasTouch: true
-  })
-  await p.goto(`${base}/en`, { waitUntil: 'networkidle0' })
-  await p.waitForSelector('[data-wasm="ready"]')
-  h = await hit()
-  const client = await p.createCDPSession(),
-    touchStart = await rotation()
-  await client.send('Input.dispatchTouchEvent', {
-    type: 'touchStart',
-    touchPoints: [{ x: h.x, y: h.y }]
-  })
-  await client.send('Input.dispatchTouchEvent', {
-    type: 'touchMove',
-    touchPoints: [{ x: h.x + 45, y: h.y + 15 }]
-  })
-  await client.send('Input.dispatchTouchEvent', {
-    type: 'touchEnd',
-    touchPoints: []
-  })
-  await wait(150)
-  assert.notEqual(await rotation(), touchStart, 'Touch drag rotates')
-  assert.equal(
-    await p.$eval('.narrative', e => e.dataset.step),
-    'intro',
-    'Cube drag does not advance chapter'
-  )
-  await wait(1500)
-  h = await hit()
-  await p.touchscreen.tap(h.x, h.y)
-  await p.waitForSelector('[data-cube-panel]')
-  await p.screenshot({ path: `${output}/mobile-card.png` })
-  assert.ok(
-    await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
-  )
-  await p.keyboard.press('Escape')
-  await p.setViewport({
-    width: 844,
-    height: 390,
-    isMobile: true,
-    hasTouch: true
-  })
-  await p.click('[data-facet-link="rust"]')
-  await p.waitForFunction(
-    () => document.querySelector('.narrative').dataset.transitioning === 'false'
-  )
-  assert.ok(
-    await p.$eval('#rust h2', e => e.getBoundingClientRect().width > 350),
-    'Landscape retains a readable content column'
-  )
-  await p.screenshot({ path: `${output}/landscape.png` })
+  // Native touch and mobile layout have their own suite.
   assert.deepEqual(errors, [])
   await writeFile(
     `${output}/evidence.json`,
     JSON.stringify({ result: 'PASS', errors }, null, 2)
   )
   console.log(
-    'PASS: contextual pools, dragging, face inspection, catalog, keyboard, reduced motion, mobile, persistent WASM'
+    'PASS: contextual pools, dragging, face inspection, catalog, keyboard, reduced motion, persistent WASM'
   )
 } finally {
   await browser.close()

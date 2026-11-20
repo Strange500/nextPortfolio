@@ -32,8 +32,7 @@ try {
   for (const [width, height] of [
     [1440, 1000],
     [2560, 720],
-    [3440, 1440],
-    [390, 844]
+    [3440, 1440]
   ]) {
     await page.setViewport({ width, height })
     await page.goto(`${base}/fr`, { waitUntil: 'networkidle0' })
@@ -140,59 +139,7 @@ try {
     await page.$eval('#rust', e => e.scrollTop > 0),
     'Expanded content scrolls inside its chapter'
   )
-  const touch = await browser.newPage()
-  await touch.setViewport({
-    width: 390,
-    height: 844,
-    isMobile: true,
-    hasTouch: true
-  })
-  await touch.goto(`${base}/fr#intro`, { waitUntil: 'networkidle0' })
-  await touch.waitForSelector('[data-stepped="true"]')
-  await touch.waitForFunction(
-    () =>
-      document.querySelector('.narrative')?.dataset.transitioning === 'false'
-  )
-  assert.equal(await touch.$eval('.narrative', e => e.dataset.step), 'intro')
-  const client = await touch.createCDPSession()
-  await client.send('Input.dispatchTouchEvent', {
-    type: 'touchStart',
-    touchPoints: [{ x: 30, y: 650 }]
-  })
-  await client.send('Input.dispatchTouchEvent', {
-    type: 'touchMove',
-    touchPoints: [{ x: 30, y: 400 }]
-  })
-  await client.send('Input.dispatchTouchEvent', {
-    type: 'touchEnd',
-    touchPoints: []
-  })
-  await touch.waitForFunction(
-    () =>
-      document.querySelector('.narrative')?.dataset.transitioning === 'false'
-  )
-  assert.equal(
-    await touch.$eval('.narrative', e => e.dataset.step),
-    'rust',
-    'Swipe advances one chapter'
-  )
-  await touch.goto(`${base}/en#contact`, { waitUntil: 'networkidle0' })
-  await touch.waitForFunction(
-    () =>
-      document.querySelector('.narrative')?.dataset.transitioning === 'false'
-  )
-  assert.equal(
-    await touch.$eval('.narrative', e => e.dataset.step),
-    'contact',
-    'Direct links restore the chapter'
-  )
-  assert.ok(
-    await touch.$eval(
-      '#contact',
-      e => Math.abs(e.getBoundingClientRect().top) < 2
-    ),
-    'Direct link is aligned to the screen'
-  )
+  // Native mobile scrolling is covered by test-mobile-portfolio.mjs.
   assert.deepEqual(errors, [])
   await writeFile(
     `${output}/evidence.json`,

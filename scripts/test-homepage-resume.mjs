@@ -65,7 +65,7 @@ try {
       await p.waitForSelector('.resume-menu', { hidden: true })
       assert.equal(
         await p.$eval('.narrative', e => e.dataset.step),
-        'intro',
+        width < 900 ? undefined : 'intro',
         'Download does not navigate the scene'
       )
     }

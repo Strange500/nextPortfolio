@@ -1,6 +1,7 @@
 'use client'
-import { useEffect, useRef } from 'react'
-import { Layers, X } from 'lucide-react'
+import { useEffect, useRef, useSyncExternalStore } from 'react'
+import { createPortal } from 'react-dom'
+import { Layers, X, Pause, Play } from 'lucide-react'
 import {
   contextTechnologies,
   technologyNote,
@@ -8,6 +9,9 @@ import {
   technologyTitle
 } from '@/data/cube-context'
 import type { CubeExplorer } from './useCubeExplorer'
+const subscribeSlot = () => () => {}
+const mobileControlsSlot = () => document.getElementById('mobile-cube-controls')
+
 export default function CubeExplorerControls({
   explorer,
   lang
@@ -15,6 +19,11 @@ export default function CubeExplorerControls({
   explorer: CubeExplorer
   lang: 'fr' | 'en'
 }) {
+  const mobileTarget = useSyncExternalStore(
+    subscribeSlot,
+    mobileControlsSlot,
+    () => null
+  )
   const fr = lang === 'fr',
     { ui } = explorer,
     closeRef = useRef<HTMLButtonElement>(null)
@@ -38,6 +47,42 @@ export default function CubeExplorerControls({
     : undefined
   return (
     <>
+      {mobileTarget &&
+        createPortal(
+          <>
+            <button
+              type='button'
+              id='mobile-cube-catalog'
+              onClick={explorer.catalog}
+              aria-expanded={ui.catalog || !!ui.selected}
+              aria-controls='cube-technology-panel'
+            >
+              {fr ? 'Les technologies' : 'Technologies'} ↗
+            </button>
+            <button
+              type='button'
+              id='mobile-cube-pause'
+              onClick={explorer.pause}
+              aria-pressed={ui.pause}
+              aria-label={
+                ui.pause
+                  ? fr
+                    ? 'Reprendre la rotation'
+                    : 'Resume rotation'
+                  : fr
+                    ? 'Suspendre la rotation'
+                    : 'Pause rotation'
+              }
+            >
+              {ui.pause ? (
+                <Play size={14} aria-hidden='true' />
+              ) : (
+                <Pause size={14} aria-hidden='true' />
+              )}
+            </button>
+          </>,
+          mobileTarget
+        )}
       <svg className='cube-callout-wires' aria-hidden='true'>
         {Array.from({ length: 6 }, (_, face) => (
           <line key={face} data-face-wire={face} />

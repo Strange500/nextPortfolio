@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import ScrollCubeScene from './ScrollCubeScene'
 import StepNavigation from './StepNavigation'
+import MobilePortfolioMenu from './MobilePortfolioMenu'
+import { contextTechnologies, technologyTitle } from '@/data/cube-context'
 import { cubeTechnologyNames } from '@/data/cube-context'
 import '../app/scroll-scene.css'
 import { ResumeDropdown } from './ResumeDropdown'
@@ -133,6 +135,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
           <a href={`/${lang}/blog`}>{t('Field notes', 'Carnet')}</a>
           <a href='#contact'>Contact ↗</a>
         </nav>
+        <MobilePortfolioMenu lang={lang} />
       </header>
 
       <StepNavigation lang={lang} />
@@ -192,6 +195,25 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
             </div>
           </div>
         </div>
+        <aside
+          className='mobile-cube-demo'
+          aria-label={t(
+            'An interactive Rust experiment',
+            'Une expérience interactive en Rust'
+          )}
+        >
+          <div data-mobile-cube-slot />
+          <div className='mobile-cube-copy'>
+            <p>{t('A cube, built in Rust.', 'Un cube, du Rust.')}</p>
+            <span>
+              {t(
+                'Swipe sideways to turn it.',
+                'Glissez latéralement pour le tourner.'
+              )}
+            </span>
+            <div id='mobile-cube-controls' />
+          </div>
+        </aside>
         <div className='hero-bottom mono'>
           <span>RUST → WASM → {t('REAL-WORLD SYSTEMS', 'SYSTÈMES RÉELS')}</span>
           <span>{t('SCROLL TO UNFOLD', 'DÉFILER POUR DÉPLIER')} ↓</span>
@@ -215,6 +237,14 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
               <br />
               <em>{t('a terminal.', 'un terminal.')}</em>
             </h2>
+            <ul
+              className='mobile-section-stack'
+              aria-label={t('Project technologies', 'Technologies du projet')}
+            >
+              {contextTechnologies['rust'].map(name => (
+                <li key={name}>{technologyTitle(name)}</li>
+              ))}
+            </ul>
             <p className='section-intro'>
               {t(
                 'A rotating cube, drawn one character at a time. A small experiment in Rust became a way to explore a bigger question: how far can a simple idea travel?',
@@ -296,6 +326,14 @@ frame buffers → canvas → visible faces`}</code>
               <br />
               <em>{t('One source of truth.', 'Une source de vérité.')}</em>
             </h2>
+            <ul
+              className='mobile-section-stack'
+              aria-label={t('Project technologies', 'Technologies du projet')}
+            >
+              {contextTechnologies['nix'].map(name => (
+                <li key={name}>{technologyTitle(name)}</li>
+              ))}
+            </ul>
             <p className='section-intro'>
               {t(
                 'A reliable program needs a reliable home. My NixOS flake turns a collection of machines into a versioned, composable system—not seven snowflake setups.',
@@ -412,6 +450,14 @@ frame buffers → canvas → visible faces`}</code>
               <br />
               <em>{t('More signal.', 'Plus de signal.')}</em>
             </h2>
+            <ul
+              className='mobile-section-stack'
+              aria-label={t('Project technologies', 'Technologies du projet')}
+            >
+              {contextTechnologies['testing'].map(name => (
+                <li key={name}>{technologyTitle(name)}</li>
+              ))}
+            </ul>
             <p className='section-intro'>
               {t(
                 'At Numih, a test that fails for the wrong reason costs real time. I worked on the engine and the architecture behind the signal—not just on adding more tests.',
@@ -530,6 +576,14 @@ frame buffers → canvas → visible faces`}</code>
               <br />
               <em>{t('a protocol.', 'un protocole.')}</em>
             </h2>
+            <ul
+              className='mobile-section-stack'
+              aria-label={t('Project technologies', 'Technologies du projet')}
+            >
+              {contextTechnologies['bitcoin'].map(name => (
+                <li key={name}>{technologyTitle(name)}</li>
+              ))}
+            </ul>
             <p className='section-intro'>
               {t(
                 'The same instinct leads me to Bitcoin: understand what a system actually guarantees. Build the pieces, inspect the boundaries, and keep signing decisions explicit.',
@@ -741,6 +795,9 @@ frame buffers → canvas → visible faces`}</code>
               GitHub ↗
             </a>
             <ResumeDropdown lang={lang} label={t('Résumé', 'CV')} />
+            <a className='mobile-back-top' href='#intro'>
+              {t('Back to top', 'Retour en haut')} ↑
+            </a>
           </div>
         </div>
         <div className='footer-colophon mono'>
