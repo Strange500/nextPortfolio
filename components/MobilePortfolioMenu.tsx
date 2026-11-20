@@ -11,9 +11,9 @@ export default function MobilePortfolioMenu({ lang }: { lang: 'fr' | 'en' }) {
   const navigating = useRef(false)
   const fr = lang === 'fr'
   const sections = [
+    ['testing', fr ? 'Expérience Numih' : 'Work at Numih'],
     ['rust', 'Rust / WASM'],
     ['nix', 'NixOS'],
-    ['testing', fr ? 'Tests' : 'Testing'],
     ['bitcoin', 'Bitcoin'],
     ['missions', fr ? 'Missions' : 'The work'],
     ['contact', 'Contact']

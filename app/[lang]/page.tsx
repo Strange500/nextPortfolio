@@ -14,12 +14,12 @@ export async function generateMetadata({
   return {
     title:
       lang === 'fr'
-        ? 'Benjamin Roget — Ingénieur logiciel & systèmes'
-        : 'Benjamin Roget — Software & Systems Engineer',
+        ? 'Benjamin Roget — Backend Java & systèmes'
+        : 'Benjamin Roget — Java Backend & Systems',
     description:
       lang === 'fr'
-        ? 'Quatre facettes d’une même exigence : Rust/WASM, NixOS, automatisation des tests et Bitcoin. Projets, architecture et résultats contextualisés.'
-        : 'Four facets of one engineering practice: Rust/WASM, NixOS, test automation and Bitcoin. Inspect the projects, architecture and evidence.'
+        ? 'Apprenti ingénieur à l’IMT Nord Europe, en alternance chez Numih. Backend Java/Spring Boot, Angular et systèmes. Stage de trois mois recherché à partir de juin 2027.'
+        : 'Engineering apprentice at IMT Nord Europe and Numih. Java/Spring Boot backend, Angular and systems. Seeking a three-month internship from June 2027.'
   }
 }
 

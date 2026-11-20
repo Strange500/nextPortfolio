@@ -8,6 +8,7 @@ export interface BlogPost {
   slug: string;
   title: string;
   date: string;
+  updated?: string;
   summary: string;
   tags: string[];
   content: string;
@@ -32,6 +33,7 @@ export function getPostBySlug(slug: string, lang: string): BlogPost | null {
       slug,
       title: data.title || slug,
       date: data.date || '',
+      updated: data.updated || undefined,
       summary: data.summary || data.description || '',
       tags: data.tags || [],
       content,

@@ -38,7 +38,7 @@ export const dictionaries = {
           date: "Sept 2025 – Present",
           deepDive: "/en/blog/automated-testing-framework",
           bullets: [
-            "Built a Spring Boot API and Angular interface to launch, schedule and monitor automated tests, with asynchronous execution and real-time status updates over WebSockets.",
+            "Developed the asynchronous Spring Boot test API within an existing team backend and built the Angular interface end to end to launch, schedule and monitor tests, integrating WebSocket status notifications.",
             "Refactored an existing Selenium/Java framework into reusable abstractions, separating framework code from test scenarios; enabled the same tests to run through Maven/Jenkins or the API.",
             "Improved reliability across roughly 50 to 70 automated tests through test-data lifecycle management (creation, update and deletion) in shared environments.",
             "Cut the time needed to adapt tests after an environment change or a major application version from about four hours to under ten minutes.",
@@ -103,7 +103,7 @@ export const dictionaries = {
           date: "Sept 2025 – Présent",
           deepDive: "/fr/blog/automated-testing-framework",
           bullets: [
-            "Développement d'une API Spring Boot et d'une interface Angular pour lancer, planifier et superviser les tests automatisés, avec exécution asynchrone et suivi des statuts en temps réel via WebSockets.",
+            "Développement de l’API Spring Boot asynchrone sur un backend d’équipe existant et réalisation intégrale de l’interface Angular pour lancer, planifier et superviser les tests, avec intégration des notifications WebSocket.",
             "Refactoring d'un framework Selenium/Java existant en abstractions réutilisables, séparant le framework des scénarios ; exécution des mêmes tests via Maven/Jenkins ou l'API.",
             "Fiabilisation d'environ 50 à 70 tests automatisés grâce à la gestion du cycle de vie des données de test (création, mise à jour, suppression) en environnements partagés.",
             "Réduction du temps d'adaptation des tests après un changement d'environnement ou une version majeure de l'application, d'environ quatre heures à moins de dix minutes.",

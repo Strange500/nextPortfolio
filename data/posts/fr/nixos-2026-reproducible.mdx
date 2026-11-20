@@ -1,14 +1,14 @@
 ---
 title: "NixOS : mon infrastructure comme du code — flakes, impermanence et homelab reproductible"
 date: "2026-08-17"
-summary: "Sept machines, un seul flake. Comment j'ai transformé mon homelab et mon environnement de dev en un actif déclaratif, versionné et testé en CI : ZFS + impermanence, Neovim déclaratif, services auto-générés, secrets chiffrés."
+summary: "Six hôtes et une ISO d’installation, un seul flake. Comment j'ai transformé mon homelab et mon environnement de dev en un actif déclaratif, versionné et testé en CI : ZFS + impermanence, Neovim déclaratif, services auto-générés, secrets chiffrés."
 tags: ["NixOS", "Infrastructure", "Homelab", "ZFS", "Neovim", "Rust"]
 ---
 
 # « I use NixOS btw. »
 
 <Tldr title="TL;DR — Résumé Exécutif">
-**Résultat :** Mon infrastructure entière — sept machines, du serveur de prod au PC de jeu — est définie dans **un seul flake Nix**, versionné sur GitHub et **testé en CI à chaque PR**.
+**Résultat :** Mon infrastructure entière — six hôtes, du serveur de prod au PC de jeu, et une cible ISO d’installation — est définie dans **un seul flake Nix**, versionné sur GitHub et **testé en CI à chaque PR**.
 
 **Concrètement :**
 - **Impermanence à blanc :** la racine de mon serveur est restaurée sur un *snapshot ZFS vide* à chaque boot via un service systemd que j'ai écrit moi-même. Tout ce qui n'est pas déclaré dans le code disparaît.
@@ -19,7 +19,7 @@ tags: ["NixOS", "Infrastructure", "Homelab", "ZFS", "Neovim", "Rust"]
 
 C'est un meme, mais pour moi c'est une stratégie de survie. Après des années à me battre contre des distributions « standards » où une mise à jour système ou un changement de machine pouvait casser des jours de réglages, j'ai pris une décision : ma configuration devait être **aussi versionnée que mon code**.
 
-Le résultat, c'est [`Strange500/nixos-config`](https://github.com/Strange500/nixos-config) : sept machines, des rôles radicalement différents, et pourtant **un seul flake**, **un seul dépôt**, **une seule source de vérité**. Cet article raconte comment j'en suis arrivé là, et pourquoi je ne reviendrai jamais en arrière.
+Le résultat, c'est [`Strange500/nixos-config`](https://github.com/Strange500/nixos-config) : six hôtes et une ISO d’installation, des rôles radicalement différents, et pourtant **un seul flake**, **un seul dépôt**, **une seule source de vérité**. Cet article raconte comment j'en suis arrivé là, et pourquoi je ne reviendrai jamais en arrière.
 
 ---
 

@@ -60,6 +60,15 @@ export default async function BlogPostPage({ params }: Props) {
           <header className='blog-article-header'>
             <p className='blog-eyebrow'>
               <time dateTime={post.date}>{blogDate(post.date, lang)}</time>{' '}
+              {post.updated && (
+                <>
+                  {' '}
+                  · {fr ? 'mis à jour le' : 'updated'}{' '}
+                  <time dateTime={post.updated}>
+                    {blogDate(post.updated, lang)}
+                  </time>
+                </>
+              )}{' '}
               <span aria-hidden='true'>/</span>{' '}
               {fr ? 'CARNET TECHNIQUE' : 'TECHNICAL FIELD NOTES'}
             </p>

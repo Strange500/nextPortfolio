@@ -78,7 +78,7 @@ try {
   for (const [section, pool] of [
     ['rust', ['Rust', 'WebAssembly', 'NextJS', 'React']],
     ['nix', ['NixOS', 'Nix', 'Home Manager', 'Linux']],
-    ['testing', ['Java EE', 'Spring Boot', 'Selenium', 'Maven']],
+    ['testing', ['Java EE', 'Spring Boot', 'Angular', 'Selenium', 'Maven']],
     ['bitcoin', ['Rust', 'Bitcoin', 'Nix']],
     ['contact', []]
   ]) {
