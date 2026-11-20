@@ -76,8 +76,7 @@ try {
     [2560, 720],
     [3440, 1440],
     [3840, 1080],
-    [5120, 1440],
-    [390, 844]
+    [5120, 1440]
   ]) {
     await page.setViewport({ width, height })
     await page.goto(`${base}/en`, { waitUntil: 'networkidle0' })

@@ -73,6 +73,8 @@ export function useCubeExplorer(
       time: number
       face: number
       moved: boolean
+      mobileTouch: boolean
+      wasPaused: boolean
     }
   })
   const invalidate = () =>
@@ -107,7 +109,9 @@ export function useCubeExplorer(
     patch({ selected: null, catalog: false })
     requestAnimationFrame(() =>
       document
-        .getElementById('cube-explore-trigger')
+        .getElementById(
+          innerWidth < 900 ? 'mobile-cube-catalog' : 'cube-explore-trigger'
+        )
         ?.focus({ preventScroll: true })
     )
   }
@@ -135,7 +139,8 @@ export function useCubeExplorer(
       !(e.target as Element).closest('[data-cube-face]')
     )
       return
-    e.preventDefault()
+    const mobileTouch = e.pointerType === 'touch' && innerWidth < 900
+    if (!mobileTouch) e.preventDefault()
     const rect = e.currentTarget.getBoundingClientRect(),
       radius = Math.max(40, rect.width * 0.44),
       cx = rect.x + rect.width / 2,
@@ -151,7 +156,9 @@ export function useCubeExplorer(
       radius,
       time: performance.now(),
       face,
-      moved: false
+      moved: false,
+      mobileTouch,
+      wasPaused: state.current.ui.pause
     }
     patch({ pause: true })
     e.currentTarget.setPointerCapture(e.pointerId)
@@ -161,6 +168,9 @@ export function useCubeExplorer(
     if (!d || d.id !== e.pointerId) return
     const dx = e.clientX - d.x,
       dy = e.clientY - d.y
+    // Vertical touch intent belongs to native page scrolling. The browser
+    // cancels this pointer when pan-y starts; a horizontal gesture rotates.
+    if (d.mobileTouch && !d.moved && Math.abs(dy) > Math.abs(dx)) return
     if (Math.hypot(dx, dy) > 6) d.moved = true
     if (d.moved) {
       const now = performance.now(),
@@ -198,6 +208,7 @@ export function useCubeExplorer(
     )
       stopCoast()
     state.current.drag = null
+    if (cancel && d.mobileTouch && !d.moved) patch({ pause: d.wasPaused })
     stage.current?.setAttribute('data-dragging', 'false')
     hover(null)
     if (e.currentTarget.hasPointerCapture(e.pointerId))

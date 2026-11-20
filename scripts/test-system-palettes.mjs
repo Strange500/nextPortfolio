@@ -142,11 +142,7 @@ try {
     await p.screenshot({ path: `${output}/${scheme}-contact-menu.png` })
     await p.keyboard.press('Escape')
     await p.setViewport({ width: 390, height: 844 })
-    await p.click('[data-facet-link="intro"]')
-    await p.waitForFunction(
-      () =>
-        document.querySelector('.narrative').dataset.transitioning === 'false'
-    )
+    await p.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
     await p.screenshot({ path: `${output}/${scheme}-mobile.png` })
     assert.ok(
       await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
@@ -202,10 +198,7 @@ try {
   assert.equal(await p.evaluate(() => localStorage.getItem('theme')), 'system')
   await p.waitForSelector('[data-wasm="ready"]')
   await p.setViewport({ width: 390, height: 844 })
-  await p.click('[data-facet-link="contact"]')
-  await p.waitForFunction(
-    () => document.querySelector('.narrative').dataset.transitioning === 'false'
-  )
+  await p.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
   await p.click('[data-theme-toggle]')
   await p.waitForSelector('[data-theme-choice="system"]')
   assert.equal(

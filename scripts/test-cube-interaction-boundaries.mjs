@@ -131,34 +131,10 @@ try {
     [],
     'Downward wheel at contact must not start a transition'
   )
-  // Same release behavior for a real touch gesture.
-  await p.setViewport({
-    width: 390,
-    height: 844,
-    isMobile: true,
-    hasTouch: true
-  })
-  await go('intro')
-  h = await hit()
-  const client = await p.createCDPSession()
-  await client.send('Input.dispatchTouchEvent', {
-    type: 'touchStart',
-    touchPoints: [{ x: h.x, y: h.y }]
-  })
-  await client.send('Input.dispatchTouchEvent', {
-    type: 'touchMove',
-    touchPoints: [{ x: h.x + 40, y: h.y + 15 }]
-  })
-  await client.send('Input.dispatchTouchEvent', {
-    type: 'touchEnd',
-    touchPoints: []
-  })
-  await go('rust')
-  assert.equal(await paused(), 'false')
-  await moving()
+  // Native touch release is covered by test-mobile-portfolio.mjs.
   assert.deepEqual(errors, [])
   console.log(
-    'PASS: no boundary animations, drag/card/touch pauses released on navigation, explicit Pause retained, fractional reading anchors keep rotating'
+    'PASS: no boundary animations, drag/card pauses released on navigation, explicit Pause retained, fractional reading anchors keep rotating'
   )
 } finally {
   await browser.close()

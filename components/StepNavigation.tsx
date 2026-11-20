@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 
 const ids = [
   'intro',
@@ -12,11 +12,24 @@ const ids = [
   'contact'
 ]
 
+const desktopSnapshot = () => matchMedia('(min-width: 900px)').matches
+const subscribeDesktop = (update: () => void) => {
+  const media = matchMedia('(min-width: 900px)')
+  media.addEventListener('change', update)
+  return () => media.removeEventListener('change', update)
+}
+
 /** One gesture advances one screen. The same window position drives the WASM scene. */
 export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
   const [active, setActive] = useState(0)
+  const desktop = useSyncExternalStore(
+    subscribeDesktop,
+    desktopSnapshot,
+    () => false
+  )
   const fr = lang === 'fr'
   useEffect(() => {
+    if (!desktop) return
     const surface = document.querySelector<HTMLElement>('.narrative')!
     const panels = ids.map(id => document.getElementById(id)!)
     const media = matchMedia('(prefers-reduced-motion: reduce)')
@@ -249,11 +262,12 @@ export default function StepNavigation({ lang }: { lang: 'fr' | 'en' }) {
       delete surface.dataset.transitioning
       delete surface.dataset.stepProgress
     }
-  }, [])
+  }, [desktop])
   const request = (next: number) =>
     window.dispatchEvent(
       new CustomEvent('portfolio-step', { detail: ids[next] })
     )
+  if (!desktop) return null
   return (
     <nav
       className='step-controls mono'

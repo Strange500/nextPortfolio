@@ -1394,3 +1394,292 @@ body:has(.narrative)::after {
     gap: 10px;
   }
 }
+
+/* Phone/tablet reading is a native document, with one small inline experiment. */
+.mobile-portfolio-menu,
+.mobile-cube-demo,
+.mobile-section-stack,
+.mobile-back-top {
+  display: none;
+}
+@media (max-width: 899px) {
+  html:has(.narrative) {
+    scroll-behavior: smooth;
+    scroll-padding-top: 24px;
+  }
+  .narrative .portfolio-nav {
+    position: relative;
+    inset: auto;
+    transform: none;
+    height: 88px;
+    width: 100%;
+    margin: 0;
+    padding: 0 136px 0 24px;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .narrative .portfolio-nav .wordmark-name {
+    display: none;
+  }
+  .narrative .portfolio-nav > nav {
+    display: none;
+  }
+  .mobile-portfolio-menu {
+    display: block;
+  }
+  .mobile-portfolio-menu button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    background: var(--paper);
+  }
+  .mobile-portfolio-links {
+    background: var(--portfolio-paper);
+    color: var(--portfolio-ink);
+    border: 1px solid var(--portfolio-line);
+    border-radius: 0;
+    min-width: 210px;
+  }
+  .mobile-portfolio-links [role='menuitem'] {
+    min-height: 44px;
+    font-size: 14px;
+    border-radius: 0;
+  }
+  .mobile-portfolio-links [data-highlighted] {
+    background: var(--portfolio-panel);
+    color: var(--portfolio-accent-ink);
+  }
+  body:has(.narrative) .global-controls {
+    position: absolute;
+    top: 22px;
+    right: 24px;
+    transform: none;
+    opacity: 1;
+  }
+  .narrative .portfolio-hero {
+    min-height: 0;
+    height: auto;
+    padding: 36px 24px 44px;
+  }
+  .narrative .hero-composition {
+    padding: 0;
+    max-width: 640px;
+  }
+  .narrative .hero-copy {
+    width: 100%;
+    max-width: none;
+    opacity: 1;
+  }
+  .narrative .hero-copy > .eyebrow {
+    font-size: 10px;
+    line-height: 1.7;
+    margin-bottom: 22px;
+    max-width: 28ch;
+  }
+  .narrative .hero-composition h1 {
+    font-size: clamp(44px, 11vw, 64px);
+    line-height: 1.02;
+    letter-spacing: -0.065em;
+  }
+  .narrative .hero-description {
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 40ch;
+    margin: 24px 0;
+  }
+  .narrative .hero-actions {
+    gap: 10px;
+    align-items: stretch;
+  }
+  .narrative .hero-actions :is(.solid-link, .resume-trigger) {
+    min-height: 48px;
+    font-size: 13px;
+    padding: 12px 14px;
+    gap: 12px;
+  }
+  .narrative .hero-bottom,
+  .narrative .hero-topline {
+    display: none;
+  }
+  .mobile-cube-demo {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    align-items: center;
+    gap: 18px;
+    max-width: 520px;
+    margin-top: 36px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  [data-mobile-cube-slot] {
+    width: 140px;
+    height: 150px;
+  }
+  .mobile-cube-copy > p {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.4;
+    margin: 0 0 6px;
+  }
+  .mobile-cube-copy > span {
+    display: block;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+  #mobile-cube-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-top: 8px;
+  }
+  #mobile-cube-controls button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 4px 0;
+    color: var(--accent-ink);
+    font-size: 11px;
+    text-align: left;
+    line-height: 1.5;
+  }
+  #mobile-cube-controls #mobile-cube-pause {
+    min-width: 36px;
+    color: var(--muted);
+  }
+  .scene-mobile-mask,
+  .scene-nav,
+  .step-controls,
+  .cube-caption,
+  .cube-explore-trigger,
+  .cube-face-callout,
+  .cube-callout-wires {
+    display: none !important;
+  }
+  .cube-hit-layer[data-cube-manipulation='true'],
+  .cube-hit-layer[data-cube-manipulation='true'] g {
+    touch-action: pan-y pinch-zoom;
+  }
+  .cube-hit-layer:focus-visible {
+    outline: none;
+  }
+  .narrative:has(.cube-hit-layer:focus-visible) .mobile-cube-demo {
+    outline: 2px solid var(--acid);
+    outline-offset: 6px;
+  }
+  .narrative .cube-technology-panel {
+    bottom: max(16px, env(safe-area-inset-bottom));
+    max-height: min(65dvh, 480px);
+    z-index: 70;
+  }
+  .narrative :is(#rust, #nix, #testing, #bitcoin, #missions, #contact) {
+    width: 100%;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 52px 24px;
+    border-top: 1px solid var(--line);
+    overflow: visible;
+  }
+  .narrative .facet-section h2 {
+    font-size: clamp(30px, 8vw, 42px);
+    line-height: 1.13;
+  }
+  .narrative .section-intro {
+    font-size: 16px;
+    line-height: 1.75;
+    margin: 20px 0;
+    max-width: 60ch;
+  }
+  .mobile-section-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    font:
+      400 11px/1.7 var(--font-fira-code),
+      monospace;
+    color: var(--muted);
+  }
+  .mobile-section-stack li {
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 3px;
+  }
+  .narrative .mission-heading h3 {
+    font-size: 20px;
+    line-height: 1.3;
+  }
+  .narrative .portfolio-footer h2 {
+    font-size: 42px;
+    line-height: 1.12;
+  }
+  .narrative .footer-colophon {
+    margin-top: 40px;
+  }
+  .narrative .mobile-back-top {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--accent-ink);
+    font-size: 13px;
+  }
+  .narrative
+    :is(
+      .mission summary,
+      .topology button,
+      .text-link,
+      .resume-trigger,
+      .solid-link,
+      .proof-item
+    ) {
+    scroll-margin-block: 24px;
+  }
+  .narrative :is(section, footer) {
+    scroll-margin-top: 24px;
+  }
+}
+@media (max-width: 359px) {
+  .narrative .portfolio-hero {
+    padding-top: 24px;
+  }
+  .narrative .hero-composition h1 {
+    font-size: 40px;
+  }
+  .narrative .hero-copy > .eyebrow {
+    margin-bottom: 18px;
+  }
+  .narrative .hero-composition > .hero-copy > p:not(.eyebrow) {
+    font-size: 15px;
+    margin-block: 20px;
+  }
+  .mobile-cube-demo {
+    grid-template-columns: 116px minmax(0, 1fr);
+    gap: 12px;
+  }
+  [data-mobile-cube-slot] {
+    width: 116px;
+    height: 140px;
+  }
+  .narrative .hero-actions .solid-link {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .narrative .hero-actions .resume-trigger {
+    width: 100%;
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) and (max-width: 899px) {
+  html:has(.narrative) {
+    scroll-behavior: auto;
+  }
+}

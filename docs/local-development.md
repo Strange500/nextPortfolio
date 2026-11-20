@@ -135,11 +135,11 @@ CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
   REVIEW_DIR=/tmp/portfolio-ultrawide node scripts/test-ultrawide.mjs
 ```
 
-This checks 232 viewport states across eight screen sizes, including
+This checks 203 desktop viewport states across seven screen sizes, including
 2560×720 and 5120×1440. CI runs it against the packaged standalone server
 and uploads viewport screenshots and geometry evidence.
 
-Staged navigation regression (current interaction contract):
+Desktop staged navigation regression (900px and wider):
 
 ```sh
 CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
@@ -171,3 +171,21 @@ Audit texture masks and their Rust/WASM rendering, then interaction boundaries:
 PORTFOLIO_URL=http://localhost:3100 node scripts/test-cube-logo-assets.mjs
 PORTFOLIO_URL=http://localhost:3100 node scripts/test-cube-interaction-boundaries.mjs
 ```
+
+### Mobile reading layout
+
+Below 900px the homepage uses native document scrolling, including touch gestures
+started on the inline cube. Sections grow with their content; the desktop dock,
+step controls and pinned scene are hidden. A header menu links to chapter anchors.
+The single Rust/WASM renderer is aligned with the small introduction demo and
+pauses when that demo leaves the viewport. Horizontal gestures still rotate it.
+Project technology names remain available as HTML in each relevant section.
+
+```sh
+CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
+  REVIEW_DIR=/tmp/portfolio-mobile node scripts/test-mobile-portfolio.mjs
+```
+
+This suite replaces the former mobile snap/viewport assertions. It checks five
+phone/landscape sizes, native touch and intermediate scroll positions, the menu,
+inline controls, responsive mode switching, and the persistent WASM renderer.
