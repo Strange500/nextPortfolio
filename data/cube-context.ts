@@ -15,7 +15,7 @@ export const contextTechnologies: Record<string, string[]> = {
   intro: cubeTechnologyNames,
   rust: ['Rust', 'WebAssembly', 'NextJS', 'React'],
   nix: ['NixOS', 'Nix', 'Home Manager', 'Linux'],
-  testing: ['Java EE', 'Spring Boot', 'Selenium', 'Maven'],
+  testing: ['Java EE', 'Spring Boot', 'Angular', 'Selenium', 'Maven'],
   bitcoin: ['Rust', 'Bitcoin', 'Nix'],
   missions: ['Rust', 'NixOS', 'Spring Boot', 'Bitcoin'],
   contact: []
@@ -36,6 +36,10 @@ const notes: Record<string, Record<string, [string, string]>> = {
   testing: {
     'Java EE': ['Langage du moteur de tests', 'Test-engine language'],
     'Spring Boot': ['Moteur et API REST', 'Engine and REST API'],
+    Angular: [
+      'Interface de lancement et de suivi',
+      'Launch and monitoring interface'
+    ],
     Selenium: ['Parcours E2E navigateur', 'Browser E2E journeys'],
     Maven: ['Exécution et rapports CI', 'CI execution and reports']
   },
@@ -81,7 +85,7 @@ export function technologySource(name: string, context: string, lang: string) {
   if (context === 'bitcoin') return 'https://github.com/Strange500/min-btc-node'
   if (
     context === 'testing' ||
-    ['Java EE', 'Spring Boot', 'Selenium', 'Maven'].includes(name)
+    ['Java EE', 'Spring Boot', 'Angular', 'Selenium', 'Maven'].includes(name)
   )
     return `/${lang}/blog/automated-testing-framework`
   if (

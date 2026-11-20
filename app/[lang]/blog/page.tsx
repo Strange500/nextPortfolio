@@ -31,7 +31,10 @@ export default async function BlogPage({
   const { lang } = await params,
     fr = lang === 'fr',
     posts = getAllPosts(lang),
-    [featured, ...rest] = posts
+    featured =
+      posts.find(post => post.slug === 'automated-testing-framework') ||
+      posts[0],
+    rest = posts.filter(post => post.slug !== featured?.slug)
   return (
     <main tabIndex={-1} id='blog-main' className='blog-index'>
       <section className='blog-index-intro' aria-labelledby='blog-title'>
@@ -66,10 +69,13 @@ export default async function BlogPage({
         <section className='blog-feature' aria-labelledby='featured-title'>
           <div className='blog-feature-label'>
             <span className='blog-eyebrow'>
-              {fr ? 'DERNIÈRE PUBLICATION' : 'LATEST NOTE'}
+              {fr
+                ? 'ÉTUDE À LA UNE / EXPÉRIENCE NUMIH'
+                : 'FEATURED CASE / WORK AT NUMIH'}
             </span>
-            <time dateTime={featured.date}>
-              {blogDate(featured.date, lang)}
+            <time dateTime={featured.updated || featured.date}>
+              {featured.updated ? (fr ? 'Mis à jour · ' : 'Updated · ') : ''}
+              {blogDate(featured.updated || featured.date, lang)}
             </time>
           </div>
           <Link

@@ -36,7 +36,7 @@
       "endDate": "",
       "url": "https://portfolio.qgroget.com/fr/blog/automated-testing-framework",
       "highlights": [
-        "Développement d'une API Spring Boot et d'une interface Angular pour lancer, planifier et superviser les tests automatisés, avec exécution asynchrone et suivi des statuts en temps réel via WebSockets.",
+        "Développement de l’API Spring Boot asynchrone sur un backend d’équipe existant et réalisation intégrale de l’interface Angular pour lancer, planifier et superviser les tests, avec intégration des notifications WebSocket.",
         "Refactoring d'un framework Selenium/Java existant en abstractions réutilisables, séparant le framework des scénarios ; exécution des mêmes tests via Maven/Jenkins ou l'API.",
         "Fiabilisation d'environ 50 à 70 tests automatisés grâce à la gestion du cycle de vie des données de test (création, mise à jour, suppression) en environnements partagés.",
         "Réduction du temps d'adaptation des tests après un changement d'environnement ou une version majeure de l'application, d'environ quatre heures à moins de dix minutes.",

@@ -53,9 +53,13 @@ try {
         ),
         posts.length
       )
-      const latest = [...posts].sort((a, b) => b.date.localeCompare(a.date))[0]
+      const featured =
+        posts.find(post => post.slug === 'automated-testing-framework') ||
+        posts[0]
       assert.ok(
-        (await p.$eval('.blog-feature-link', e => e.href)).endsWith(latest.slug)
+        (await p.$eval('.blog-feature-link', e => e.href)).endsWith(
+          featured.slug
+        )
       )
       assert.ok(
         await p.$eval('.blog-skip', e => e.getBoundingClientRect().bottom <= 0),

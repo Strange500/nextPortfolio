@@ -118,7 +118,7 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
       lang={lang}
       data-motion={reduced ? 'reduced' : 'full'}
     >
-      <a className='skip-link' href='#rust'>
+      <a className='skip-link' href='#testing'>
         {t('Skip to the work', 'Aller aux réalisations')}
       </a>
       <header className='portfolio-nav'>
@@ -153,27 +153,26 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
               'LOGICIEL, SYSTÈMES & EXPÉRIMENTATIONS'
             )}
           </span>
-          <span>RUST / WASM · NIXOS · {t('TESTING', 'TESTS')} · BITCOIN</span>
+          <span>JAVA / SPRING BOOT · ANGULAR · {t('SYSTEMS', 'SYSTÈMES')}</span>
         </div>
         <div className='hero-composition'>
           <div className='hero-copy'>
             <p className='eyebrow'>
               {t(
-                'BENJAMIN ROGET · SOFTWARE ENGINEER',
-                'BENJAMIN ROGET · INGÉNIEUR LOGICIEL'
+                'BENJAMIN ROGET · APPRENTICE ENGINEER',
+                'BENJAMIN ROGET · APPRENTI INGÉNIEUR'
               )}
             </p>
             <h1 id='hero-title'>
               {t('Small details.', 'Le détail.')}
               <br />
               {t('Whole', 'Tout le')}
-              <br />
-              <em>{t('systems.', 'système.')}</em>
+              <br /> <em>{t('systems.', 'système.')}</em>
             </h1>
             <p className='hero-description'>
               {t(
-                'I’m Benjamin. I turn complex systems into things you can understand, reproduce, and trust.',
-                'Moi, c’est Benjamin. Je transforme les systèmes complexes en outils compréhensibles, reproductibles et fiables.'
+                'Java/Spring Boot backend, automated testing and reproducible systems. Engineering student at IMT Nord Europe, on an apprenticeship at Numih.',
+                'Backend Java/Spring Boot, tests automatisés et systèmes reproductibles. Élève ingénieur à l’IMT Nord Europe, en alternance chez Numih.'
               )}
             </p>
             <p
@@ -183,9 +182,16 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
               {t('Technologies: ', 'Technologies : ')}
               {cubeTechnologyNames.join(' · ')}
             </p>
+            <p className='hero-availability'>
+              <span className='status-dot' aria-hidden='true' />
+              {t(
+                'Seeking a 3-month internship · from June 2027',
+                'Stage de 3 mois recherché · à partir de juin 2027'
+              )}
+            </p>
             <div className='hero-actions'>
-              <a className='solid-link' href='#rust'>
-                {t('Explore my work', 'Découvrir mon travail')} <span>↓</span>
+              <a className='solid-link' href='#testing'>
+                {t('My work at Numih', 'Mon expérience Numih')} <span>↓</span>
               </a>
               <ResumeDropdown
                 lang={lang}
@@ -193,6 +199,30 @@ export default function PortfolioNarrative({ lang }: { lang: Language }) {
                 download
               />
             </div>
+            <a
+              className='hero-case-study'
+              href={blog('automated-testing-framework')}
+            >
+              <span className='eyebrow'>
+                {t(
+                  'NUMIH / JAVA · SPRING BOOT · ANGULAR',
+                  'NUMIH / JAVA · SPRING BOOT · ANGULAR'
+                )}
+              </span>
+              <strong>
+                {t(
+                  'From a Selenium suite to a shared test platform.',
+                  'D’une suite Selenium à une plateforme de tests partagée.'
+                )}
+              </strong>
+              <span>
+                {t(
+                  'Backend refactoring and API · Angular interface built end to end',
+                  'Refonte backend et API · interface Angular réalisée intégralement'
+                )}{' '}
+                <b aria-hidden='true'>↗</b>
+              </span>
+            </a>
           </div>
         </div>
         <aside
@@ -275,8 +305,8 @@ frame buffers → canvas → visible faces`}</code>
                 </pre>
                 <span className='terminal-note'>
                   {t(
-                    'The build path, illustrated. The same cube stays with you throughout the page.',
-                    'Le parcours de compilation, illustré. Le même cube vous accompagne dans toute la page.'
+                    'The build path, illustrated. This is the real Rust engine running in your browser.',
+                    'Le parcours de compilation, illustré. Ce moteur Rust s’exécute réellement dans votre navigateur.'
                   )}
                 </span>
               </div>
@@ -464,11 +494,61 @@ frame buffers → canvas → visible faces`}</code>
                 'Chez Numih, un test qui échoue pour la mauvaise raison coûte du temps. J’ai travaillé sur le moteur et l’architecture derrière le signal, pas seulement sur le nombre de tests.'
               )}
             </p>
+            <div className='experience-overview'>
+              <p className='experience-role'>
+                {t(
+                  'Numih France · apprenticeship since September 2025',
+                  'Numih France · alternance depuis septembre 2025'
+                )}
+              </p>
+              <p>
+                {t(
+                  'I refactored the existing Selenium framework, migrated it to Spring Boot and developed its asynchronous API. I built the Angular interface end to end, starting in August 2026.',
+                  'J’ai refondu le framework Selenium existant, migré son moteur vers Spring Boot et développé son API asynchrone. J’ai réalisé l’intégralité de l’interface Angular, commencée en août 2026.'
+                )}
+              </p>
+              <dl className='experience-results'>
+                <div>
+                  <dt>50–70</dt>
+                  <dd>
+                    {t(
+                      'tests in the reported scope',
+                      'tests dans le périmètre déclaré'
+                    )}
+                  </dd>
+                </div>
+                <div>
+                  <dt>~4 h → &lt;10 min</dt>
+                  <dd>
+                    {t(
+                      'environment / version migration¹',
+                      'migration d’environnement / version¹'
+                    )}
+                  </dd>
+                </div>
+              </dl>
+              <a
+                className='text-link'
+                href={blog('automated-testing-framework')}
+              >
+                {t(
+                  'My role, decisions and results',
+                  'Mon rôle, les choix et les résultats'
+                )}{' '}
+                ↗
+              </a>
+              <p className='source-note'>
+                {t(
+                  '¹ Before/after estimate reported from the work experience; no published measurement protocol.',
+                  '¹ Ordre de grandeur avant/après déclaré dans l’expérience ; protocole de mesure non publié.'
+                )}
+              </p>
+            </div>
             <details className='chapter-details'>
               <summary>
                 {t(
-                  '50–70 tests · ≈70% fewer false positives · results and context',
-                  '50–70 tests · ≈70 % de faux positifs en moins · résultats et contexte'
+                  'Technical scope, further results and limitations',
+                  'Périmètre technique, autres résultats et limites'
                 )}
               </summary>
               <div id='proof' className='proof-console'>
@@ -491,12 +571,12 @@ frame buffers → canvas → visible faces`}</code>
                       value: '≈70%',
 
                       label: t(
-                        'fewer false positives',
-                        'de faux positifs en moins'
+                        'estimated reduction in false positives',
+                        'de faux positifs en moins, estimation'
                       ),
                       context: t(
-                        'After refactoring the test architecture: fewer misleading failures to investigate.',
-                        'Après refonte de l’architecture de test : moins d’échecs trompeurs à analyser.'
+                        'Reported estimate after refactoring; the measurement period and calculation method are not documented.',
+                        'Estimation déclarée après refonte ; période de mesure et méthode de calcul non documentées.'
                       )
                     },
                     {
@@ -544,8 +624,8 @@ frame buffers → canvas → visible faces`}</code>
                 </div>
                 <p className='source-note'>
                   {t(
-                    'Source: reported Numih work experience (résumé). Approximate before/after figures, not live benchmarks. Employer code is private; the case study explains the architecture. The support tool is a separate delivery.',
-                    'Source : expérience Numih déclarée dans le CV. Ordres de grandeur avant/après, pas des mesures en direct. Code employeur privé ; l’étude détaille l’architecture. L’outil de support est une réalisation distincte.'
+                    'Scope and before/after figures reported from the work experience. These are estimates, not independently verified benchmarks. The backend is collaborative; I built the Angular interface end to end. Employer code is private. The support tool is a separate delivery.',
+                    'Périmètre et ordres de grandeur déclarés dans l’expérience. Ce sont des estimations, pas des benchmarks vérifiés indépendamment. Le backend est collectif ; j’ai réalisé l’interface Angular intégralement. Code employeur privé. L’outil de support est une réalisation distincte.'
                   )}
                 </p>
                 <a
@@ -657,10 +737,38 @@ frame buffers → canvas → visible faces`}</code>
         {[
           {
             title: t(
+              'Make test failures worth investigating',
+              'Rendre les échecs de test utiles'
+            ),
+            tag: 'JAVA / SPRING BOOT / ANGULAR',
+            role: t(
+              'Refactoring and asynchronous API on an existing team backend; full Angular interface.',
+              'Refonte et API asynchrone sur un backend d’équipe existant ; interface Angular intégrale.'
+            ),
+            href: blog('automated-testing-framework'),
+            problem: t(
+              'False positives and slow environment migrations erode confidence.',
+              'Faux positifs et migrations lentes érodent la confiance.'
+            ),
+            choice: t(
+              'Unify execution behind Spring Boot and refactor the test architecture.',
+              'Unifier l’exécution avec Spring Boot et refondre l’architecture de test.'
+            ),
+            result: t(
+              '50–70 tests in the reported scope; environment/version migration from ~4h to <10m (reported estimate).',
+              '50–70 tests dans le périmètre déclaré ; migration d’environnement/version de ~4 h à <10 min (estimation déclarée).'
+            )
+          },
+          {
+            title: t(
               'Bring a terminal experiment to the web',
               'Du terminal au navigateur'
             ),
             tag: 'RUST / WASM',
+            role: t(
+              'Personal project: Rust renderer and browser integration.',
+              'Projet personnel : moteur Rust et intégration navigateur.'
+            ),
             href: 'https://github.com/Strange500/ascii-cube-rs',
             problem: t(
               'Keep character-based 3D rendering interactive outside a terminal.',
@@ -681,6 +789,10 @@ frame buffers → canvas → visible faces`}</code>
               'Remplacer l’infrastructure accidentelle'
             ),
             tag: 'NIXOS / FLAKES',
+            role: t(
+              'Personal infrastructure: host configuration, reusable modules and build automation.',
+              'Infrastructure personnelle : configuration des hôtes, modules réutilisables et automatisation des builds.'
+            ),
             href: blog('nixos-2026-reproducible'),
             problem: t(
               'Manual setup drifts between machines and is hard to recreate.',
@@ -697,30 +809,14 @@ frame buffers → canvas → visible faces`}</code>
           },
           {
             title: t(
-              'Make test failures worth investigating',
-              'Rendre les échecs de test utiles'
-            ),
-            tag: 'JAVA / SELENIUM',
-            href: blog('automated-testing-framework'),
-            problem: t(
-              'False positives and slow environment migrations erode confidence.',
-              'Faux positifs et migrations lentes érodent la confiance.'
-            ),
-            choice: t(
-              'Unify execution behind Spring Boot and refactor the test architecture.',
-              'Unifier l’exécution avec Spring Boot et refondre l’architecture de test.'
-            ),
-            result: t(
-              '50–70 tests, ≈70% fewer false positives, migrations from ~4h to <10m.',
-              '50–70 tests, ≈70 % de faux positifs en moins, migrations de ~4 h à <10 min.'
-            )
-          },
-          {
-            title: t(
               'Understand Bitcoin from the inside',
               'Comprendre Bitcoin de l’intérieur'
             ),
             tag: 'BITCOIN / SYSTEMS',
+            role: t(
+              'Personal learning projects around networking and transaction signing.',
+              'Projets personnels d’apprentissage autour du réseau et de la signature de transactions.'
+            ),
             href: 'https://github.com/Strange500/min-btc-node',
             problem: t(
               'Using a protocol is not the same as understanding its guarantees.',
@@ -749,6 +845,10 @@ frame buffers → canvas → visible faces`}</code>
             </summary>
             <div className='mission-main'>
               <dl>
+                <div>
+                  <dt>{t('My role', 'Mon rôle')}</dt>
+                  <dd>{m.role}</dd>
+                </div>
                 <div>
                   <dt>{t('Problem', 'Problème')}</dt>
                   <dd>{m.problem}</dd>
@@ -783,8 +883,8 @@ frame buffers → canvas → visible faces`}</code>
           </h2>
           <p className='contact-intro'>
             {t(
-              'A project to build, a system to improve? Let’s talk.',
-              'Un projet à construire, un système à faire évoluer ? Parlons-en.'
+              'Looking for a backend or software tooling intern? I’m seeking a three-month placement from June 2027.',
+              'Vous recherchez un stagiaire en backend ou en outillage logiciel ? Je recherche un stage de trois mois à partir de juin 2027.'
             )}
           </p>
           <div className='inline-links'>
@@ -793,6 +893,12 @@ frame buffers → canvas → visible faces`}</code>
             </a>
             <a className='text-link' href='https://github.com/Strange500'>
               GitHub ↗
+            </a>
+            <a
+              className='text-link'
+              href='https://www.linkedin.com/in/roget-benjamin'
+            >
+              LinkedIn ↗
             </a>
             <ResumeDropdown lang={lang} label={t('Résumé', 'CV')} />
             <a className='mobile-back-top' href='#intro'>

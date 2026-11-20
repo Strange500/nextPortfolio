@@ -1,381 +1,128 @@
 ---
-title: "One E2E Test, Multiple Execution Paths: Building a Test Platform with Spring Boot"
+title: "One test platform, two execution paths"
 date: "2026-07-31"
-description: "How to decouple E2E test definitions from their execution triggers, creating a unified platform that runs synchronously in CI/CD and asynchronously via interactive REST APIs."
-tags: ["Java", "Spring Boot", "JUnit 5", "E2E Testing", "System Design", "Architecture"]
+updated: "2026-11-20"
+description: "At Numih: refactoring a Selenium framework, a Spring Boot API and an Angular interface. My role, architectural choices and contextualized results."
+tags: ["Java", "Spring Boot", "Angular", "Selenium", "JUnit 5", "Architecture"]
 ---
 
-# One E2E Test, Multiple Execution Paths: Building a Test Platform with Spring Boot
+<Tldr title="At a glance">
+**Context:** At Numih France, an existing Selenium suite needed to remain usable in Jenkins while becoming available on demand through a web interface.
 
-<Tldr>
-**Result:** Rebuilt the E2E test platform so a single test definition runs through both synchronous CI (JUnit / Maven) and an asynchronous interactive dashboard — without duplicating any test logic.
+**My role:** Framework refactoring, migration to Spring Boot and asynchronous API development within a collaborative backend project. I built the Angular interface end to end, starting in August 2026, using Angular, its libraries and a generated REST client.
 
-**Measured impact:**
-- **More reliable CI reporting** by distinguishing skipped tests from actual failures.
-- Invalid runs fail in **~50 ms** instead of spinning up a **20 s** browser session.
-- A run that isn't ready to proceed never touches shared state, so testers **working concurrently on the same environment don't interfere** with each other.
+**Result:** A shared test foundation for CI and users: parameterized launches, history, scheduling and execution monitoring. Across the reported scope of 50–70 tests, adapting to a new environment or major version went from roughly four hours to under ten minutes, according to my work experience.
+
+**Limit:** These are reported estimates, not a benchmark with a published methodology. Employer code is private; the diagrams below explain responsibilities without reproducing that code.
 </Tldr>
 
-Our end-to-end (E2E) test suite originally had a single execution model: tests were JUnit classes executed via Maven inside Jenkins pipelines.
+## The problem: evolving an existing system
 
-That worked well for automated nightly builds, but it became limiting as the platform grew:
-- Developers wanted to run specific scenarios locally or on demand without triggering a full CI/CD build.
-- QA and Product teams needed an interactive web dashboard to launch tests with custom parameter datasets.
-- Expensive browser sessions were constantly being spun up only to fail 5 seconds later due to unmet technical or business prerequisites.
+I have contributed to this suite since September 2025 as part of my software engineering apprenticeship. The project already had Selenium business scenarios, page abstractions and Jenkins pipelines.
 
-The initial idea was to add a REST controller on top of the test code. However, doing that directly creates two divergent execution paths:
+The challenge was both to make browser interactions more reliable and to support uses beyond nightly builds. Users needed to select a scenario, supply parameters and retrieve its outcome without operating Jenkins or duplicating the scenario in a second engine.
 
+## My contribution over time
 
-```text
+The refactoring progressed in stages. Other team members also contributed to the backend and business scenarios.
 
-Jenkins ──> JUnit ──> Test Logic
+| Period | My contribution |
+| --- | --- |
+| Since September 2025 | Maintaining scenarios, adapting to environments and working on the data required by tests. |
+| January–June 2026 | Reusable Selenium element, table and processing abstractions; pagination, documentation and related unit tests. |
+| July 2026 | Spring Boot migration, typed parameters, execution conditions and asynchronous API launches. |
+| From August 2026 | Backend result persistence and history; development of the entire Angular interface. |
+| September–October 2026 | Test cancellation, endpoint permissions, daily-run integration and simple recovery after restart. |
 
-Web UI  ──> REST  ──> Test Logic
+I do not claim sole authorship of the platform. Business scenarios, scheduling and server-side WebSocket publishing also include work by other team members. My scope includes integrating these capabilities into the Angular interface.
 
-```
+## The central choice: separate a scenario from its trigger
 
-Without a shared core, these two paths quickly drift apart in how they handle parameters, browser lifecycles, logging context, and result formats.
-
-The architectural thesis of the refactoring was simple:
-
-> **A test should be entirely ignorant of how it is launched.**
-
-This principle led to a strict separation between *what* is tested and *how* it is executed:
+The same scenario should run from CI or a user request. Its parameters and business steps should not depend on the trigger.
 
 ```mermaid
-flowchart BT
-    subgraph Execution ["Adapters (How it's launched)"]
-        C[JUnit Adapter] 
-        D[REST Adapter] 
-    end
-
-    subgraph Core ["Platform Core"]
-        B[TestRunner]
-        A[TestCase]
-    end
-    
-    C -->|Synchronous / mvn test| B
-    D -->|Asynchronous / POST| B
-    B -->|Manages Lifecycle| A
-
+flowchart LR
+    CI[JUnit / Maven / Jenkins] --> CORE[Shared test foundation]
+    UI[Angular interface] --> API[Asynchronous Spring Boot API]
+    API --> CORE
+    CORE --> PRE[Preconditions and preparation]
+    PRE --> SEL[Selenium and business scenario]
+    API --> DB[Execution history]
 ```
 
-This article details the implementation of this execution-agnostic test platform using Spring Boot and JUnit 5.
+This is a responsibility diagram, not an exhaustive class map. The shared foundation handles parameters, preconditions, preparation and cleanup, and result production.
 
----
+### Reusable Selenium abstractions
 
-## 1. Decoupling Definition from Execution
+Much of the work preceded the API: extracting common operations instead of repeating table reading, processing tracking or element lookup in every scenario.
 
-A clean separation of concerns requires two distinct layers:
+Table abstractions were made generic and progressively integrated into pages. Unit tests against test HTML pages cover these behaviors. A shared component becomes easier to evolve, but changes still need checking across the scenarios that use it.
 
-1. **`TestCase<P>`**: Defines the test configuration (metadata, required conditions, and business steps).
-2. **`TestRunner`**: Handles the execution lifecycle (precondition evaluation, Selenium driver management, structured result generation).
+### Asynchronous execution for the web
 
-### The Test Definition (`TestCase<P>`)
+An HTTP request should not remain open throughout a Selenium run. The API validates parameters, creates an execution and submits work to a background executor. The interface can display its states: queued, running, successful, failed, skipped or cancelled.
 
-Every test class is a Spring component extending `TestCase<P>`, parameterized by a DTO `P`. It contains zero execution logic.
+Typed parameters describe the expected inputs and allow validation before launch. History retains information for understanding a run and retrieving its logs or screenshots.
 
-```java
-package com.example.framework.testcase;
+## The Angular interface: making tests usable
 
-import com.example.framework.condition.ExecutionCondition;
-import java.util.List;
+I started the interface in early August 2026 and built it end to end. It includes:
 
-public abstract class TestCase<P extends BaseTestParams> {
+- A scenario catalogue and parameterized launches.
+- Active executions, recent results and per-test activity.
+- Execution logs and screenshots.
+- Test scheduling, activation and deletion.
+- Authentication, user preferences and execution cancellation.
 
-    public abstract String id();
-    public abstract String name();
-    
-    // Type definition for REST payload parsing
-    public abstract Class<P> parameterType();
-    
-    // Default datasets for automated CI pipelines
-    public abstract List<P> defaultParameters();
-    
-    // Core scenario logic implemented by the test developer
-    public abstract boolean execute(P params) throws Exception;
+The REST client is generated from the OpenAPI description. This lets me focus on user flows and application state while keeping types aligned with the server contract.
 
-    // Declarative prerequisites (Evaluated BEFORE opening a browser)
-    public List<ExecutionCondition> conditions() {
-        return List.of();
-    }
-}
+### WebSocket notifications and REST details
 
+The interface combines WebSocket/STOMP notifications with REST reads: after a status-change notification, it fetches execution details through REST and updates its lists.
+
+```mermaid
+sequenceDiagram
+    participant UI as Angular
+    participant API as REST API
+    participant WS as WebSocket/STOMP
+    UI->>API: Request execution
+    API-->>UI: Execution identifier
+    WS-->>UI: Status-change notification
+    UI->>API: Fetch execution details
+    API-->>UI: Updated state
 ```
 
-### The Orchestrator (`TestRunner`)
+The notification does not carry the full result. The backend remains the source of state. Server-side WebSocket publishing is a team contribution; I implemented its frontend integration.
 
-The `TestRunner` service encapsulates the lifecycle. It is the only component allowed to touch the underlying test execution logic, ensuring that regardless of who triggered the test, the environment is set up and torn down identically. The entire process, including preconditions, is wrapped in a `try-catch` to guarantee structured logging.
+## Results and strength of evidence
 
-```java
-package com.example.framework.engine;
+| Item | What I can claim |
+| --- | --- |
+| 50–70 tests | Reported scope of tests made more reliable; the count depends on the scope and version considered. |
+| Roughly 4 h → under 10 min | Reported estimate for adapting tests after an environment change or major application version. This is not the runtime of the entire suite. |
+| Roughly 70% fewer false positives | Reported estimate after refactoring. I do not have the measurement context needed to specify the period, denominator or calculation method. |
+| Shared API and interface | Capabilities visible in the implementation: launching, history, status notifications, scheduling and cancellation. |
 
-import com.example.framework.testcase.TestCase;
-import com.example.framework.result.TestResult;
-import org.springframework.stereotype.Service;
+Code and history establish capabilities and the progression of the work. They do not, by themselves, prove a time saving or percentage improvement.
 
-@Service
-public class TestRunner {
+The Spring Boot tool distributing product-support duties across roughly 40 developers is a separate delivery mentioned in my résumé, not part of this test platform.
 
-    private final WebDriverManager driverManager;
+## Tradeoffs and limitations
 
-    public TestRunner(WebDriverManager driverManager) {
-        this.driverManager = driverManager;
-    }
+**Preconditions and isolation are different problems.** Checking whether a scenario can start avoids some unnecessary executions. It does not guarantee that concurrent tests never mutate the same data. Data preparation, cleanup and isolation remain necessary.
 
-    public <P extends BaseTestParams> TestResult run(TestCase<P> testCase, P params) {
-        long startTime = System.currentTimeMillis();
+**Restart recovery is simple.** An October 2026 change requeues persisted executions that are still active at startup. This does not guarantee exactly-once execution: an interrupted scenario may already have produced side effects.
 
-        try {
-            // 1. Evaluate Cold Preconditions
-            for (ExecutionCondition condition : testCase.conditions()) {
-                var result = condition.evaluate();
-                if (!result.success()) {
-                    return TestResult.skipped(result.reason(), startTime);
-                }
-            }
+**Parallelism must respect the application under test.** A thread pool does not remove business conflicts, browser constraints or the capacity limits of a shared environment.
 
-            // 2. Execute Lifecycle
-            driverManager.initDriver(params.getBrowser());
-            boolean success = testCase.execute(params);
-            
-            return success ? 
-                TestResult.success(startTime) : 
-                TestResult.failed("Scenario assertions failed.", startTime);
-                
-        } catch (Exception e) {
-            // Capture structured failure information
-            return TestResult.crashed("Unhandled execution exception", e, startTime);
-        } finally {
-            driverManager.quitDriverSafely();
-        }
-    }
-}
+**Reliability also depends on scenarios.** Better orchestration does not automatically fix a fragile selector or an incorrect wait. Work on reusable abstractions and related tests remains essential.
 
-```
+## What I learned
 
----
+The challenge was more than adding a REST controller. It involved evolving an existing system, preserving CI usage and making execution state understandable in an interface used by other people.
 
-## 2. Test Discovery and Strongly-Typed Parameters
+This work connects my main interests: Java backend development, software quality and tools built for a team.
 
-If a test is agnostic to its trigger, the framework needs a mechanism to inject the correct parameters from external REST calls. This is handled by the `TestRegistry`.
-
-Because every `TestCase` is a Spring `@Component`, they are injected into a central registry at startup. This enables a dual-purpose routing model:
-
-* **For REST APIs:** `parameterType()` allows the `ObjectMapper` to parse raw JSON into the strongly-typed Java record `P`.
-* **For CI/CD:** `defaultParameters()` provides the baseline datasets so the JUnit engine knows what to run automatically during a pipeline build.
-
-```java
-package com.example.framework.registry;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Component;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-@Component
-public class TestRegistry {
-
-    private final Map<String, TestCase<?>> tests;
-    private final ObjectMapper objectMapper;
-
-    public TestRegistry(List<TestCase<?>> testCases, ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-        this.tests = testCases.stream()
-            .collect(Collectors.toMap(TestCase::id, t -> t));
-    }
-
-    public TestCase<?> get(String id) {
-        if (!tests.containsKey(id)) {
-            throw new IllegalArgumentException("Test not found: " + id);
-        }
-        return tests.get(id);
-    }
-
-    public <P extends BaseTestParams> P parseParams(TestCase<P> testCase, JsonNode payload) {
-        return objectMapper.convertValue(payload, testCase.parameterType());
-    }
-}
-
-```
-
----
-
-## 3. Asynchronous Execution Model for REST Clients
-
-E2E tests in enterprise platforms often take between 30 seconds and 15 minutes to execute. Holding an HTTP connection open for this duration causes gateway timeouts and thread starvation.
-
-To handle this, the REST API uses an asynchronous polling pattern:
-
-1. The client submits a `POST` request.
-2. The server immediately returns `202 Accepted` with a `QUEUED` status.
-3. A background thread pool evaluates preconditions and runs the test.
-4. The client polls a `GET` endpoint to observe state transitions (`QUEUED` → `RUNNING` → `SUCCESS` | `FAILED` | `SKIPPED`).
-
-```java
-package com.example.framework.api;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.bind.annotation.*;
-
-@RestController
-@RequestMapping("/api/v1/executions")
-public class ExecutionController {
-
-    private final TestRegistry testRegistry;
-    private final TestRunner testRunner;
-    private final ExecutionTaskStore taskStore;
-    private final ThreadPoolTaskExecutor testExecutor;
-
-    @PostMapping
-    public ResponseEntity<ExecutionTask> startExecution(@RequestBody ExecutionRequest request) {
-        var testCase = testRegistry.get(request.testId());
-        var params = testRegistry.parseParams(testCase, request.payload());
-        
-        String executionId = UUID.randomUUID().toString();
-        ExecutionTask task = taskStore.create(executionId, testCase.name()); // Status: QUEUED
-
-        testExecutor.submit(() -> {
-            taskStore.markRunning(executionId);
-            
-            var result = testRunner.run(testCase, params); 
-            
-            taskStore.markCompleted(executionId, result);
-        });
-
-        return ResponseEntity.accepted().body(task);
-    }
-}
-
-```
-
----
-
-## 4. Adapting to CI/CD with Dynamic JUnit 5 Tests
-
-While the REST API runs tests asynchronously for the web UI, Jenkins and Maven require synchronous JUnit 5 executions to produce standard XML Surefire reports.
-
-The JUnit adapter utilizes JUnit 5’s `@TestFactory` to hook into the exact same `TestRunner`, automatically expanding the parameterized datasets provided by `defaultParameters()`:
-
-```java
-package com.example.framework.adapter.junit;
-
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
-
-@Component
-public class TestSuiteFactory {
-
-    @Autowired
-    private TestRegistry registry;
-
-    @Autowired
-    private TestRunner testRunner;
-
-    @TestFactory
-    public Stream<DynamicTest> generateDynamicTests() {
-        return registry.getAll().stream().flatMap(testCase -> 
-            testCase.defaultParameters().stream().map(params -> 
-                DynamicTest.dynamicTest(
-                    testCase.name() + " (" + params.getEnvironment() + ")",
-                    () -> executeInJUnitContext(testCase, params)
-                )
-            )
-        );
-    }
-
-    @SuppressWarnings("unchecked")
-    private <P extends BaseTestParams> void executeInJUnitContext(TestCase<P> testCase, Object params) {
-        var result = testRunner.run(testCase, (P) params);
-
-        if (result.status() == TestStatus.SKIPPED) {
-            Assumptions.assumeTrue(false, result.message()); 
-        }
-
-        org.junit.jupiter.api.Assertions.assertEquals(
-            TestStatus.SUCCESS, 
-            result.status(), 
-            "Test failed: " + result.message()
-        );
-    }
-}
-
-```
-
-> **Note on CI Visuals:** By mapping the internal `SKIPPED` status to JUnit's `Assumptions.assumeTrue(false)`, native test runners register the execution as *Aborted*. CI/CD tools like Jenkins consume this report and properly classify the test as unstable or skipped, distinguishing unavailable preconditions from actual test failures.
-
----
-
-## 5. Cold Preconditions: Checking Business Reality
-
-Launching a Selenium WebDriver session takes significant time. Running that setup only to discover that a prerequisite business state hasn't been met wastes compute time.
-
-The framework uses lightweight guardrails that check HTTP APIs or database states before the browser is initialized. These checks validate specific business scenarios rather than just infrastructure availability.
-
-### Example: Verifying Payroll Data Prerequisites
-
-Consider a test that simulates a therapeutic part-time absence declaration. Before opening the browser, the framework evaluates the business context:
-
-```java
-package com.example.framework.condition;
-
-public class TherapeuticAbsenceDsnCondition implements ExecutionCondition {
-
-    private final HrApiClient apiClient;
-    private final String agentId;
-
-    public TherapeuticAbsenceDsnCondition(HrApiClient apiClient, String agentId) {
-        this.apiClient = apiClient;
-        this.agentId = agentId;
-    }
-
-    @Override
-    public ConditionResult evaluate() {
-        if (!apiClient.checkAgentExists(agentId)) {
-            return new ConditionResult(false, "Agent ID " + agentId + " missing.");
-        }
-        if (!apiClient.isPayrollPeriodActive()) {
-            return new ConditionResult(false, "Current DSN payroll period is closed.");
-        }
-        if (!apiClient.hasTherapeuticAbsence(agentId)) {
-            return new ConditionResult(false, "No therapeutic absence found to declare.");
-        }
-        
-        return new ConditionResult(true, "Business prerequisites met. Ready to test.");
-    }
-}
-
-```
-
-If this evaluation fails, the REST API returns a `SKIPPED` payload. In CI, JUnit reports an aborted test. This reduces the compute time of an invalid test from 20 seconds to 50 milliseconds. And because every prerequisite is validated *before* a browser session opens or any data is mutated, a run that isn't ready to proceed never touches shared state — so testers working concurrently on the same environment don't interfere with each other.
-
----
-
-## Architectural Boundaries
-
-This platform solves execution orchestration and routing. It does not solve:
-
-* **Execution State Persistence:** The asynchronous REST adapter manages execution tasks in memory. If the Spring Boot application restarts, running or queued jobs are lost unless backed by a persistent database or queue.
-* **Flaky Locators:** A decoupled architecture does not fix brittle CSS selectors or race conditions in Selenium.
-* **Test Data State Mutation:** While preconditions check if data exists, managing the cleanup and isolation of dirty data in a shared environment remains a separate infrastructure challenge.
-
-## Conclusion & Results
-
-Test definition is not test execution.
-
-By treating an E2E test as a parameterized domain model (`TestCase` → `TestRunner`), the architecture provides significant flexibility: the same Java code that runs synchronously in a nightly Jenkins build powers an asynchronous, interactive frontend dashboard, with type safety at the Java boundary and smart precondition evaluation.
-
-The measured outcomes:
-
-* **More reliable CI reporting** by distinguishing skipped tests from actual failures.
-* Invalid runs fail in **~50 ms** instead of spinning up a **20 s** browser session.
-* One tester's run **no longer interferes** with others working on the same shared environment.
-
-<Cta title="Let's build something together">
-  I'm currently seeking a **3-month software engineering internship in the US, starting June 2027**. If your team tackles similar test-automation or backend-infrastructure challenges, let's connect on [LinkedIn](https://www.linkedin.com/in/roget-benjamin).
-
-  *Note: code samples in this article are simplified and illustrative — the production source is proprietary.*
+<Cta title="Let’s discuss your team">
+I am seeking a **three-month software engineering internship from June 2027**, in backend development or software tooling. Contact me on [LinkedIn](https://www.linkedin.com/in/roget-benjamin) or by [email](mailto:benjamin.rogetpro@gmail.com).
 </Cta>

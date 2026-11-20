@@ -189,3 +189,11 @@ CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
 This suite replaces the former mobile snap/viewport assertions. It checks five
 phone/landscape sizes, native touch and intermediate scroll positions, the menu,
 inline controls, responsive mode switching, and the persistent WASM renderer.
+
+Recruiter journey (homepage information and CV, direct experience link, visible
+results, bilingual case-study diagrams/update date, and contact):
+
+```sh
+CHROME_PATH=/usr/bin/chromium PORTFOLIO_URL=http://localhost:3100 \
+  REVIEW_DIR=/tmp/portfolio-recruiter node scripts/test-recruiter-path.mjs
+```

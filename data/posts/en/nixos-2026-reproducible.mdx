@@ -1,14 +1,14 @@
 ---
 title: "NixOS: My Infrastructure as Code — Flakes, Impermanence, and a Reproducible Homelab"
 date: "2026-08-17"
-summary: "Seven machines, one flake. How I turned my homelab and dev environment into a declarative, versioned, CI-tested asset: ZFS + impermanence, declarative Neovim, auto-generated services, and encrypted secrets."
+summary: "Six hosts and one installer ISO, one flake. How I turned my homelab and dev environment into a declarative, versioned, CI-tested asset: ZFS + impermanence, declarative Neovim, auto-generated services, and encrypted secrets."
 tags: ["NixOS", "Infrastructure", "Homelab", "ZFS", "Neovim", "Rust"]
 ---
 
 # "I use NixOS btw."
 
 <Tldr title="TL;DR — Executive Summary">
-**Result:** My entire infrastructure — seven machines, from a production server to a gaming PC — is defined in **a single Nix flake**, versioned on GitHub and **tested in CI on every PR**.
+**Result:** My entire infrastructure — six hosts, from a production server to a gaming PC, plus an installer ISO target — is defined in **a single Nix flake**, versioned on GitHub and **tested in CI on every PR**.
 
 **Concretely:**
 - **Blank-slate impermanence:** my server's root is restored to an *empty ZFS snapshot* on every boot via a systemd service I wrote myself. Anything not declared in code disappears.
@@ -19,7 +19,7 @@ tags: ["NixOS", "Infrastructure", "Homelab", "ZFS", "Neovim", "Rust"]
 
 It's a meme, but for me it's a survival strategy. After years of wrestling with "standard" Linux distributions where a system update or a hardware swap could break days of tweaking, I made a decision: my setup had to be **as version-controlled as my code**.
 
-The result is [`Strange500/nixos-config`](https://github.com/Strange500/nixos-config): seven machines, radically different roles, and yet **one flake**, **one repo**, **one source of truth**. This post is the story of how I got there — and why I'm never going back.
+The result is [`Strange500/nixos-config`](https://github.com/Strange500/nixos-config): six hosts and an installer ISO, radically different roles, and yet **one flake**, **one repo**, **one source of truth**. This post is the story of how I got there — and why I'm never going back.
 
 ---
 
