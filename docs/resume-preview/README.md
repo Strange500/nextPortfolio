@@ -1,5 +1,69 @@
 # CV — previews et contrôle visuel
 
+## Version cohérente avec le portfolio — 20 novembre 2026
+
+[CV français](portfolio-cv-fr.png) · [English résumé](portfolio-cv-en.png)
+
+Le renderer reprend directement les couleurs du thème clair dans
+`app/narrative.css` : papier #f1eee7, encre #20242b, secondaire #5e656f,
+accent #2f53d7. Il garde Inter et Fira Code, aligne l’en-tête à gauche et utilise
+des séparateurs fins. Le corps passe à 9,25 pt ; les dates et liens secondaires
+restent à 7,5 pt. Les versions FR et EN utilisent le même ordre de lecture :
+profil, expérience, formation, compétences, projets, langues.
+
+### Pertinence et sélection des projets
+
+Le CV cible un stage backend Java et systèmes de trois mois dès juin 2027.
+L’expérience Numih est condensée en cinq points conservant le framework partagé,
+l’interface Angular intégrale, les gains estimés, l’outil de support distinct et
+la formation/recrutement. Aucun pourcentage non étayé n’est ajouté au CV.
+Le statut français devient « Élève ingénieur » ; le diplôme reste prévu en 2028.
+Les intitulés DUT et le classement de promotion sont conservés.
+
+La liste de destinations du résumé anglais est retirée du CV généraliste ;
+l’objectif d’équipe anglophone est conservé. Les coordonnées gardent ville,
+email, téléphone et profils. Le JSON ne contient plus d’adresse complète ni de
+chemin local de photo inutilisé. Le TOEIC est identifié comme Listening & Reading,
+sans déduction d’un niveau oral ou CECRL. Les compétences sont priorisées plutôt
+que présentées comme une liste exhaustive de technologies.
+
+L’inventaire GitHub a servi à sélectionner des candidats, puis leurs descriptions,
+structures et portions de code ont été examinées. Les tests de tous ces projets
+n’ont pas été exécutés ; les tests décrits ci-dessous sont présents dans leurs
+sources, sans affirmation de leur statut courant.
+
+| Projet public | Décision pour ce CV | Éléments examinés |
+| --- | --- | --- |
+| [RayTracer (Java)](https://github.com/Strange500/RayTracer) | Sélectionné en premier, remplace QGChat | Projet académique documenté ; rendu parallèle, BVH, tests JUnit et comparaison d’images de référence. |
+| [min-btc-node](https://github.com/Strange500/min-btc-node) | Conservé | Réseau asynchrone multi-pairs, messages de filtres compacts, code GCS et suivi d’UTXO dans le gestionnaire. Le README place encore certaines de ces capacités dans la roadmap : la description est corroborée par le code. |
+| [nixos-config](https://github.com/Strange500/nixos-config) | Conservé | Modules réutilisables, flake, configurations et checks ; complète le profil backend avec l’infrastructure. |
+| [QGChat](https://github.com/Strange500/QGChat) | Alternative pour une candidature Java web | MVC/DAO/SQL et REST ; le CV montre déjà une expérience web plus récente chez Numih. |
+| [ascii-cube-rs](https://github.com/Strange500/ascii-cube-rs) | Alternative Rust/WASM et interfaces | Démonstration publique, exports WASM et intégration réelle au portfolio. |
+| [pico-ledger](https://github.com/Strange500/pico-ledger) | Alternative embarqué | Firmware, cœur portable et tests sur hôte ; conserver la qualification de prototype. |
+| [telegram-spring](https://github.com/Strange500/telegram-spring) | Non retenu sur cette page | Stack pertinente mais périmètre de chat plus réduit que la plateforme Numih. |
+| [RayTracer-Rust](https://github.com/Strange500/RayTracer-Rust) | Alternative Rust | BVH et comparaisons d’images ; la version Java sert mieux le positionnement choisi et dispose d’une présentation d’entrée plus complète. |
+
+Les forks, exercices d’apprentissage et simples roadmaps n’ont pas été mis en
+avant comme réalisations complètes. Aucun contenu privé n’est reproduit.
+
+### Validation
+
+```sh
+node scripts/test-resume-content.mjs
+python3 scripts/test-resume-preview.py
+VIRTUAL_ENV=/path/to/pdf-venv ./scripts/generate-resume.sh
+/path/to/pdf-venv/bin/python scripts/test-resume-pdf.py --output /tmp/cv-review
+```
+
+Dépendances du venv de validation : WeasyPrint 70.0 et PyMuPDF. Le contrôle de
+contenu et la concordance des JSON générés sont désormais exécutés en CI, avec
+les tests HTML déjà présents. Le contrôle PDF lit les fichiers réellement livrés :
+une page A4 FR/EN, textes intégraux extractibles, neuf cibles de liens dans chaque
+version, alias identiques, aucun mot superposé ou hors page. Les PNG ont été
+inspectés visuellement. Une épreuve papier à taille réelle reste utile.
+
+## Historique des validations précédentes
+
 ## État actuel : cartes équilibrées et liens courts (suite de #33)
 
 Base : `08348d8` (#33 ouverte, contenant #32 fusionnée). Nouvelle branche dédiée,

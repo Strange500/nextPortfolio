@@ -38,12 +38,11 @@ export const dictionaries = {
           date: "Sept 2025 – Present",
           deepDive: "/en/blog/automated-testing-framework",
           bullets: [
-            "Developed the asynchronous Spring Boot test API within an existing team backend and built the Angular interface end to end to launch, schedule and monitor tests, integrating WebSocket status notifications.",
-            "Refactored an existing Selenium/Java framework into reusable abstractions, separating framework code from test scenarios; enabled the same tests to run through Maven/Jenkins or the API.",
-            "Improved reliability across roughly 50 to 70 automated tests through test-data lifecycle management (creation, update and deletion) in shared environments.",
-            "Cut the time needed to adapt tests after an environment change or a major application version from about four hours to under ten minutes.",
-            "Develop and maintain business application features in Java and Angular, and designed a Spring Boot internal tool that now distributes daily product-support duties across about 40 developers.",
-            "Led technical assessments for intern and apprentice recruitment, designing Java coding exercises and questionnaires on Java, Hibernate and Agile practices and conducting technical interviews; trained an intern and an apprentice on the testing framework."
+            "Refactored an existing Selenium/Java framework and migrated it to Spring Boot, sharing the test engine between Maven/Jenkins CI and an asynchronous REST API.",
+            "Built the Angular interface end to end for test launches, scheduling and execution monitoring, integrating WebSocket status notifications.",
+            "Made roughly 50–70 tests more reliable through test-data lifecycle management; reduced environment/version adaptation from about 4 hours to under 10 minutes (work-experience estimate).",
+            "Developed a separate Spring Boot tool distributing daily product-support duties across about 40 developers; maintained Java and Angular business features.",
+            "Conducted technical recruitment assessments (Java exercises and interviews); trained an intern and an apprentice on the testing framework."
           ]
         },
         {
@@ -103,12 +102,11 @@ export const dictionaries = {
           date: "Sept 2025 – Présent",
           deepDive: "/fr/blog/automated-testing-framework",
           bullets: [
-            "Développement de l’API Spring Boot asynchrone sur un backend d’équipe existant et réalisation intégrale de l’interface Angular pour lancer, planifier et superviser les tests, avec intégration des notifications WebSocket.",
-            "Refactoring d'un framework Selenium/Java existant en abstractions réutilisables, séparant le framework des scénarios ; exécution des mêmes tests via Maven/Jenkins ou l'API.",
-            "Fiabilisation d'environ 50 à 70 tests automatisés grâce à la gestion du cycle de vie des données de test (création, mise à jour, suppression) en environnements partagés.",
-            "Réduction du temps d'adaptation des tests après un changement d'environnement ou une version majeure de l'application, d'environ quatre heures à moins de dix minutes.",
-            "Développement et déploiement d'un outil interne Spring Boot répartissant chaque jour les tâches de support produit entre environ 40 développeurs, et maintenance de fonctionnalités métier en Java et Angular.",
-            "Responsabilité de l'évaluation technique des candidats stagiaires et alternants : conception d'un exercice Java sur ordinateur et de QCM Java, Hibernate et pratiques Agile, entretiens techniques ; formation d'un stagiaire et d'un alternant au framework de tests."
+            "Refonte d’un framework Selenium/Java existant et migration vers Spring Boot : moteur partagé entre la CI Maven/Jenkins et une API REST asynchrone.",
+            "Réalisation intégrale de l’interface Angular de lancement, programmation et suivi des tests, avec intégration des notifications de statut WebSocket.",
+            "Fiabilisation d’environ 50–70 tests par gestion du cycle de vie des données ; adaptation d’environnement/version ramenée d’environ 4 h à moins de 10 min (estimation issue de l’expérience).",
+            "Développement d’un outil Spring Boot distinct répartissant le support quotidien entre environ 40 développeurs ; maintenance de fonctionnalités métier Java et Angular.",
+            "Évaluation technique de candidats (exercices Java et entretiens) ; formation d’un stagiaire et d’un alternant au framework de tests."
           ]
         },
         {

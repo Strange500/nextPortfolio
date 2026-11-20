@@ -29,7 +29,8 @@ for lang, filename, alias in [('en', 'resume.pdf', 'resume-en.pdf'), ('fr', 'res
     normalized = re.sub(r'\s+', ' ', text).strip()
     for claim in [h for job in data['work'] for h in job.get('highlights', [])] + [p['description'] for p in data['projects']]:
         assert re.sub(r'\s+', ' ', claim).strip() in normalized, (lang, 'missing or broken claim', claim)
-    assert 'pico-ledger' not in text and 'RayTracer' not in text and 'ascii-cube' not in text
+    assert 'RayTracer' in text
+    assert 'pico-ledger' not in text and 'ascii-cube' not in text
     words = page.get_text('words')
     for word in words:
         assert page.rect.contains(pymupdf.Rect(word[:4])), (lang, 'out of bounds', word)

@@ -2,11 +2,11 @@
   "$schema": "https://raw.githubusercontent.com/jsonresume/resume-schema/v1.0.0/schema.json",
   "basics": {
     "name": "Benjamin Roget",
-    "label": "Software Engineering Student | Backend & Systems",
+    "label": "Engineering Student — Java Backend & Systems",
     "email": "benjamin.rogetpro@gmail.com",
     "phone": "+33 7 83 03 95 25",
     "url": "https://portfolio.qgroget.com",
-    "summary": "Seeking a 3-month software engineering internship starting June 2027 in Poland, Romania, Czechia or the Nordics, in English-speaking teams; the US is a secondary option. Engineering student and software engineering apprentice with experience building Java/Spring Boot applications and automated testing tools. Personal projects focus on Rust, networking and Linux infrastructure.",
+    "summary": "Seeking a 3-month software engineering internship starting June 2027, in an English-speaking team. Engineering apprentice at IMT Nord Europe and Numih France. Java/Spring Boot backend and automated testing, with personal projects in Rust and Linux infrastructure.",
     "location": {
       "city": "Villeneuve d'Ascq",
       "region": "Hauts-de-France",
@@ -33,12 +33,11 @@
       "endDate": "",
       "url": "https://portfolio.qgroget.com/en/blog/automated-testing-framework",
       "highlights": [
-        "Developed the asynchronous Spring Boot test API within an existing team backend and built the Angular interface end to end to launch, schedule and monitor tests, integrating WebSocket status notifications.",
-        "Refactored an existing Selenium/Java framework into reusable abstractions, separating framework code from test scenarios; enabled the same tests to run through Maven/Jenkins or the API.",
-        "Improved reliability across roughly 50 to 70 automated tests through test-data lifecycle management (creation, update and deletion) in shared environments.",
-        "Cut the time needed to adapt tests after an environment change or a major application version from about four hours to under ten minutes.",
-        "Develop and maintain business application features in Java and Angular, and designed a Spring Boot internal tool that now distributes daily product-support duties across about 40 developers.",
-        "Led technical assessments for intern and apprentice recruitment, designing Java coding exercises and questionnaires on Java, Hibernate and Agile practices and conducting technical interviews; trained an intern and an apprentice on the testing framework."
+        "Refactored an existing Selenium/Java framework and migrated it to Spring Boot, sharing the test engine between Maven/Jenkins CI and an asynchronous REST API.",
+        "Built the Angular interface end to end for test launches, scheduling and execution monitoring, integrating WebSocket status notifications.",
+        "Made roughly 50–70 tests more reliable through test-data lifecycle management; reduced environment/version adaptation from about 4 hours to under 10 minutes (work-experience estimate).",
+        "Developed a separate Spring Boot tool distributing daily product-support duties across about 40 developers; maintained Java and Angular business features.",
+        "Conducted technical recruitment assessments (Java exercises and interviews); trained an intern and an apprentice on the testing framework."
       ]
     },
     {
@@ -75,47 +74,36 @@
       "keywords": [
         "Java",
         "Spring Boot",
-        "Java EE",
         "REST APIs",
-        "SQL",
-        "Maven"
+        "SQL"
       ]
     },
     {
-      "name": "Systems & Languages",
+      "name": "Testing & Delivery",
       "keywords": [
-        "Rust",
-        "C",
-        "Python",
-        "TypeScript",
-        "JavaScript",
-        "WebAssembly"
+        "Selenium",
+        "JUnit 5",
+        "Maven",
+        "Jenkins",
+        "Git"
       ]
     },
     {
       "name": "Web",
       "keywords": [
         "Angular",
+        "TypeScript",
         "React",
         "Next.js"
       ]
     },
     {
-      "name": "Testing & Tooling",
+      "name": "Systems",
       "keywords": [
-        "Selenium",
-        "JUnit 5",
-        "Jenkins",
-        "Git"
-      ]
-    },
-    {
-      "name": "Infrastructure",
-      "keywords": [
-        "NixOS",
+        "Rust",
         "Linux",
-        "Docker",
-        "Podman"
+        "NixOS",
+        "Docker"
       ]
     }
   ],
@@ -143,32 +131,29 @@
     {
       "name": "Triathlon training",
       "keywords": []
-    },
-    {
-      "name": "Weightlifting",
-      "keywords": []
     }
   ],
   "projects": [
     {
+      "name": "RayTracer",
+      "description": "Academic Java ray tracer: parallel rendering, BVH acceleration and JUnit 5 regression tests comparing generated images against references.",
+      "keywords": [
+        "Java",
+        "JUnit 5",
+        "Parallelism",
+        "BVH"
+      ],
+      "url": "https://github.com/Strange500/RayTracer"
+    },
+    {
       "name": "min-btc-node",
-      "description": "Built a Rust Bitcoin light-client prototype with asynchronous P2P networking across multiple peers, block-header synchronization, and BIP157/158 compact filters to retrieve relevant blocks and track wallet UTXOs.",
+      "description": "Rust light-client prototype: asynchronous multi-peer P2P networking, header synchronization, BIP157/158 compact filters and UTXO tracking.",
       "keywords": [
         "Rust",
         "Bitcoin",
         "Networking"
       ],
       "url": "https://github.com/Strange500/min-btc-node"
-    },
-    {
-      "name": "QGChat",
-      "description": "Java EE MVC chat application with a REST API for channels and messages, PostgreSQL persistence, temporary JWT tokens for channel invitations, and Docker Compose deployment.",
-      "keywords": [
-        "Java EE",
-        "PostgreSQL",
-        "Docker"
-      ],
-      "url": "https://github.com/Strange500/QGChat"
     },
     {
       "name": "nixos-config",
